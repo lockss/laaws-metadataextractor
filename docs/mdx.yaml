@@ -1,0 +1,467 @@
+swagger: '2.0'
+info:
+  description: Metadata Extractor for SNAFL
+  version: 1.0.0
+  title: SNAFL-Metadata Extractor
+  contact:
+    name: 'LOCKSS Support'
+    url: 'http://www.lockss.org/'
+    email: 'support@lockss.org'
+  license:
+    name: 'Modified BSD License'
+    url: 'http://www.lockss.org/support/open-source-license/'
+host: 'snafl.lockss.org:443'
+basePath: /mdx
+tags:
+  - name: Default
+    description: Default section
+  - name: au
+    description: tasks on au
+  - name: jobs
+    description: tasks on jobs
+schemes:
+  - https
+paths:
+  /au:
+    get:
+      tags:
+        - au
+      operationId: getAu
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: 'page'
+          in: query
+          description: The page to begin entry from.
+          required: false
+          type: integer
+          default: 1
+        - name: 'limit'
+          in: query
+          description: The number of au / page.
+          required: false
+          type: integer
+          default: 50
+      responses:
+        '200':
+          description: "A list of all au's in storage"
+          schema:
+              $ref: '#/definitions/auPageInfo'
+        '500':
+          description: Internal server error
+        '503':
+          description: Some or all of the system is not available
+  '/au/{auid}':
+    get:
+      tags:
+        - au
+      summary: Get the metadata stored for an au
+      description: Get the metadata stored for an au
+      operationId: getAuAuid
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: auid
+          in: path
+          description: The au id on which to perform the operation.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Returns OK and the metadata content
+          schema:
+            $ref: '#/definitions/auMetadata'
+        '404':
+          description: Au not found
+        '500':
+          description: Internal server error
+        '503':
+          description: Some or all of the system is not available
+    put:
+      tags:
+        - au
+      summary: Reindex All or part of the metadata for an au
+      description: Reindex All or part of the metadata for an au
+      operationId: putAuAuid
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: auid
+          in: path
+          description: The id of the au on which the operation should be performed.
+          required: true
+          type: string
+      responses:
+        '202':
+          description: Successfully add request to queue
+          schema:
+            $ref: '#/definitions/job'
+        '401':
+          description: The request was denied because of unauthorized access.
+        '404':
+          description: AU Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+    delete:
+      tags:
+        - au
+      summary: Delete the metadata stored for an au
+      description: Delete the metadata stored for an au
+      operationId: deleteAuAuid
+      consumes: []
+      produces: 
+        - application/json
+      parameters:
+        - name: auid
+          in: path
+          description: The id of the au on which the operation should be performed.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized Access
+        '404':
+          description: The au does not exist
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+  '/au/{auid}/jobs':
+    get:
+      tags:
+        - au
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: auid
+          in: path
+          description: The au id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The status of the au job
+          schema:
+            $ref: '#/definitions/job'
+        '404':
+          description: The au does not exist
+        '500':
+          description: Internal server error
+        '503':
+          description: Some or all of the system is not available
+  /jobs:
+    get:
+      tags:
+        - jobs
+      summary: Get a list of currently active jobs
+      description: Get a list of currently active jobs
+      operationId: getJobs
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: 'page'
+          in: query
+          description: The page to begin entry from.
+          required: false
+          type: integer
+          default: 1
+        - name: 'limit'
+          in: query
+          description: The number of au / page.
+          required: false
+          type: integer
+          default: 50
+      responses:
+        '200':
+          description: A listing of current jobs
+          schema:
+              $ref: '#/definitions/jobPageInfo'
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+    delete:
+      tags:
+        - jobs
+      summary: Delete all of the currently queued and active jobs
+      description: Delete all of the currently queued and active jobs
+      operationId: deleteJobs
+      consumes: []
+      produces: 
+       - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Jobs were successfully deleted
+        '401':
+          description: Unauthorized access
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+  '/jobs/au/{auid}':
+    get:
+      tags:
+        - jobs
+      summary: Retrieve job for au
+      description: Retrieve job for au
+      operationId: getJobsAuAuid
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: auid
+          in: path
+          description: The id of the au on which the operation should be performed.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The status of the current job
+          schema:
+            $ref: '#/definitions/job'
+        '404':
+          description: No such au id
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+    delete:
+      tags:
+        - jobs
+      summary: Delete job for au
+      description: Delete job for au
+      operationId: deleteJobsAuAuid
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: auid
+          in: path
+          description: The id of the au on which the operation should be performed.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully cancelled job
+          schema:
+            $ref: '#/definitions/job'
+        '403':
+          description: You do not have permission to perform deletions
+        '404':
+          description: The au has no jobs
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+  '/jobs/{jobid}':
+    get:
+      tags:
+        - jobs
+      summary: Retrieve the job info
+      description: Retrieve the job info
+      operationId: getJobsJobid
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: jobid
+          in: path
+          description: A job id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Return the status of the job with this id
+          schema:
+            $ref: '#/definitions/status'
+        '404':
+          description: No such job id
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+    delete:
+      tags:
+        - jobs
+      summary: Delete the job from the queue and stop any processing
+      description: Delete the job from the queue and stop any processing
+      operationId: deleteJobsJobid
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: jobid
+          in: path
+          description: A job id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The job has been stopped and deleted
+          schema:
+            $ref: '#/definitions/job'
+        '403':
+          description: Request denied
+        '404':
+          description: The job could not be found.
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Some or all of the system is not available
+definitions:
+  metadataElement:
+    type: object
+    required:
+      - Key
+      - Value
+    properties:
+      Key:
+        type: string
+        description: the key for this element
+      Value:
+        type: array
+        description: The list of values for this element
+        items:
+          type: string
+    description: The metadata for a single metadata entry
+  status:
+    type: object
+    required:
+      - code
+      - msg
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: The numeric value for the current state
+      msg:
+        type: string
+        description: A text message defining the current code
+    description: The existing state of an job in the job queue
+  job:
+    type: object
+    required:
+      - au
+      - creationDate
+      - id
+      - status
+    properties:
+      au:
+        $ref: '#/definitions/au'
+      id:
+        type: string
+        description: The id for this job
+      description:
+        type: string
+        description: A short description of job being performed
+      creationDate:
+        type: string
+        format: date
+        description: The date the job entered the queue
+      startDate:
+        type: string
+        format: date
+        description: The date-time the job began processing
+      endDate:
+        type: string
+        format: date
+        description: The date-time for when the job ended with or without error
+      status:
+        $ref: '#/definitions/status'
+    description: A job or task to be performed
+  auMetadata:
+    type: object
+    properties:
+      auMetadataList:
+        type: array
+        description: The list of article metadata for this au
+        items:
+          $ref: '#/definitions/articleMetadata'
+    description: The metadata as extracted from the metadata db for this au
+  au:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+        description: The long fully qualified AU ID
+      job:
+        type: string
+        description: The job id associated with this au.
+      name:
+        type: string
+        description: The name of the au in simple english for display.
+    description: The AU descriptor
+  articleMetadata:
+    type: object
+    properties:
+      articleMetadataList:
+        type: array
+        description: The list of metadata elements for this article
+        items:
+          $ref: '#/definitions/metadataElement'
+    description: The metadata generated from a single article
+  auPageInfo:
+    type: object
+    required:
+      - aus
+      - pageInfo
+    properties:
+      aus:
+        type: array
+        description: The list of au in the db
+        items:
+          $ref: '#/definitions/au'
+      pageInfo:
+        $ref: '#/definitions/pageInfo'
+  jobPageInfo:
+    type: object
+    required:
+      - jobs
+      - pageInfo
+    properties:
+      jobs:
+        type: array
+        description: The list of jobs currently running
+        items:
+          $ref: '#/definitions/job'
+      pageInfo:
+        $ref: '#/definitions/pageInfo'
+  pageInfo:
+    type: object
+    required:
+      - curLink
+      - currentPage
+      - resultsPerPage
+      - totalCount
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: The total number of elements to be paged in.
+      resultsPerPage:
+        type: integer
+        format: int32
+        description: number of results per page
+      currentPage:
+        type: integer
+        format: int32
+        description: The current page number
+      curLink:
+        type: string
+        description: The current link
+      nextLink:
+        type: string
+        description: The next link
+    description: The information related to paging in the content
