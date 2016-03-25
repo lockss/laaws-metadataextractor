@@ -2,7 +2,7 @@
 The wrapper around the metadata extracter and reporter.
 
 ## Build and Run with
-### <code>mvn package java:run </code>
+### <code>mvn clean package exec:java </code>
 
 ## API is documented at:
-### localhost:/docs/
+### localhost:8888/docs/
