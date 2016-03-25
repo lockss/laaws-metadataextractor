@@ -84,8 +84,8 @@ public class SnaflApp
     beanConfig.setTitle( "Metadata Service" );
 
     beanConfig.setSchemes(new String[]{"http"});
-    beanConfig.setHost(host);
-    beanConfig.setBasePath("/docs");
+    //beanConfig.setHost(host);
+//    beanConfig.setBasePath("/docs");
     beanConfig.setScan(true);
 
   }
