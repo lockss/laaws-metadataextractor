@@ -190,7 +190,5 @@ local.properties
 # Code Recommenders
 .recommenders/
 
-# logs
-logs/
-*.log
-
+# Project specific
+/logs
