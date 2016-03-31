@@ -26,6 +26,8 @@ paths:
     get:
       tags:
         - au
+      summary: Get a list of existing AUs
+      description: Get a list of all existing AUs (no parameters) or a list of the AUs in a page defined by the page index and size
       operationId: getAu
       consumes: []
       produces:
@@ -57,7 +59,7 @@ paths:
       tags:
         - au
       summary: Get the metadata stored for an au
-      description: Get the metadata stored for an au
+      description: Get the metadata stored for an AU given the AU identifier
       operationId: getAuAuid
       consumes: []
       produces:
@@ -83,7 +85,7 @@ paths:
       tags:
         - au
       summary: Reindex All or part of the metadata for an au
-      description: Reindex All or part of the metadata for an au
+      description: Reindex All or part of the metadata for an AU given the AU identifier
       operationId: putAuAuid
       consumes: []
       produces:
@@ -111,7 +113,7 @@ paths:
       tags:
         - au
       summary: Delete the metadata stored for an au
-      description: Delete the metadata stored for an au
+      description: Delete the metadata stored for an AU given the AU identifier
       operationId: deleteAuAuid
       consumes: []
       produces: 
@@ -137,6 +139,9 @@ paths:
     get:
       tags:
         - au
+      summary: Get the job for an AU
+      description: Get the job for an AU given the AU identifier
+      operationId: getAuAuidJob
       consumes: []
       produces:
         - application/json
@@ -162,7 +167,7 @@ paths:
       tags:
         - jobs
       summary: Get a list of currently active jobs
-      description: Get a list of currently active jobs
+      description: Get a list of all currently active jobs (no parameters) or a list of the currently active jobs in a page defined by the page index and size
       operationId: getJobs
       consumes: []
       produces:
@@ -213,7 +218,7 @@ paths:
       tags:
         - jobs
       summary: Retrieve job for au
-      description: Retrieve job for au
+      description: Retrieve job for AU given the AU identifier
       operationId: getJobsAuAuid
       consumes: []
       produces:
@@ -239,7 +244,7 @@ paths:
       tags:
         - jobs
       summary: Delete job for au
-      description: Delete job for au
+      description: Delete job for AU given the AU identifier
       operationId: deleteJobsAuAuid
       consumes: []
       produces:
@@ -268,7 +273,7 @@ paths:
       tags:
         - jobs
       summary: Retrieve the job info
-      description: Retrieve the job info
+      description: Retrieve the job info given the job identifier
       operationId: getJobsJobid
       consumes: []
       produces:
@@ -294,7 +299,7 @@ paths:
       tags:
         - jobs
       summary: Delete the job from the queue and stop any processing
-      description: Delete the job from the queue and stop any processing
+      description: Delete the job from the queue and stop any processing given the job identifier
       operationId: deleteJobsJobid
       consumes: []
       produces:
