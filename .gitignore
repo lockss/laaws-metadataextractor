@@ -192,3 +192,6 @@ local.properties
 
 # Project specific
 /logs
+/cache/
+/tdbxml/
+/derby.log
