@@ -1,0 +1,4 @@
+org.lockss.crawler.enabled=false
+org.lockss.metadataManager.mandatoryFields=publisher;provider
+org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
+org.lockss.poll.pollStarterInitialDelay=36000000
