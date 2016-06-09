@@ -90,13 +90,13 @@
     </dependency>
 
     <!-- LOCKSS daemon -->
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/lockss.jar -DpomFile=poms/lockss-2016.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/lockss.jar -DpomFile=poms/lockss-2016.pom -->
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss</artifactId>
       <version>2016</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/lockss-plugins.jar -DpomFile=poms/lockss-plugins-2016.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/lockss-plugins.jar -DpomFile=poms/lockss-plugins-2016.pom -->
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss-plugins</artifactId>
@@ -303,85 +303,85 @@
       <artifactId>xstream</artifactId>
       <version>1.1.3</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/commons-collections-3.2.2.jar -DpomFile=poms/commons-collections-3.2.2.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/commons-collections-3.2.2.jar -DpomFile=poms/commons-collections-3.2.2.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.apache.commons.collections</groupId>
       <artifactId>commons-collections</artifactId>
       <version>3.2.2</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/derby-9.1.jar -DpomFile=poms/derby-9.1.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/derby.jar -DpomFile=poms/derby-9.1.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.apache.derby</groupId>
       <artifactId>derby</artifactId>
       <version>9.1</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/derbyclient-9.1.jar -DpomFile=poms/derbyclient-9.1.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/derbyclient.jar -DpomFile=poms/derbyclient-9.1.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.apache.derby</groupId>
       <artifactId>derbyclient</artifactId>
       <version>9.1</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/derbynet-9.1.jar -DpomFile=poms/derbynet-9.1.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/derbynet.jar -DpomFile=poms/derbynet-9.1.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.apache.derby</groupId>
       <artifactId>derbynet</artifactId>
       <version>9.1</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/heritrix-commons-3.1.0-p1.jar -DpomFile=poms/heritrix-commons-3.1.0-p1.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/heritrix-commons-3.1.0-p1.jar -DpomFile=poms/heritrix-commons-3.1.0-p1.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.archive</groupId>
       <artifactId>heritrix-commons</artifactId>
       <version>3.1.0-p1</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/htmlparser-1.6p.jar -DpomFile=poms/htmlparser-1.6p.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/htmlparser-1.6p.jar -DpomFile=poms/htmlparser-1.6p.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.htmlparser</groupId>
       <artifactId>htmlparser</artifactId>
       <version>1.6p</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/jetty-5.1.5L.jar -DpomFile=poms/jetty-5.1.5L.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/jetty-5.1.5L.jar -DpomFile=poms/jetty-5.1.5L.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.mortbay</groupId>
       <artifactId>jetty</artifactId>
       <version>5.1.5L</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/JimiProClasses.jar -DpomFile=poms/JimiProClasses.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/JimiProClasses.jar -DpomFile=poms/JimiProClasses.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.com.sun.jimi</groupId>
       <artifactId>jimi</artifactId>
       <version>1990809</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/JoSQL-2.2.jar -DpomFile=poms/JoSQL-2.2.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/JoSQL-2.2.jar -DpomFile=poms/JoSQL-2.2.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.josql</groupId>
       <artifactId>JoSQL</artifactId>
       <version>2.2</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/mysql-connector-java-5.1.29-bin.jar -DpomFile=poms/mysql-connector-java-5.1.29-bin.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/mysql-connector-java-5.1.29-bin.jar -DpomFile=poms/mysql-connector-java-5.1.29-bin.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.com.mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.29-bin</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/oiosaml.java-21188-PATCHED.jar -DpomFile=poms/oiosaml.java-21188-PATCHED.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/oiosaml.java-21188-PATCHED.jar -DpomFile=poms/oiosaml.java-21188-PATCHED.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.dk.itst.oiosaml</groupId>
       <artifactId>oiosaml-java</artifactId>
       <version>21188-PATCHED</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/PDFBox-0.7.3.jar -DpomFile=poms/PDFBox-0.7.3.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/PDFBox-0.7.3.jar -DpomFile=poms/PDFBox-0.7.3.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.pdfbox</groupId>
       <artifactId>PDFBox</artifactId>
       <version>0.7.3</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/postgresql-jdbc4-9.1.jar -DpomFile=poms/postgresql-jdbc4-9.1.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/postgresql-jdbc4-9.1.jar -DpomFile=poms/postgresql-jdbc4-9.1.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.org.postgresql</groupId>
       <artifactId>postgresql-jdbc4</artifactId>
       <version>9.1</version>
     </dependency>
-    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=lib/rdf-api-2001-01-19.jar -DpomFile=poms/rdf-api-2001-01-19.pom -->
+    <!-- install manually: snafl-metadata$ mvn install:install-file -Dfile=../lockss-daemon_snafl-changes/lib/rdf-api-2001-01-19.jar -DpomFile=poms/rdf-api-2001-01-19.pom -->
     <dependency>
       <groupId>org.lockss.thirdparty.edu.stanford.db.rdf</groupId>
       <artifactId>rdf-api</artifactId>
