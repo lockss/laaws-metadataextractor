@@ -11,6 +11,9 @@ branches:
   
 os:
   - linux
-
+  
+script:
+  ./initBuild
+  
 notifications:
   email: github-snafl@lists.lockss.org
