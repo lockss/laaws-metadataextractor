@@ -13,7 +13,7 @@ os:
   - linux
   
 script:
-  ./initBuild
+  - ./initBuild
   
 notifications:
   email: github-snafl@lists.lockss.org
