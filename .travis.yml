@@ -8,12 +8,12 @@ jdk:
 branches:
   only:
   - master
-  
+
 os:
   - linux
-  
-script:
+
+before_install:
   - ./initBuild
-  
+
 notifications:
   email: github-snafl@lists.lockss.org
