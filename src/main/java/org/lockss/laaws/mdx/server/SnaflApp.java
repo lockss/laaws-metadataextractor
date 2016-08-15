@@ -25,7 +25,7 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.snafl.mdx.server;
+package org.lockss.laaws.mdx.server;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;

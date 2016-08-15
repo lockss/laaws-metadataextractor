@@ -1,4 +1,4 @@
-package org.lockss.snafl.mdx.api;
+package org.lockss.laaws.mdx.api;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

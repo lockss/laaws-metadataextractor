@@ -25,7 +25,7 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.snafl.mdx.api.impl;
+package org.lockss.laaws.mdx.api.impl;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -36,14 +36,14 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.log4j.Logger;
 import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
-import org.lockss.snafl.mdx.api.ApiException;
-import org.lockss.snafl.mdx.api.ApiResponseMessage;
-import org.lockss.snafl.mdx.api.JobsApiService;
-import org.lockss.snafl.mdx.api.NotFoundException;
-import org.lockss.snafl.mdx.model.Job;
-import org.lockss.snafl.mdx.model.JobPageInfo;
-import org.lockss.snafl.mdx.model.PageInfo;
-import org.lockss.snafl.mdx.model.Status;
+import org.lockss.laaws.mdx.api.ApiException;
+import org.lockss.laaws.mdx.api.ApiResponseMessage;
+import org.lockss.laaws.mdx.api.JobsApiService;
+import org.lockss.laaws.mdx.api.NotFoundException;
+import org.lockss.laaws.mdx.model.Job;
+import org.lockss.laaws.mdx.model.JobPageInfo;
+import org.lockss.laaws.mdx.model.PageInfo;
+import org.lockss.laaws.mdx.model.Status;
 
 /**
  * Provider of access to the AU metadata jobs.

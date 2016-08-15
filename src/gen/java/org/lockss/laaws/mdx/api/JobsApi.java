@@ -25,14 +25,14 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.snafl.mdx.api;
+package org.lockss.laaws.mdx.api;
 
 import io.swagger.annotations.Api;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import org.lockss.snafl.mdx.api.factories.JobsApiServiceFactory;
+import org.lockss.laaws.mdx.api.factories.JobsApiServiceFactory;
 
 /**
  * Provider of access to the AU metadata jobs.

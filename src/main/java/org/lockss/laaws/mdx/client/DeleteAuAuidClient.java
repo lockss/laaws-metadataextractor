@@ -25,7 +25,7 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.snafl.mdx.client;
+package org.lockss.laaws.mdx.client;
 
 import java.net.URLEncoder;
 import javax.ws.rs.client.ClientBuilder;

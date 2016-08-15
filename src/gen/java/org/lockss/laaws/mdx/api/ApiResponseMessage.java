@@ -1,4 +1,4 @@
-package org.lockss.snafl.mdx.api;
+package org.lockss.laaws.mdx.api;
 
 import javax.xml.bind.annotation.XmlTransient;
 

@@ -1,4 +1,4 @@
-package org.lockss.snafl.mdx.model;
+package org.lockss.laaws.mdx.model;
 
 import java.util.Objects;
 

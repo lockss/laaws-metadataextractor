@@ -1,4 +1,4 @@
-package org.lockss.snafl.mdx.server;
+package org.lockss.laaws.mdx.server;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;

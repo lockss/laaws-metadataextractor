@@ -25,7 +25,7 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.snafl.mdx.model;
+package org.lockss.laaws.mdx.model;
 
 import java.util.ArrayList;
 import java.util.List;

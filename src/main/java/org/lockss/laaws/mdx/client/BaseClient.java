@@ -25,7 +25,7 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.snafl.mdx.client;
+package org.lockss.laaws.mdx.client;
 
 public class BaseClient {
   static String baseUri = "http://localhost:8888";

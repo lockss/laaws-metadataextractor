@@ -1,4 +1,4 @@
-package org.lockss.snafl.mdx.utils;
+package org.lockss.laaws.mdx.utils;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-18T17:08:06.568-07:00")
 public class StringUtil {

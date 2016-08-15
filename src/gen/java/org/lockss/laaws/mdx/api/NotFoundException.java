@@ -1,4 +1,4 @@
-package org.lockss.snafl.mdx.api;
+package org.lockss.laaws.mdx.api;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
 public class NotFoundException extends ApiException {

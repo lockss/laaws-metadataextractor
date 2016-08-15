@@ -25,7 +25,7 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.snafl.mdx.api;
+package org.lockss.laaws.mdx.api;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
