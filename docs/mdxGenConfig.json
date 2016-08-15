@@ -1,0 +1,12 @@
+{
+  "library":"jersey2",
+  "groupId":"org.lockss.laaws",
+  "artifactId":"mdx",
+  "artifactVersion":"1.0.0",
+  "modelPackage":"org.lockss.snafl.mdx.model",
+  "apiPackage":"org.lockss.snafl.mdx.api",
+  "invokerPackage":"org.lockss.snafl.mdx",
+  "hideGenerationTimestamp": true,
+  "title": "Lockss Metadata Extractor"
+}
+
