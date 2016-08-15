@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
-  description: Metadata Extractor for SNAFL
+  description: Metadata Extractor for LAAWS
   version: 1.0.0
-  title: SNAFL-Metadata Extractor
+  title: LAAWS-Metadata Extractor
   contact:
     name: 'LOCKSS Support'
     url: 'http://www.lockss.org/'
@@ -10,7 +10,7 @@ info:
   license:
     name: 'Modified BSD License'
     url: 'http://www.lockss.org/support/open-source-license/'
-host: 'snafl.lockss.org:443'
+host: 'laaws.lockss.org:443'
 basePath: /mdx
 tags:
   - name: Default

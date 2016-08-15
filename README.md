@@ -1,22 +1,22 @@
-# snafl-metadata [![Build Status](https://travis-ci.org/lockss/snafl-metadata.svg?branch=master)](https://travis-ci.org/lockss/snafl-metadata)
-The wrapper around the metadata extracter and reporter.
+# laaws-metadata-extractor [![Build Status](https://travis-ci.org/lockss/laaws-metadata-extractor.svg?branch=master)](https://travis-ci.org/lockss/laaws-metadata-extractor)
+The wrapper around the metadata extractor and reporter.
 
 ### Clone the repo
 `git clone --recursive https://github.com/lockss/laaws-metadata.git`
 
 ### Set up the TDB tree:
-Edit ./runSnafl and set the TDB_DIR variable properly.
+Edit ./runLaawsMdx and set the TDB_DIR variable properly.
 
 ### Build and install the required LOCKSS daemon jar files:
 run `initBuild`
 
 ### Build and run:
-`./runSnafl`
+`./runLaawsMdx`
 
-The log is at ./snafl.log
+The log is at ./laawsmdx.log
 
 ### Stop:
-`./stopSnafl`
+`./stopLaawsMdx`
 
 ### API is documented at:
 #### localhost:8888/docs/

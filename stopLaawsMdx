@@ -24,7 +24,7 @@
 #
 if [ -f dpid ] ; then
   kill -9 `cat dpid` && rm -f dpid
-  echo Snafl stopped
+  echo LaawsMdx stopped
 else
-  echo Snafl not running
+  echo LaawsMdx not running
 fi

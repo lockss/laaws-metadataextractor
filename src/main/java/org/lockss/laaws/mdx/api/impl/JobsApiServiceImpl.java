@@ -189,9 +189,9 @@ public class JobsApiServiceImpl extends JobsApiService {
 
     PageInfo pi = new PageInfo();
 
-    URI baseUri = UriBuilder.fromUri(System.getProperty("SNAFL_SERVER_HOST",
+    URI baseUri = UriBuilder.fromUri(System.getProperty("LAAWS_MDX_SERVER_HOST",
 	"http://localhost")).
-	port(Integer.getInteger(System.getProperty("SNAFL_SERVER_PORT"), 8888)).
+	port(Integer.getInteger(System.getProperty("LAAWS_MDX_SERVER_PORT"), 8888)).
 	build();
 
     String curLink = baseUri + "/jobs";

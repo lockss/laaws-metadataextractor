@@ -53,18 +53,18 @@ import org.slf4j.LoggerFactory;
 /**
  * Main Class for starting the Entity Browser
  */
-public class SnaflApp extends LockssDaemon {
-  private static final Logger LOG = LoggerFactory.getLogger( SnaflApp.class );
+public class LaawsMdxApp extends LockssDaemon {
+  private static final Logger LOG = LoggerFactory.getLogger( LaawsMdxApp.class );
 
-  public static String SNAFL_SERVER_HOST ="SNAFL_SERVER_HOST";
-  public static String SNAFL_SERVER_PORT = "SNAFL_SERVER_PORT";
+  public static String LAAWS_MDX_SERVER_HOST ="LAAWS_MDX_SERVER_HOST";
+  public static String LAAWS_MDX_SERVER_PORT = "LAAWS_MDX_SERVER_PORT";
   private static final int DEFAULT_SERVER_PORT = 8888;
   private static final String DEFAULT_SERVER_HOST = "http://localhost";
   int serverPort;
   String serverHost;
 
   public static void main( String[] args ) {
-    SnaflApp snaflApp;
+	LaawsMdxApp laawsMdxApp;
     if (!SystemUtils.isJavaVersionAtLeast(MIN_JAVA_VERSION)) {
       System.err.println("LOCKSS requires at least Java " + MIN_JAVA_VERSION +
                          ", this is " + SystemUtils.JAVA_VERSION +
@@ -76,8 +76,8 @@ public class SnaflApp extends LockssDaemon {
     setSystemProperties();
 
     try {
-      snaflApp = new SnaflApp(opts.getPropUrls(), opts.getGroupNames());
-      snaflApp.startDaemon();
+      laawsMdxApp = new LaawsMdxApp(opts.getPropUrls(), opts.getGroupNames());
+      laawsMdxApp.startDaemon();
       // raise priority after starting other threads, so we won't get
       // locked out and fail to exit when told.
       Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 2);
@@ -96,22 +96,23 @@ public class SnaflApp extends LockssDaemon {
     if (CurrentConfig.getBooleanParam(PARAM_APP_EXIT_IMM,
                                       DEFAULT_APP_EXIT_IMM)) {
       try {
-	snaflApp.stop();
+	laawsMdxApp.stop();
       } catch (RuntimeException e) {
         // ignore errors stopping daemon
       }
       System.exit(Constants.EXIT_CODE_NORMAL);
     }
-    snaflApp.keepRunning();
+    laawsMdxApp.keepRunning();
     LOG.info("Exiting because time to die");
     System.exit(Constants.EXIT_CODE_NORMAL);
   }
 
-  public SnaflApp(List<String> propUrls, String groupNames) throws Exception {
+  public LaawsMdxApp(List<String> propUrls, String groupNames)
+		  throws Exception {
     super(propUrls, groupNames);
 
-    serverHost = System.getProperty(SNAFL_SERVER_HOST, DEFAULT_SERVER_HOST);
-    serverPort = Integer.getInteger(System.getProperty(SNAFL_SERVER_PORT),
+    serverHost = System.getProperty(LAAWS_MDX_SERVER_HOST, DEFAULT_SERVER_HOST);
+    serverPort = Integer.getInteger(System.getProperty(LAAWS_MDX_SERVER_PORT),
 	DEFAULT_SERVER_PORT);
 
     // Build the Swagger data
@@ -137,7 +138,7 @@ public class SnaflApp extends LockssDaemon {
     // This configures Swagger
     BeanConfig beanConfig = new BeanConfig();
     beanConfig.setVersion( "1.0.2" );
-    beanConfig.setResourcePackage("org.lockss.snafl.mdx.api");
+    beanConfig.setResourcePackage("org.lockss.laaws.mdx.api");
 
     beanConfig.setDescription( "Metadata Service API." );
     beanConfig.setTitle( "Metadata Service" );
@@ -165,8 +166,8 @@ public class SnaflApp extends LockssDaemon {
   private static ContextHandler buildResourceContextHandler() {
     ResourceConfig resourceConfig = new ResourceConfig();
 
-    resourceConfig.packages("org.lockss.snafl.mdx.model",
-                            "org.lockss.snafl.mdx.api",
+    resourceConfig.packages("org.lockss.laaws.mdx.model",
+                            "org.lockss.laaws.mdx.api",
                             "io.swagger.jaxrs.listing");
     resourceConfig.register(JacksonFeature.class);
     //resourceConfig.register(NotFoundException.class);
@@ -190,7 +191,7 @@ public class SnaflApp extends LockssDaemon {
   private static ContextHandler buildSwaggerUIContextHandler() throws Exception {
     final ResourceHandler swaggerUIResourceHandler = new ResourceHandler();
     swaggerUIResourceHandler.setResourceBase(
-      SnaflApp.class.getClassLoader().getResource("swaggerui").toURI()
+      LaawsMdxApp.class.getClassLoader().getResource("swaggerui").toURI()
       .toString());
     ContextHandler swaggerUIContextHandler = new ContextHandler();
     swaggerUIContextHandler.setContextPath("/docs/");
