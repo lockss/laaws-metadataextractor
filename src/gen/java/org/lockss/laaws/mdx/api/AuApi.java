@@ -38,7 +38,6 @@ import org.lockss.laaws.mdx.api.factories.AuApiServiceFactory;
  * Provider of access to the metadata of an AU.
  */
 @Path("/au")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
 @Api(value = "/au")
 public class AuApi  {
   private final AuApiService delegate = AuApiServiceFactory.getAuApi();
@@ -118,11 +117,11 @@ public class AuApi  {
    *           if the AU with the given identifier does not exist.
    */
   @GET
-  @Path("/{auid}/jobs")
+  @Path("/{auid}/job")
   @Produces({"application/json"})
-  public Response getAuAuidJobs(@PathParam("auid") String auid,
+  public Response getAuAuidJob(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getAuAuidJobs(auid,securityContext);
+    return delegate.getAuAuidJob(auid,securityContext);
   }
 
   /**

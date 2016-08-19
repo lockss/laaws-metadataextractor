@@ -32,16 +32,15 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import org.lockss.laaws.mdx.api.factories.JobsApiServiceFactory;
+import org.lockss.laaws.mdx.api.factories.JobApiServiceFactory;
 
 /**
  * Provider of access to the AU metadata jobs.
  */
-@Path("/jobs")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
-@Api(value = "/jobs")
-public class JobsApi  {
-  private final JobsApiService delegate = JobsApiServiceFactory.getJobsApi();
+@Path("/job")
+@Api(value = "/job")
+public class JobApi  {
+  private final JobApiService delegate = JobApiServiceFactory.getJobApi();
 
   /**
    * Deletes all of the queued jobs and stops any processing and deletes any
@@ -54,13 +53,13 @@ public class JobsApi  {
    */
   @DELETE
   @Produces({"application/json"})
-  public Response deleteJobs(@Context SecurityContext securityContext)
+  public Response deleteJob(@Context SecurityContext securityContext)
       throws ApiException {
-    return delegate.deleteJobs(securityContext);
+    return delegate.deleteJob(securityContext);
   }
 
   /**
-   * Deletes the the job for an AU given the AU identifier.
+   * Deletes the job for an AU given the AU identifier.
    * 
    * @param auid
    *          A String with the AU identifier.
@@ -74,9 +73,9 @@ public class JobsApi  {
   @DELETE
   @Path("/au/{auid}")
   @Produces({"application/json"})
-  public Response deleteJobsAuAuid(@PathParam("auid") String auid,
+  public Response deleteJobAuAuid(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.deleteJobsAuAuid(auid,securityContext);
+    return delegate.deleteJobAuAuid(auid,securityContext);
   }
 
   /**
@@ -95,13 +94,13 @@ public class JobsApi  {
   @DELETE
   @Path("/{jobid}")
   @Produces({"application/json"})
-  public Response deleteJobsJobid(@PathParam("jobid") String jobid,
+  public Response deleteJobJobid(@PathParam("jobid") String jobid,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.deleteJobsJobid(jobid,securityContext);
+    return delegate.deleteJobJobid(jobid,securityContext);
   }
 
   /**
-   * Provides a list of existing jobss.
+   * Provides a list of existing jobs.
    * 
    * @param page
    *          An Integer with the index of the page to be returned.
@@ -137,9 +136,9 @@ public class JobsApi  {
   @GET
   @Path("/au/{auid}")
   @Produces({"application/json"})
-  public Response getJobsAuAuid(@PathParam("auid") String auid,
+  public Response getJobAuAuid(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getJobsAuAuid(auid,securityContext);
+    return delegate.getJobAuAuid(auid,securityContext);
   }
 
   /**
@@ -157,8 +156,8 @@ public class JobsApi  {
   @GET
   @Path("/{jobid}")
   @Produces({"application/json"})
-  public Response getJobsJobid(@PathParam("jobid") String jobid,
+  public Response getJobJobid(@PathParam("jobid") String jobid,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getJobsJobid(jobid,securityContext);
+    return delegate.getJobJobid(jobid,securityContext);
   }
 }

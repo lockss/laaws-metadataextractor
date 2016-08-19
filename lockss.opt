@@ -1,4 +1,40 @@
-org.lockss.crawler.enabled=false
+# Using Derby.
+#org.lockss.dbManager.derby.infologAppend=true
+##org.lockss.dbManager.derby.languageLogqueryplan=true
+#org.lockss.dbManager.derby.languageLogstatementtext=true
+##org.lockss.dbManager.derby.streamErrorFile=/tmp/derby.log
+#org.lockss.dbManager.derby.streamErrorLogseveritylevel=0
+#org.lockss.dbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
+#org.lockss.dbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+#org.lockss.dbManager.datasource.password=goodPassword
+##org.lockss.dbManager.datasource.createDatabase=create
+##org.lockss.dbManager.datasource.databaseName=db/DbManager
+##org.lockss.dbManager.datasource.portNumber=1527
+##org.lockss.dbManager.datasource.serverName=localhost
+##org.lockss.dbManager.datasource.user=LOCKSS
+# Using PostgreSQL.
+#org.lockss.dbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
+##org.lockss.dbManager.datasource.databaseName=LOCKSS
+##org.lockss.dbManager.datasource.password=goodPassword
+#org.lockss.dbManager.datasource.portNumber=5432
+##org.lockss.dbManager.datasource.serverName=localhost
+##org.lockss.dbManager.datasource.user=LOCKSS
+# Using MySQL
+#org.lockss.dbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+#
 org.lockss.metadataManager.mandatoryFields=publisher;provider
 org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
-org.lockss.poll.pollStarterInitialDelay=36000000
+#org.lockss.plugin.auContentFromWs=true
+#org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
+#org.lockss.plugin.auContentFromWs.urlContentWs.password=lockss-p
+#org.lockss.plugin.auContentFromWs.urlContentWs.serviceName=ContentServiceImplService
+#org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws.lockss.org/
+#org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
+#org.lockss.plugin.auContentFromWs.urlContentWs.userName=lockss-u
+#org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
+#org.lockss.plugin.auContentFromWs.urlListWs.password=lockss-p
+#org.lockss.plugin.auContentFromWs.urlListWs.serviceName=DaemonStatusServiceImplService
+#org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.lockss.org/
+#org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
+#org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
+#org.lockss.ui.port=8082

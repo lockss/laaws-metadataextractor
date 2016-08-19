@@ -28,13 +28,14 @@
 package org.lockss.laaws.mdx.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.lockss.job.JobAuStatus;
 
 /**
- * The AU descriptor
+ * An Archival Unit.
  **/
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
+@ApiModel(description = "An Archival Unit.")
 public class Au   {
   
   private String id = null;
@@ -48,9 +49,9 @@ public class Au   {
   }
   
   /**
-   * The long fully qualified AU ID
+   * The identifier of this AU.
    **/
-    @JsonProperty("id")
+  @ApiModelProperty(required = true, value = "The identifier of this AU.")
   public String getId() {
     return id;
   }
@@ -59,9 +60,10 @@ public class Au   {
   }
   
   /**
-   * The job id associated with this au.
+   * The identifier of the job associated with this AU.
    **/
-  @JsonProperty("job")
+  @ApiModelProperty(value =
+      "The identifier of the job associated with this AU.")
   public String getJob() {
     return job;
   }
@@ -70,9 +72,9 @@ public class Au   {
   }
 
   /**
-   * The name of the au in simple english for display.
+   * The name of the AU, for display purposes.
    **/
-  @JsonProperty("name")
+  @ApiModelProperty(value = "The name of the AU, for display purposes.")
   public String getName() {
     return name;
   }

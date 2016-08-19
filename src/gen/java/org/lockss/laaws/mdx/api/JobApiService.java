@@ -34,7 +34,7 @@ import javax.ws.rs.core.SecurityContext;
  * Base provider of access to the AU metadata jobs.
  */
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
-public abstract class JobsApiService {
+public abstract class JobApiService {
 
   /**
    * Deletes all of the queued jobs and stops any processing and deletes any
@@ -45,7 +45,7 @@ public abstract class JobsApiService {
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    */
-  public abstract Response deleteJobs(SecurityContext securityContext)
+  public abstract Response deleteJob(SecurityContext securityContext)
       throws ApiException ;
 
   /**
@@ -60,7 +60,7 @@ public abstract class JobsApiService {
    * @throws NotFoundException
    *           if the AU with the given identifier does not exist.
    */
-  public abstract Response deleteJobsAuAuid(String auid,
+  public abstract Response deleteJobAuAuid(String auid,
       SecurityContext securityContext) throws NotFoundException;
 
   /**
@@ -76,7 +76,7 @@ public abstract class JobsApiService {
    * @throws NotFoundException
    *           if the job with the given identifier does not exist.
    */
-  public abstract Response deleteJobsJobid(String jobid,
+  public abstract Response deleteJobJobid(String jobid,
       SecurityContext securityContext) throws NotFoundException;
 
   /**
@@ -108,7 +108,7 @@ public abstract class JobsApiService {
    * @throws NotFoundException
    *           if the AU with the given identifier does not exist.
    */
-  public abstract Response getJobsAuAuid(String auid,
+  public abstract Response getJobAuAuid(String auid,
       SecurityContext securityContext) throws NotFoundException;
 
   /**
@@ -123,6 +123,6 @@ public abstract class JobsApiService {
    * @throws NotFoundException
    *           if the job with the given identifier does not exist.
    */
-  public abstract Response getJobsJobid(String jobid,
+  public abstract Response getJobJobid(String jobid,
       SecurityContext securityContext) throws NotFoundException;
 }

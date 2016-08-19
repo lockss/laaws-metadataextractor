@@ -38,7 +38,7 @@ import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
 import org.lockss.laaws.mdx.api.ApiException;
 import org.lockss.laaws.mdx.api.ApiResponseMessage;
-import org.lockss.laaws.mdx.api.JobsApiService;
+import org.lockss.laaws.mdx.api.JobApiService;
 import org.lockss.laaws.mdx.api.NotFoundException;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
@@ -48,9 +48,8 @@ import org.lockss.laaws.mdx.model.Status;
 /**
  * Provider of access to the AU metadata jobs.
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
-public class JobsApiServiceImpl extends JobsApiService {
-  private static Logger log = Logger.getLogger(JobsApiServiceImpl.class);
+public class JobApiServiceImpl extends JobApiService {
+  private static Logger log = Logger.getLogger(JobApiServiceImpl.class);
 
   /**
    * Deletes all of the queued jobs and stops any processing and deletes any
@@ -62,7 +61,7 @@ public class JobsApiServiceImpl extends JobsApiService {
    * @return a Response with any data that needs to be returned to the runtime.
    */
   @Override
-  public Response deleteJobs(SecurityContext securityContext)
+  public Response deleteJob(SecurityContext securityContext)
       throws ApiException {
     if (log.isDebugEnabled()) log.debug("Invoked");
 
@@ -77,7 +76,7 @@ public class JobsApiServiceImpl extends JobsApiService {
 
       return Response.ok().entity(result).build();
     } catch (Exception e) {
-      String message = "Cannot deleteJobs()";
+      String message = "Cannot deleteJob()";
       log.error(message, e);
       throw new ApiException(1, message + ": " + e.getMessage());
     }
@@ -97,7 +96,7 @@ public class JobsApiServiceImpl extends JobsApiService {
    *           if the AU with the given identifier does not exist.
    */
   @Override
-  public Response deleteJobsAuAuid(String auid, SecurityContext securityContext)
+  public Response deleteJobAuAuid(String auid, SecurityContext securityContext)
       throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
@@ -117,7 +116,7 @@ public class JobsApiServiceImpl extends JobsApiService {
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot deleteJobsAuAuid() for auid = '" + auid + "'";
+      String message = "Cannot deleteJobAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }
@@ -141,7 +140,7 @@ public class JobsApiServiceImpl extends JobsApiService {
    *           if the job with the given identifier does not exist.
    */
   @Override
-  public Response deleteJobsJobid(String jobid, SecurityContext securityContext)
+  public Response deleteJobJobid(String jobid, SecurityContext securityContext)
       throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
@@ -159,7 +158,7 @@ public class JobsApiServiceImpl extends JobsApiService {
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot deleteJobsJobid() for jobid = '" + jobid + "'";
+      String message = "Cannot deleteJobJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }
@@ -194,8 +193,8 @@ public class JobsApiServiceImpl extends JobsApiService {
 	port(Integer.getInteger(System.getProperty("LAAWS_MDX_SERVER_PORT"), 8888)).
 	build();
 
-    String curLink = baseUri + "/jobs";
-    String nextLink = baseUri + "/jobs";
+    String curLink = baseUri + "/job";
+    String nextLink = baseUri + "/job";
 
     if (page != null) {
       curLink = curLink + "?page=" + page;
@@ -261,7 +260,7 @@ public class JobsApiServiceImpl extends JobsApiService {
    *           if the AU with the given identifier does not exist.
    */
   @Override
-  public Response getJobsAuAuid(String auid, SecurityContext securityContext)
+  public Response getJobAuAuid(String auid, SecurityContext securityContext)
       throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
@@ -279,7 +278,7 @@ public class JobsApiServiceImpl extends JobsApiService {
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot getJobsAuAuid() for auid = '" + auid + "'";
+      String message = "Cannot getJobAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }
@@ -298,7 +297,7 @@ public class JobsApiServiceImpl extends JobsApiService {
    *           if the job with the given identifier does not exist.
    */
   @Override
-  public Response getJobsJobid(String jobid, SecurityContext securityContext)
+  public Response getJobJobid(String jobid, SecurityContext securityContext)
       throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
@@ -316,7 +315,7 @@ public class JobsApiServiceImpl extends JobsApiService {
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot getJobsJobid() for jobid = '" + jobid + "'";
+      String message = "Cannot getJobJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }

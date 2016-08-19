@@ -32,9 +32,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Client for the getJobsAuAuid() operation.
+ * Client for the getJobAuAuid() operation.
  */
-public class GetJobsAuAuidClient extends BaseClient {
+public class GetJobAuAuidClient extends BaseClient {
 
   public static void main(String[] args) throws Exception {
     for (int i = 0; i < args.length; i++) {
@@ -46,7 +46,7 @@ public class GetJobsAuAuidClient extends BaseClient {
 
     if (args.length > 0) {
       WebTarget webTarget = ClientBuilder.newClient().target(baseUri)
-	  .path("jobs").path("au").path(encodedAuId);
+	  .path("job").path("au").path(encodedAuId);
 
       System.out.println(webTarget.request().get(String.class));
     } else {

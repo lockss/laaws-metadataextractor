@@ -28,14 +28,15 @@
 package org.lockss.laaws.mdx.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.joda.time.LocalDate;
 import org.lockss.job.JobAuStatus;
 
 /**
- * A job or task to be performed
+ * An asynchronous task to be performed.
  **/
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
+@ApiModel(description = "An asynchronous task to be performed.")
 public class Job   {
   
   private Au au = null;
@@ -58,9 +59,6 @@ public class Job   {
     }
   }
 
-  /**
-   **/
-  @JsonProperty("au")
   public Au getAu() {
     return au;
   }
@@ -69,9 +67,9 @@ public class Job   {
   }
   
   /**
-   * The id for this job
+   * The identifier of this job.
    **/
-  @JsonProperty("id")
+  @ApiModelProperty(required = true, value = "The identifier of this job.")
   public String getId() {
     return id;
   }
@@ -80,9 +78,10 @@ public class Job   {
   }
 
   /**
-   * A short description of job being performed
+   * A description of the task being performed by this job.
    **/
-  @JsonProperty("description")
+  @ApiModelProperty(value =
+      "A description of the task being performed by this job.")
   public String getDescription() {
     return description;
   }
@@ -91,9 +90,10 @@ public class Job   {
   }
 
   /**
-   * The date the job entered the queue
+   * The timestamp when this job was created.
    **/
-  @JsonProperty("creationDate")
+  @ApiModelProperty(required = true,
+      value = "The timestamp when this job was created.")
   public LocalDate getCreationDate() {
     return creationDate;
   }
@@ -102,9 +102,9 @@ public class Job   {
   }
 
   /**
-   * The date-time the job began processing
+   * The timestamp when this job processing started.
    **/
-  @JsonProperty("startDate")
+  @ApiModelProperty(value = "The timestamp when this job processing started.")
   public LocalDate getStartDate() {
     return startDate;
   }
@@ -113,9 +113,9 @@ public class Job   {
   }
 
   /**
-   * The date-time for when the job ended with or without error
+   * The timestamp when this job processing ended.
    **/
-  @JsonProperty("endDate")
+  @ApiModelProperty(value = "The timestamp when this job processing ended.")
   public LocalDate getEndDate() {
     return endDate;
   }
@@ -123,9 +123,6 @@ public class Job   {
     this.endDate = endDate;
   }
 
-  /**
-   **/
-  @JsonProperty("status")
   public Status getStatus() {
     return status;
   }

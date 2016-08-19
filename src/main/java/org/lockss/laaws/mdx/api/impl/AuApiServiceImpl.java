@@ -48,7 +48,6 @@ import org.lockss.laaws.mdx.model.PageInfo;
 /**
  * Implementation of the base provider of access to the metadata of an AU.
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
 public class AuApiServiceImpl extends AuApiService {
   private static Logger log = Logger.getLogger(AuApiServiceImpl.class);
 
@@ -115,7 +114,8 @@ public class AuApiServiceImpl extends AuApiService {
 
     URI baseUri = UriBuilder.fromUri(System.getProperty("LAAWS_MDX_SERVER_HOST",
 	"http://localhost")).
-	port(Integer.getInteger(System.getProperty("LAAWS_MDX_SERVER_PORT"), 8888)).
+	port(Integer.getInteger(System.getProperty("LAAWS_MDX_SERVER_PORT"),
+	    8888)).
 	build();
 
     String curLink = baseUri + "/au";
@@ -223,7 +223,7 @@ public class AuApiServiceImpl extends AuApiService {
    *           if the AU with the given identifier does not exist.
    */
   @Override
-  public Response getAuAuidJobs(String auid, SecurityContext securityContext)
+  public Response getAuAuidJob(String auid, SecurityContext securityContext)
       throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
@@ -241,7 +241,7 @@ public class AuApiServiceImpl extends AuApiService {
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot getAuAuidJobs() for auid = '" + auid + "'";
+      String message = "Cannot getAuAuidJob() for auid = '" + auid + "'";
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }

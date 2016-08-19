@@ -30,14 +30,15 @@ package org.lockss.laaws.mdx.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.lockss.metadata.AuMetadataDetail;
 import org.lockss.metadata.AuMetadataDetail.ArticleMetadataDetail;
 
 /**
- * The metadata as extracted from the metadata db for this au
+ * The metadata for an AU.
  **/
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
+@ApiModel(description = "The metadata for an AU.")
 public class AuMetadata   {
   
   private List<ArticleMetadata> auMetadataList =
@@ -50,9 +51,9 @@ public class AuMetadata   {
   }
   
   /**
-   * The list of article metadata for this au
+   * The metadata for each article in the AU.
    **/
-  @JsonProperty("auMetadataList")
+  @ApiModelProperty(value = "The metadata for each article in the AU.")
   public List<ArticleMetadata> getAuMetadataList() {
     return auMetadataList;
   }

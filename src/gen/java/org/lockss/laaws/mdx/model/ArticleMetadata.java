@@ -31,13 +31,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.lockss.metadata.AuMetadataDetail.ArticleMetadataDetail;
 
 /**
  * The metadata generated from a single article
  **/
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
+@ApiModel(description = "The metadata generated for a single article.")
 public class ArticleMetadata   {
   
   private Map<String, String> scalarMap = new HashMap<String, String>();
@@ -56,7 +57,8 @@ public class ArticleMetadata   {
   /**
    * The map of scalar metadata elements for this article.
    **/
-  @JsonProperty("scalarMap")
+  @ApiModelProperty(value =
+      "The map of scalar metadata elements for this article.")
   public Map<String, String> getScalarMap() {
     return scalarMap;
   }
@@ -67,7 +69,8 @@ public class ArticleMetadata   {
   /**
    * The map of listed metadata elements for this article.
    **/
-  @JsonProperty("listMap")
+  @ApiModelProperty(value =
+      "The map of listed metadata elements for this article.")
   public Map<String, List<String>> getListMap() {
     return listMap;
   }
@@ -78,7 +81,8 @@ public class ArticleMetadata   {
   /**
    * The map of mapped metadata elements for this article.
    **/
-  @JsonProperty("mapMap")
+  @ApiModelProperty(value =
+      "The map of mapped metadata elements for this article.")
   public Map<String, Map<String, String>> getMapMap() {
     return mapMap;
   }

@@ -31,13 +31,13 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Client for the deleteJobs() operation.
+ * Client for the deleteJob() operation.
  */
-public class DeleteJobsClient extends BaseClient {
+public class DeleteJobClient extends BaseClient {
 
   public static void main(String[] args) {
     WebTarget webTarget = ClientBuilder.newClient().target(baseUri)
-	.path("jobs");
+	.path("job");
 
     System.out.println(webTarget.request().delete(String.class));
   }

@@ -33,7 +33,6 @@ import javax.ws.rs.core.SecurityContext;
 /**
  * Base provider of access to the metadata of an AU.
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
 public abstract class AuApiService {
 
   /**
@@ -95,7 +94,7 @@ public abstract class AuApiService {
    * @throws NotFoundException
    *           if the AU with the given identifier does not exist.
    */
-  public abstract Response getAuAuidJobs(String auid,
+  public abstract Response getAuAuidJob(String auid,
       SecurityContext securityContext) throws NotFoundException;
 
   /**

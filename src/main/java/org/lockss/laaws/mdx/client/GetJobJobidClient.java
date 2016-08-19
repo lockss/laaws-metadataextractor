@@ -31,9 +31,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Client for the getJobsJobid() operation.
+ * Client for the getJobJobid() operation.
  */
-public class GetJobsJobidClient extends BaseClient {
+public class GetJobJobidClient extends BaseClient {
 
   public static void main(String[] args) {
     for (int i = 0; i < args.length; i++) {
@@ -42,7 +42,7 @@ public class GetJobsJobidClient extends BaseClient {
 
     if (args.length > 0) {
       WebTarget webTarget = ClientBuilder.newClient().target(baseUri)
-	  .path("jobs").path(args[0]);
+	  .path("job").path(args[0]);
 
       System.out.println(webTarget.request().get(String.class));
     } else {

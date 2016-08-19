@@ -28,14 +28,15 @@
 package org.lockss.laaws.mdx.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.lockss.job.JobAuStatus;
 
 /**
- * The existing state of an job in the job queue
+ * The existing state of a job.
  **/
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-03-20T22:32:10.024-07:00")
-public class Status   {
+@ApiModel(description = "The existing state of a job.")
+public class Status {
 
   private Integer code = null;
   private String msg = null;
@@ -46,9 +47,10 @@ public class Status   {
   }
 
   /**
-   * The numeric value for the current state
+   * The numeric value for the current state.
    **/
-  @JsonProperty("code")
+  @ApiModelProperty(required = true,
+      value = "The numeric value for the current state.")
   public Integer getCode() {
     return code;
   }
@@ -57,9 +59,10 @@ public class Status   {
   }
 
   /**
-   * A text message defining the current code
+   * A text message defining the current state.
    **/
-  @JsonProperty("msg")
+  @ApiModelProperty(required = true,
+      value = "A text message defining the current state.")
   public String getMsg() {
     return msg;
   }
