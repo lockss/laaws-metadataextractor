@@ -2,7 +2,10 @@
 The wrapper around the metadata extractor and reporter.
 
 ### Clone the repo
-`git clone --recursive https://github.com/lockss/laaws-metadata.git`
+`git clone --recursive https://github.com/lockss/laaws-mdx.git`
+
+### Create the Eclipse project (if so desired)
+File -> Import... -> Maven -> Existing Maven Projects
 
 ### Set up the TDB tree:
 Edit ./runLaawsMdx and set the TDB_DIR variable properly.
