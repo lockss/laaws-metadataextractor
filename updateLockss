@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
@@ -22,12 +23,13 @@
 # be used in advertising or otherwise to promote the sale, use or other dealings
 # in this Software without prior written authorization from Stanford University.
 #
-TDB_DIR=tdbxml/prod
-TITLE_DBS="`find ${TDB_DIR} -maxdepth 1 -name \*.xml | sort`"
-PROP_URL_LIST="common.xml ${TITLE_DBS} lockss.txt lockss.opt"
-
-# NB leading space meaningful here
-PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/ -p /g'`
-
-mvn clean package exec:java -Dexec.args="$PROP_ARGS" > logs/laawsmdx.log 2>&1 &
-echo $! > dpid
+cd lockss-daemon
+git checkout snafl-changes
+echo "Building LOCKSS jars...\n"
+ant jar-lockss
+ant jar-plugins
+cd ..
+# install the lockss libs we use
+echo "Installing LOCKSS jars to maven repo...\n"
+mvn install:install-file -Dfile=lockss-daemon/lib/lockss.jar -DpomFile=poms/lockss-2016.pom 
+mvn install:install-file -Dfile=lockss-daemon/lib/lockss-plugins.jar -DpomFile=poms/lockss-plugins-2016.pom

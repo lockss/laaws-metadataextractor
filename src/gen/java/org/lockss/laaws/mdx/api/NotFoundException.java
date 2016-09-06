@@ -28,9 +28,28 @@
 package org.lockss.laaws.mdx.api;
 
 public class NotFoundException extends ApiException {
-	private int code;
-	public NotFoundException (int code, String msg) {
-		super(code, msg);
-		this.code = code;
-	}
+  private static final long serialVersionUID = -6885376137327631936L;
+  private int code;
+
+  /**
+   * Constructor.
+   *
+   * @param code
+   *          An int with the exception code.
+   * @param msg
+   *          A String with the exception detail message.
+   */
+  public NotFoundException (int code, String msg) {
+    super(code, msg);
+    this.code = code;
+  }
+
+  /**
+   * Provides the exception code.
+   *
+   * @return an int with the exception code.
+   */
+  public int getCode() {
+      return code;
+  }
 }

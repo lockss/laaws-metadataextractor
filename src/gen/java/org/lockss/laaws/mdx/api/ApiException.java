@@ -27,10 +27,29 @@
  */
 package org.lockss.laaws.mdx.api;
 
-public class ApiException extends Exception{
-	private int code;
-	public ApiException (int code, String msg) {
-		super(msg);
-		this.code = code;
-	}
+public class ApiException extends Exception {
+  private static final long serialVersionUID = -1294142405497174440L;
+  private int code;
+
+  /**
+   * Constructor.
+   *
+   * @param code
+   *          An int with the exception code.
+   * @param msg
+   *          A String with the exception detail message.
+   */
+  public ApiException (int code, String msg) {
+    super(msg);
+    this.code = code;
+  }
+
+  /**
+   * Provides the exception code.
+   *
+   * @return an int with the exception code.
+   */
+  public int getCode() {
+      return code;
+  }
 }

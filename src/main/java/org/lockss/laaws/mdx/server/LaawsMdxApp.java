@@ -140,8 +140,8 @@ public class LaawsMdxApp extends LockssDaemon {
     beanConfig.setVersion( "1.0.2" );
     beanConfig.setResourcePackage("org.lockss.laaws.mdx.api");
 
-    beanConfig.setDescription( "Metadata Service API." );
-    beanConfig.setTitle( "Metadata Service" );
+    beanConfig.setDescription( "Metadata Extraction Service API" );
+    beanConfig.setTitle( "Metadata Extraction Service" );
 
     beanConfig.setSchemes(new String[]{"http"});
     //beanConfig.setHost(host);
