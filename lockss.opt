@@ -46,6 +46,9 @@
 # Using MySQL
 #org.lockss.dbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 #
+org.lockss.jobManager.enabled=true
+#org.lockss.jobManager.taskListSize=1
+#org.lockss.jobManager.sleepDelaySeconds=60
 org.lockss.metadataManager.mandatoryFields=publisher;provider
 org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
 org.lockss.plugin.auContentFromWs=true
