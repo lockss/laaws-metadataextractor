@@ -68,21 +68,6 @@ public abstract class AuApiService {
       SecurityContext securityContext) throws NotFoundException;
 
   /**
-   * Provides the metadata stored for an AU given the AU identifier.
-   * 
-   * @param auid
-   *          A String with the AU identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
-   */
-  public abstract Response getAuAuid(String auid,
-      SecurityContext securityContext) throws NotFoundException;
-
-  /**
    * Provides the job for an AU given the AU identifier.
    * 
    * @param auid

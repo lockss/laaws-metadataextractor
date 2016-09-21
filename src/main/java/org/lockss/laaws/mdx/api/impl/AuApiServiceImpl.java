@@ -36,11 +36,9 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.log4j.Logger;
 import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
-import org.lockss.metadata.AuMetadataDetail;
 import org.lockss.laaws.mdx.api.AuApiService;
 import org.lockss.laaws.mdx.api.NotFoundException;
 import org.lockss.laaws.mdx.model.Au;
-import org.lockss.laaws.mdx.model.AuMetadata;
 import org.lockss.laaws.mdx.model.AuPageInfo;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.PageInfo;
@@ -170,44 +168,6 @@ public class AuApiServiceImpl extends AuApiService {
     if (log.isDebugEnabled()) log.debug("result = " + result);
 
     return Response.ok().entity(result).build();
-  }
-
-  /**
-   * Provides the metadata stored for an AU given the AU identifier.
-   * 
-   * @param auid
-   *          A String with the AU identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
-   */
-  @Override
-  public Response getAuAuid(String auid, SecurityContext securityContext)
-      throws NotFoundException {
-    if (log.isDebugEnabled()) log.debug("auid = " + auid);
-
-    try {
-      AuMetadataDetail auMetadataDetail = LockssDaemon.getLockssDaemon().
-	  getMetadataManager().getAuMetadataDetail(auid);
-      if (log.isDebugEnabled())
-	log.debug("auMetadataDetail = " + auMetadataDetail);
-
-      AuMetadata result = new AuMetadata(auMetadataDetail);
-      if (log.isDebugEnabled()) log.debug("result = " + result);
-
-      return Response.ok().entity(result).build();
-    } catch (IllegalArgumentException iae) {
-      String message = "No Archival Unit found for auid = '" + auid + "'";
-      log.error(message);
-      throw new NotFoundException(1, message);
-    } catch (Exception e) {
-      String message = "Cannot getAuAuid() for auid = '" + auid + "'";
-      log.error(message, e);
-      throw new NotFoundException(1, message + ": " + e.getMessage());
-    }
   }
 
   /**

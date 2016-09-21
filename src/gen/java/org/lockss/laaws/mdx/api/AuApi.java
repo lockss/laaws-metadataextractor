@@ -85,26 +85,6 @@ public class AuApi  {
   }
 
   /**
-   * Provides the metadata stored for an AU given the AU identifier.
-   * 
-   * @param auid
-   *          A String with the AU identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
-   */
-  @GET
-  @Path("/{auid}")
-  @Produces({"application/json"})
-  public Response getAuAuid(@PathParam("auid") String auid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getAuAuid(auid,securityContext);
-  }
-
-  /**
    * Provides the job for an AU given the AU identifier.
    * 
    * @param auid
