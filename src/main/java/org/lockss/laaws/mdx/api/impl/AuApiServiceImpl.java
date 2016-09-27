@@ -34,8 +34,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.log4j.Logger;
-import org.lockss.app.LockssDaemon;
+import org.lockss.app.LockssApp;
+//import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
+import org.lockss.job.JobManager;
 import org.lockss.laaws.mdx.api.AuApiService;
 import org.lockss.laaws.mdx.api.NotFoundException;
 import org.lockss.laaws.mdx.model.Au;
@@ -67,8 +69,9 @@ public class AuApiServiceImpl extends AuApiService {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
     try {
-      JobAuStatus jobAuStatus = LockssDaemon.getLockssDaemon().getJobManager().
-	  scheduleMetadataRemoval(auid);
+      //JobAuStatus jobAuStatus = LockssDaemon.getLockssDaemon().getJobManager().
+	//  scheduleMetadataRemoval(auid);
+      JobAuStatus jobAuStatus = getJobManager().scheduleMetadataRemoval(auid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Job result = new Job(jobAuStatus);
@@ -146,8 +149,9 @@ public class AuApiServiceImpl extends AuApiService {
     result.setPageInfo(pi);
 
     try {
-      List<JobAuStatus> jobAuStatuses =
-	  LockssDaemon.getLockssDaemon().getJobManager().getAus(page, limit);
+//      List<JobAuStatus> jobAuStatuses =
+//	  LockssDaemon.getLockssDaemon().getJobManager().getAus(page, limit);
+      List<JobAuStatus> jobAuStatuses = getJobManager().getAus(page, limit);
       if (log.isDebugEnabled()) log.debug("jobAuStatuses = " + jobAuStatuses);
 
       List<Au> aus = new ArrayList<Au>();
@@ -188,8 +192,9 @@ public class AuApiServiceImpl extends AuApiService {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
     try {
-      JobAuStatus jobAuStatus =
-	  LockssDaemon.getLockssDaemon().getJobManager().getAuJob(auid);
+//      JobAuStatus jobAuStatus =
+//	  LockssDaemon.getLockssDaemon().getJobManager().getAuJob(auid);
+      JobAuStatus jobAuStatus = getJobManager().getAuJob(auid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Job result = new Job(jobAuStatus);
@@ -226,8 +231,10 @@ public class AuApiServiceImpl extends AuApiService {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
     try {
-      JobAuStatus jobAuStatus = LockssDaemon.getLockssDaemon().getJobManager().
-	  scheduleMetadataExtraction(auid);
+//      JobAuStatus jobAuStatus = LockssDaemon.getLockssDaemon().getJobManager().
+//	  scheduleMetadataExtraction(auid);
+      JobAuStatus jobAuStatus =
+	  getJobManager().scheduleMetadataExtraction(auid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Job result = new Job(jobAuStatus);
@@ -243,5 +250,14 @@ public class AuApiServiceImpl extends AuApiService {
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }
+  }
+
+  /**
+   * Provides the job manager.
+   * 
+   * @return a JobManager with the job manager.
+   */
+  private JobManager getJobManager() {
+    return (JobManager)LockssApp.getManager(JobManager.getManagerKey());
   }
 }

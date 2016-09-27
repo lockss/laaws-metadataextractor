@@ -34,8 +34,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.log4j.Logger;
-import org.lockss.app.LockssDaemon;
+import org.lockss.app.LockssApp;
+//import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
+import org.lockss.job.JobManager;
 import org.lockss.laaws.mdx.api.ApiException;
 import org.lockss.laaws.mdx.api.ApiResponseMessage;
 import org.lockss.laaws.mdx.api.JobApiService;
@@ -67,8 +69,9 @@ public class JobApiServiceImpl extends JobApiService {
 
 
     try {
-      int removedCount =
-	  LockssDaemon.getLockssDaemon().getJobManager().removeAllJobs();
+//      int removedCount =
+//	  LockssDaemon.getLockssDaemon().getJobManager().removeAllJobs();
+      int removedCount = getJobManager().removeAllJobs();
       String message = "Count of all jobs deleted: " + removedCount;
       if (log.isDebugEnabled()) log.debug(message);
       ApiResponseMessage result =
@@ -101,8 +104,9 @@ public class JobApiServiceImpl extends JobApiService {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
     try {
-      JobAuStatus jobAuStatus =
-	  LockssDaemon.getLockssDaemon().getJobManager().removeAuJob(auid);
+//      JobAuStatus jobAuStatus =
+//	  LockssDaemon.getLockssDaemon().getJobManager().removeAuJob(auid);
+      JobAuStatus jobAuStatus = getJobManager().removeAuJob(auid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       if (jobAuStatus != null) {
@@ -145,8 +149,9 @@ public class JobApiServiceImpl extends JobApiService {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
     try {
-      JobAuStatus jobAuStatus =
-	  LockssDaemon.getLockssDaemon().getJobManager().removeJob(jobid);
+//      JobAuStatus jobAuStatus =
+//	  LockssDaemon.getLockssDaemon().getJobManager().removeJob(jobid);
+      JobAuStatus jobAuStatus = getJobManager().removeJob(jobid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Job result = new Job(jobAuStatus);
@@ -223,8 +228,9 @@ public class JobApiServiceImpl extends JobApiService {
     result.setPageInfo(pi);
 
     try {
-      List<JobAuStatus> jobAuStatuses =
-	  LockssDaemon.getLockssDaemon().getJobManager().getJobs(page, limit);
+//      List<JobAuStatus> jobAuStatuses =
+//	  LockssDaemon.getLockssDaemon().getJobManager().getJobs(page, limit);
+      List<JobAuStatus> jobAuStatuses = getJobManager().getJobs(page, limit);
       if (log.isDebugEnabled()) log.debug("jobAuStatuses = " + jobAuStatuses);
 
       List<Job> jobs = new ArrayList<Job>();
@@ -265,8 +271,9 @@ public class JobApiServiceImpl extends JobApiService {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
     try {
-      JobAuStatus jobAuStatus =
-	  LockssDaemon.getLockssDaemon().getJobManager().getAuJob(auid);
+//      JobAuStatus jobAuStatus =
+//	  LockssDaemon.getLockssDaemon().getJobManager().getAuJob(auid);
+      JobAuStatus jobAuStatus = getJobManager().getAuJob(auid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Job result = new Job(jobAuStatus);
@@ -302,8 +309,9 @@ public class JobApiServiceImpl extends JobApiService {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
     try {
-      JobAuStatus jobAuStatus =
-	  LockssDaemon.getLockssDaemon().getJobManager().getJobStatus(jobid);
+//      JobAuStatus jobAuStatus =
+//	  LockssDaemon.getLockssDaemon().getJobManager().getJobStatus(jobid);
+      JobAuStatus jobAuStatus = getJobManager().getJobStatus(jobid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Status result = new Status(jobAuStatus);
@@ -319,5 +327,14 @@ public class JobApiServiceImpl extends JobApiService {
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }
+  }
+
+  /**
+   * Provides the job manager.
+   * 
+   * @return a JobManager with the job manager.
+   */
+  private JobManager getJobManager() {
+    return (JobManager)LockssApp.getManager(JobManager.getManagerKey());
   }
 }
