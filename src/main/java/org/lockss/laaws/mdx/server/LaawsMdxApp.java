@@ -46,9 +46,11 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.lockss.app.LockssDaemon;
 import org.lockss.config.CurrentConfig;
 import org.lockss.daemon.ResourceUnavailableException;
-import org.lockss.db.DbManager;
+import org.lockss.job.JobDbManager;
 import org.lockss.job.JobManager;
+import org.lockss.metadata.MetadataDbManager;
 import org.lockss.metadata.MetadataManager;
+import org.lockss.rs.auth.AccessControlFilter;
 import org.lockss.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,82 +67,85 @@ public class LaawsMdxApp extends LockssDaemon {
   private static final String DEFAULT_SERVER_HOST = "http://localhost";
 
   // Parameter keys for daemon managers
-  public static final String RANDOM_MANAGER = "RandomManager";
-  public static final String ACCOUNT_MANAGER = "AccountManager";
-  public static final String KEYSTORE_MANAGER = "KeystoreManager";
-  public static final String ACTIVITY_REGULATOR = "ActivityRegulator";
-  public static final String TIMER_SERVICE = "TimerService";
-  public static final String DATAGRAM_COMM_MANAGER = "DatagramCommManager";
-  public static final String STREAM_COMM_MANAGER = "StreamCommManager";
-  public static final String ROUTER_MANAGER = "RouterManager";
-  public static final String DATAGRAM_ROUTER_MANAGER = "DatagramRouterManager";
-  public static final String PLUGIN_MANAGER = "PluginManager";
-  public static final String REPOSITORY_MANAGER = "RepositoryManager";
-  public static final String LOCKSS_REPOSITORY = "LockssRepository";
-  public static final String HISTORY_REPOSITORY = "HistoryRepository";
-  public static final String NODE_MANAGER = "NodeManager";
-  public static final String CONTENT_SERVLET_MANAGER = "ContentManager";
-  public static final String SYSTEM_METRICS = "SystemMetrics";
-  public static final String URL_MANAGER = "UrlManager";
-  public static final String NODE_MANAGER_MANAGER = "NodeManagerManager";
-  public static final String REPOSITORY_STATUS = "RepositoryStatus";
-  public static final String ARCHIVAL_UNIT_STATUS = "ArchivalUnitStatus";
-  public static final String PLATFORM_CONFIG_STATUS = "PlatformConfigStatus";
-  public static final String CONFIG_STATUS = "ConfigStatus";
-  public static final String OVERVIEW_STATUS = "OverviewStatus";
-  public static final String CRON = "Cron";
-  public static final String TRUEZIP_MANAGER = "TrueZipManager";
+//  public static final String RANDOM_MANAGER = "RandomManager";
+//  public static final String ACCOUNT_MANAGER = "AccountManager";
+//  public static final String KEYSTORE_MANAGER = "KeystoreManager";
+//  public static final String ACTIVITY_REGULATOR = "ActivityRegulator";
+//  public static final String TIMER_SERVICE = "TimerService";
+//  public static final String DATAGRAM_COMM_MANAGER = "DatagramCommManager";
+//  public static final String STREAM_COMM_MANAGER = "StreamCommManager";
+//  public static final String ROUTER_MANAGER = "RouterManager";
+//  public static final String DATAGRAM_ROUTER_MANAGER = "DatagramRouterManager";
+//  public static final String PLUGIN_MANAGER = "PluginManager";
+//  public static final String REPOSITORY_MANAGER = "RepositoryManager";
+//  public static final String LOCKSS_REPOSITORY = "LockssRepository";
+//  public static final String HISTORY_REPOSITORY = "HistoryRepository";
+//  public static final String NODE_MANAGER = "NodeManager";
+//  public static final String CONTENT_SERVLET_MANAGER = "ContentManager";
+//  public static final String SYSTEM_METRICS = "SystemMetrics";
+//  public static final String URL_MANAGER = "UrlManager";
+//  public static final String NODE_MANAGER_MANAGER = "NodeManagerManager";
+//  public static final String REPOSITORY_STATUS = "RepositoryStatus";
+//  public static final String ARCHIVAL_UNIT_STATUS = "ArchivalUnitStatus";
+//  public static final String PLATFORM_CONFIG_STATUS = "PlatformConfigStatus";
+//  public static final String CONFIG_STATUS = "ConfigStatus";
+//  public static final String OVERVIEW_STATUS = "OverviewStatus";
+//  public static final String CRON = "Cron";
+//  public static final String TRUEZIP_MANAGER = "TrueZipManager";
 
   // Manager descriptors.  The order of this table determines the order in
   // which managers are initialized and started.
   protected final ManagerDesc[] managerDescs = {
-    new ManagerDesc(RANDOM_MANAGER, "org.lockss.daemon.RandomManager"),
+//    new ManagerDesc(RANDOM_MANAGER, "org.lockss.daemon.RandomManager"),
     new ManagerDesc(RESOURCE_MANAGER, DEFAULT_RESOURCE_MANAGER),
     new ManagerDesc(STATUS_SERVICE, DEFAULT_STATUS_SERVICE),
-    new ManagerDesc(TRUEZIP_MANAGER, "org.lockss.truezip.TrueZipManager"),
-    new ManagerDesc(URL_MANAGER, "org.lockss.daemon.UrlManager"),
-    new ManagerDesc(TIMER_SERVICE, "org.lockss.util.TimerQueue$Manager"),
-    new ManagerDesc(SCHED_SERVICE, DEFAULT_SCHED_SERVICE),
-    new ManagerDesc(SYSTEM_METRICS, "org.lockss.daemon.SystemMetrics"),
+//    new ManagerDesc(TRUEZIP_MANAGER, "org.lockss.truezip.TrueZipManager"),
+//    new ManagerDesc(URL_MANAGER, "org.lockss.daemon.UrlManager"),
+//    new ManagerDesc(TIMER_SERVICE, "org.lockss.util.TimerQueue$Manager"),
+//    new ManagerDesc(SCHED_SERVICE, DEFAULT_SCHED_SERVICE),
+//    new ManagerDesc(SYSTEM_METRICS, "org.lockss.daemon.SystemMetrics"),
     // keystore manager must be started before any others that need to
     // access managed keystores
     new ManagerDesc(KEYSTORE_MANAGER,
                     "org.lockss.daemon.LockssKeyStoreManager"),
     new ManagerDesc(ACCOUNT_MANAGER, "org.lockss.account.AccountManager"),
-    new ManagerDesc(REPOSITORY_MANAGER,
-                    "org.lockss.repository.RepositoryManager"),
+//    new ManagerDesc(REPOSITORY_MANAGER,
+//                    "org.lockss.repository.RepositoryManager"),
     // start plugin manager after generic services
     new ManagerDesc(PLUGIN_MANAGER, "org.lockss.plugin.PluginManager"),
     // start database manager before any manager that uses it.
-    new ManagerDesc(DbManager.getManagerKey(), "org.lockss.db.DbManager"),
+    new ManagerDesc(MetadataDbManager.getManagerKey(),
+	"org.lockss.metadata.MetadataDbManager"),
     // start metadata manager after pluggin manager and database manager.
     new ManagerDesc(MetadataManager.getManagerKey(),
 	"org.lockss.metadata.MetadataManager"),
     // Start the job manager.
+    new ManagerDesc(JobDbManager.getManagerKey(),
+	"org.lockss.job.JobDbManager"),
     new ManagerDesc(JobManager.getManagerKey(), "org.lockss.job.JobManager"),
     // NOTE: Any managers that are needed to decide whether a servlet is to be
     // enabled or not (through ServletDescr.isEnabled()) need to appear before
     // the AdminServletManager on the next line.
     new ManagerDesc(SERVLET_MANAGER, "org.lockss.servlet.AdminServletManager"),
-    new ManagerDesc(CONTENT_SERVLET_MANAGER,
-                    "org.lockss.servlet.ContentServletManager"),
+    //new ManagerDesc(CONTENT_SERVLET_MANAGER,
+    //                "org.lockss.servlet.ContentServletManager"),
     // comm after other major services so don't process messages until
     // they're ready
-    new ManagerDesc(NODE_MANAGER_MANAGER,
-                    "org.lockss.state.NodeManagerManager"),
-    new ManagerDesc(PLATFORM_CONFIG_STATUS,
-                    "org.lockss.config.PlatformConfigStatus"),
-    new ManagerDesc(CONFIG_STATUS,
-                    "org.lockss.config.ConfigStatus"),
-    new ManagerDesc(ARCHIVAL_UNIT_STATUS,
-                    "org.lockss.state.ArchivalUnitStatus"),
-    new ManagerDesc(REPOSITORY_STATUS,
-                    "org.lockss.repository.LockssRepositoryStatus"),
-    new ManagerDesc(OVERVIEW_STATUS,
-                    "org.lockss.daemon.status.OverviewStatus"),
-    new ManagerDesc(CRON, "org.lockss.daemon.Cron"),
+//    new ManagerDesc(NODE_MANAGER_MANAGER,
+//                    "org.lockss.state.NodeManagerManager"),
+//    new ManagerDesc(PLATFORM_CONFIG_STATUS,
+//                    "org.lockss.config.PlatformConfigStatus"),
+//    new ManagerDesc(CONFIG_STATUS,
+//                    "org.lockss.config.ConfigStatus"),
+//    new ManagerDesc(ARCHIVAL_UNIT_STATUS,
+//                    "org.lockss.state.ArchivalUnitStatus"),
+    //new ManagerDesc(REPOSITORY_STATUS,
+    //                "org.lockss.repository.LockssRepositoryStatus"),
+    //new ManagerDesc(OVERVIEW_STATUS,
+    //                "org.lockss.daemon.status.OverviewStatus"),
+    //new ManagerDesc(CRON, "org.lockss.daemon.Cron"),
     // watchdog last
-    new ManagerDesc(WATCHDOG_SERVICE, DEFAULT_WATCHDOG_SERVICE)
+    //new ManagerDesc(WATCHDOG_SERVICE, DEFAULT_WATCHDOG_SERVICE)
   };
 
   int serverPort;
@@ -253,6 +258,7 @@ public class LaawsMdxApp extends LockssDaemon {
                             "org.lockss.laaws.mdx.api",
                             "io.swagger.jaxrs.listing");
     resourceConfig.register(JacksonFeature.class);
+    resourceConfig.register(AccessControlFilter.class);
     //resourceConfig.register(NotFoundException.class);
 
     ServletContainer servletContainer = new ServletContainer(resourceConfig);

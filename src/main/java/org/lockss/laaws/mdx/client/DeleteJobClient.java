@@ -27,7 +27,6 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
 /**
@@ -36,8 +35,7 @@ import javax.ws.rs.client.WebTarget;
 public class DeleteJobClient extends BaseClient {
 
   public static void main(String[] args) {
-    WebTarget webTarget = ClientBuilder.newClient().target(baseUri)
-	.path("job");
+    WebTarget webTarget = getWebTarget().path("job");
 
     System.out.println(webTarget.request().delete(String.class));
   }

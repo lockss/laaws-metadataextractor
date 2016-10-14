@@ -45,6 +45,12 @@ tags:
     description: Tasks on jobs
 schemes:
   - https
+securityDefinitions:
+  basicAuth:
+    type: basic
+    description: HTTP Basic Authentication. Works over `HTTP` and `HTTPS`
+security:
+  - basicAuth: []
 paths:
   /au:
     get:

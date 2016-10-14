@@ -23,28 +23,52 @@
 # in this Software without prior written authorization from Stanford University.
 #
 # Using Derby.
-#org.lockss.dbManager.derby.infologAppend=true
-##org.lockss.dbManager.derby.languageLogqueryplan=true
-#org.lockss.dbManager.derby.languageLogstatementtext=true
-##org.lockss.dbManager.derby.streamErrorFile=/tmp/derby.log
-#org.lockss.dbManager.derby.streamErrorLogseveritylevel=0
-#org.lockss.dbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
-#org.lockss.dbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
-#org.lockss.dbManager.datasource.password=goodPassword
-##org.lockss.dbManager.datasource.createDatabase=create
-##org.lockss.dbManager.datasource.databaseName=db/DbManager
-##org.lockss.dbManager.datasource.portNumber=1527
-##org.lockss.dbManager.datasource.serverName=localhost
-##org.lockss.dbManager.datasource.user=LOCKSS
+#org.lockss.metadataDbManager.derby.infologAppend=true
+##org.lockss.metadataDbManager.derby.languageLogqueryplan=true
+#org.lockss.metadataDbManager.derby.languageLogstatementtext=true
+##org.lockss.metadataDbManager.derby.streamErrorFile=/tmp/derby.log
+#org.lockss.metadataDbManager.derby.streamErrorLogseveritylevel=0
+#org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
+#org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+#org.lockss.metadataDbManager.datasource.password=goodPassword
+##org.lockss.metadataDbManager.datasource.createDatabase=create
+##org.lockss.metadataDbManager.datasource.databaseName=db/MetadataDbManager
+##org.lockss.metadataDbManager.datasource.portNumber=1527
+##org.lockss.metadataDbManager.datasource.serverName=localhost
+##org.lockss.metadataDbManager.datasource.user=LOCKSS
 # Using PostgreSQL.
-#org.lockss.dbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
-##org.lockss.dbManager.datasource.databaseName=LOCKSS
-##org.lockss.dbManager.datasource.password=goodPassword
-#org.lockss.dbManager.datasource.portNumber=5432
-##org.lockss.dbManager.datasource.serverName=localhost
-##org.lockss.dbManager.datasource.user=LOCKSS
+#org.lockss.metadataDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
+##org.lockss.metadataDbManager.datasource.databaseName=MetadataDbManager
+##org.lockss.metadataDbManager.datasource.password=goodPassword
+#org.lockss.metadataDbManager.datasource.portNumber=5432
+##org.lockss.metadataDbManager.datasource.serverName=localhost
+##org.lockss.metadataDbManager.datasource.user=LOCKSS
 # Using MySQL
-#org.lockss.dbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+#org.lockss.metadataDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+#
+# Using Derby.
+#org.lockss.jobDbManager.derby.infologAppend=true
+##org.lockss.jobDbManager.derby.languageLogqueryplan=true
+#org.lockss.jobDbManager.derby.languageLogstatementtext=true
+##org.lockss.jobDbManager.derby.streamErrorFile=/tmp/derby.log
+#org.lockss.jobDbManager.derby.streamErrorLogseveritylevel=0
+#org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
+#org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+#org.lockss.jobDbManager.datasource.password=goodPassword
+##org.lockss.jobDbManager.datasource.createDatabase=create
+##org.lockss.jobDbManager.datasource.databaseName=db/JobDbManager
+##org.lockss.jobDbManager.datasource.portNumber=1527
+##org.lockss.jobDbManager.datasource.serverName=localhost
+##org.lockss.jobDbManager.datasource.user=LOCKSS
+# Using PostgreSQL.
+#org.lockss.jobDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
+##org.lockss.jobDbManager.datasource.databaseName=JobDbManager
+##org.lockss.jobDbManager.datasource.password=goodPassword
+#org.lockss.jobDbManager.datasource.portNumber=5432
+##org.lockss.jobDbManager.datasource.serverName=localhost
+##org.lockss.jobDbManager.datasource.user=LOCKSS
+# Using MySQL
+#org.lockss.jobDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 #
 org.lockss.jobManager.enabled=true
 #org.lockss.jobManager.taskListSize=1

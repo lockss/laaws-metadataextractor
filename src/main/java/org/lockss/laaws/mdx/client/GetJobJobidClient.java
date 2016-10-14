@@ -27,7 +27,6 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
 /**
@@ -41,8 +40,7 @@ public class GetJobJobidClient extends BaseClient {
     }
 
     if (args.length > 0) {
-      WebTarget webTarget = ClientBuilder.newClient().target(baseUri)
-	  .path("job").path(args[0]);
+      WebTarget webTarget = getWebTarget().path("job").path(args[0]);
 
       System.out.println(webTarget.request().get(String.class));
     } else {

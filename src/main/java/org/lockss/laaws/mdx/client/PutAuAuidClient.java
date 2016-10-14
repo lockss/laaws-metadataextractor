@@ -27,11 +27,10 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import org.glassfish.jersey.internal.util.collection.ImmutableMultivaluedMap;
 import java.net.URLEncoder;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MultivaluedHashMap;
 
 /**
  * Client for the putAuAuid() operation.
@@ -47,11 +46,11 @@ public class PutAuAuidClient extends BaseClient {
     System.out.println("encodedAuId = '" + encodedAuId + "'");
 
     if (args.length > 0) {
-      WebTarget webTarget = ClientBuilder.newClient().target(baseUri)
-	  .path("au").path(encodedAuId);
+      WebTarget webTarget = getWebTarget().path("au").path(encodedAuId);
 
       System.out.println(webTarget.request()
-	  .put(Entity.form(ImmutableMultivaluedMap.empty()), String.class));
+	  .put(Entity.form(new MultivaluedHashMap<String, String>()),
+	      String.class));
     } else {
       System.err.println("ERROR: Missing command line argument with auId");
     }
