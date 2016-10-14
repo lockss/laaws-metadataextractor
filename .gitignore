@@ -197,3 +197,4 @@ local.properties
 /tdbxml/
 /tdbxml
 /derby.log
+/cronstate.xml
