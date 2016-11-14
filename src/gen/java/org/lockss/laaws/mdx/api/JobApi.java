@@ -34,7 +34,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import org.lockss.laaws.mdx.api.factories.JobApiServiceFactory;
-import org.lockss.servlet.LockssServlet;
+import org.lockss.rs.auth.Roles;
 
 /**
  * Provider of access to the AU metadata jobs.
@@ -55,7 +55,7 @@ public class JobApi  {
    */
   @DELETE
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ADMIN) // Allow this role.
+  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
   public Response deleteJob(@Context SecurityContext securityContext)
       throws ApiException {
     return delegate.deleteJob(securityContext);
@@ -76,7 +76,7 @@ public class JobApi  {
   @DELETE
   @Path("/au/{auid}")
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ADMIN) // Allow this role.
+  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
   public Response deleteJobAuAuid(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
     return delegate.deleteJobAuAuid(auid,securityContext);
@@ -98,7 +98,7 @@ public class JobApi  {
   @DELETE
   @Path("/{jobid}")
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ADMIN) // Allow this role.
+  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
   public Response deleteJobJobid(@PathParam("jobid") String jobid,
       @Context SecurityContext securityContext) throws NotFoundException {
     return delegate.deleteJobJobid(jobid,securityContext);
@@ -120,7 +120,7 @@ public class JobApi  {
    */
   @GET
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ACCESS) // Allow this role.
+  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
   public Response getJob(@QueryParam("page") Integer page,
       @QueryParam("limit") Integer limit,
       @Context SecurityContext securityContext) throws NotFoundException {
@@ -142,7 +142,7 @@ public class JobApi  {
   @GET
   @Path("/au/{auid}")
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ACCESS) // Allow this role.
+  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
   public Response getJobAuAuid(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
     return delegate.getJobAuAuid(auid,securityContext);
@@ -163,7 +163,7 @@ public class JobApi  {
   @GET
   @Path("/{jobid}")
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ACCESS) // Allow this role.
+  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
   public Response getJobJobid(@PathParam("jobid") String jobid,
       @Context SecurityContext securityContext) throws NotFoundException {
     return delegate.getJobJobid(jobid,securityContext);

@@ -28,6 +28,8 @@ PROP_URL_LIST="common.xml ${TITLE_DBS} lockss.txt lockss.opt"
 
 # NB leading space meaningful here
 PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/ -p /g'`
-
-mvn clean package exec:java -Dexec.args="$PROP_ARGS" > logs/laawsmdx.log 2>&1 &
+sed "s@CONF_FILES_PLACEHOLDER@$PROP_ARGS@g" template-ejb-jar.xml > src/main/webapp/WEB-INF/ejb-jar.xml
+mvn clean package
+java -Dswarm.http.port=8888 -jar target/laaws-metadata-extraction-service-swarm.jar > logs/laawsmdx.log 2>&1 &
 echo $! > dpid
+tail -f logs/laawsmdx.log

@@ -34,7 +34,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import org.lockss.laaws.mdx.api.factories.AuApiServiceFactory;
-import org.lockss.servlet.LockssServlet;
+import org.lockss.rs.auth.Roles;
 
 /**
  * Provider of access to the metadata of an AU.
@@ -59,7 +59,7 @@ public class AuApi  {
   @DELETE
   @Path("/{auid}")
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ADMIN) // Allow this role.
+  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
   public Response deleteAuAuid(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
     return delegate.deleteAuAuid(auid,securityContext);
@@ -81,7 +81,7 @@ public class AuApi  {
    */
   @GET
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ACCESS) // Allow this role.
+  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
   public Response getAu(@QueryParam("page") Integer page,
       @QueryParam("limit") Integer limit,
       @Context SecurityContext securityContext) throws NotFoundException {
@@ -103,7 +103,7 @@ public class AuApi  {
   @GET
   @Path("/{auid}/job")
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ACCESS) // Allow this role.
+  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
   public Response getAuAuidJob(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
     return delegate.getAuAuidJob(auid,securityContext);
@@ -125,7 +125,7 @@ public class AuApi  {
   @PUT
   @Path("/{auid}")
   @Produces({"application/json"})
-  @RolesAllowed(LockssServlet.ROLE_CONTENT_ADMIN) // Allow this role.
+  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
   public Response putAuAuid(@PathParam("auid") String auid,
       @Context SecurityContext securityContext) throws NotFoundException {
     return delegate.putAuAuid(auid,securityContext);

@@ -25,28 +25,45 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.client;
+package org.lockss.laaws.mdx.ejb;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import org.jboss.resteasy.client.jaxrs.BasicAuthentication;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.ejb.Startup;
+import org.lockss.laaws.mdx.server.LaawsMdxApp;
 
 /**
- * A base client for all of the LAAWS-MDX web service operations.
+ * The code to be executed on server startup.
  */
-public class BaseClient {
-  private static final String userName = "lockss-u";
-  private static final String password = "lockss-p";
+@Startup
+public class StartUpEjbImpl implements StartUpEjbLocal {
+  private static final Logger LOGGER =
+      Logger.getLogger(StartUpEjbImpl.class.getName());
 
-  private static final String baseUri = "http://localhost:8888";
+  @Resource(name="confFiles")
+  private String confFiles;
 
-  protected static WebTarget getWebTarget() {
-    Client client = ClientBuilder.newClient();
-    ResteasyWebTarget webTarget = (ResteasyWebTarget)client.target(baseUri);
-    webTarget.register(new BasicAuthentication(userName, password));
+  /**
+   * Run immediately after this EJB is fully constructed.
+   */
+  @PostConstruct
+  public void runAfterConstruction() {
+    LOGGER.log(Level.INFO, "Starting StartUpEjbImpl");
+    LOGGER.log(Level.INFO, "confFiles = '" + confFiles + "'");
 
-    return webTarget;
+    // Configure the LAAWS-specific part of the web services server.
+    LaawsMdxApp.main(confFiles.split(" "));
+    LOGGER.log(Level.INFO, "Done with StartUpEjbImpl.runAfterConstruction()");
+  }
+
+  /**
+   * Run immediately before this EJB is destroyed.
+   */
+  @PreDestroy
+  public void runBeforeDestroy() {
+    LOGGER.log(Level.INFO, "Stopping StartUpEjbImpl");
   }
 }
