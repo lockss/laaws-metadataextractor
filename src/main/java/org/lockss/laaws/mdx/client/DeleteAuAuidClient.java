@@ -44,7 +44,7 @@ public class DeleteAuAuidClient extends BaseClient {
     System.out.println("encodedAuId = '" + encodedAuId + "'");
 
     if (args.length > 0) {
-      WebTarget webTarget = getWebTarget().path("au").path(encodedAuId);
+      WebTarget webTarget = getWebTarget().path("aus").path(encodedAuId);
 
       System.out.println(webTarget.request().delete(String.class));
     } else {

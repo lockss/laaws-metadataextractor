@@ -33,7 +33,7 @@ import javax.ws.rs.core.SecurityContext;
 /**
  * Base provider of access to the metadata of an AU.
  */
-public abstract class AuApiService {
+public abstract class AusApiService {
 
   /**
    * Deletes the metadata stored for an AU given the AU identifier.

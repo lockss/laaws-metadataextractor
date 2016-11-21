@@ -35,7 +35,7 @@ import javax.ws.rs.client.WebTarget;
 public class DeleteJobClient extends BaseClient {
 
   public static void main(String[] args) {
-    WebTarget webTarget = getWebTarget().path("job");
+    WebTarget webTarget = getWebTarget().path("jobs");
 
     System.out.println(webTarget.request().delete(String.class));
   }

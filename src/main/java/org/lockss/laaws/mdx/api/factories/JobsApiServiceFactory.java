@@ -25,31 +25,16 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.client;
+package org.lockss.laaws.mdx.api.factories;
 
-import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.api.JobsApiService;
+import org.lockss.laaws.mdx.api.impl.JobsApiServiceImpl;
 
-/**
- * Client for the getJob() operation.
- */
-public class GetJobClient extends BaseClient {
+public class JobsApiServiceFactory {
+   private final static JobsApiService service = new JobsApiServiceImpl();
 
-  public static void main(String[] args) {
-    for (int i = 0; i < args.length; i++) {
-      System.out.println("arg[" + i + "] = " + args[i]);
-    }
-
-    WebTarget webTarget = getWebTarget().path("jobs");
-
-    if (args.length > 1) {
-      webTarget = webTarget.queryParam(args[0], args[1]);
-
-      if (args.length > 3) {
-	webTarget = webTarget.queryParam(args[2], args[3]);
-      }
-    }
-
-    System.out.println("webTarget.getUri() = " + webTarget.getUri());
-    System.out.println(webTarget.request().get(String.class));
-  }
+   public static JobsApiService getJobApi()
+   {
+      return service;
+   }
 }

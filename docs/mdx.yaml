@@ -24,9 +24,10 @@
 #
 swagger: '2.0'
 info:
-  description: Metadata Extractor for LAAWS
+  description: API of Metadata Extraction Service for LAAWS
   version: 1.0.0
-  title: LAAWS-Metadata Extractor
+  title: LAAWS Metadata Extraction Service API
+  termsOfService: http://www.lockss.org/terms/
   contact:
     name: 'LOCKSS Support'
     url: 'http://www.lockss.org/'
@@ -35,16 +36,18 @@ info:
     name: 'Modified BSD License'
     url: 'http://www.lockss.org/support/open-source-license/'
 host: 'laaws.lockss.org:443'
-basePath: /mdx
+basePath: /
 tags:
   - name: Default
     description: Default section
-  - name: au
+  - name: aus
     description: Tasks on AUs
-  - name: job
+  - name: jobs
     description: Tasks on jobs
 schemes:
   - https
+produces:
+  - application/json
 securityDefinitions:
   basicAuth:
     type: basic
@@ -52,10 +55,10 @@ securityDefinitions:
 security:
   - basicAuth: []
 paths:
-  /au:
+  /aus:
     get:
       tags:
-        - au
+        - aus
       summary: Get a list of existing AUs
       description: Get a list of all existing AUs (no parameters) or a list of the AUs in a page defined by the page index and size
       operationId: getAu
@@ -84,10 +87,10 @@ paths:
             description: Internal server error
         '503':
           description: Some or all of the system is not available
-  '/au/{auid}':
+  '/aus/{auid}':
     put:
       tags:
-        - au
+        - aus
       summary: Reindex the metadata for an AU
       description: Reindex the metadata for an AU given the AU identifier
       operationId: putAuAuid
@@ -117,7 +120,7 @@ paths:
           description: Some or all of the system is not available
     delete:
       tags:
-        - au
+        - aus
       summary: Delete the metadata stored for an AU
       description: Delete the metadata stored for an AU given the AU identifier
       operationId: deleteAuAuid
@@ -145,10 +148,10 @@ paths:
           description: Internal server error
         '503':
           description: Some or all of the system is not available
-  '/au/{auid}/job':
+  '/aus/{auid}/job':
     get:
       tags:
-        - au
+        - aus
       summary: Get the job for an AU
       description: Get the job for an AU given the AU identifier
       operationId: getAuAuidJob
@@ -172,10 +175,10 @@ paths:
           description: Internal server error
         '503':
           description: Some or all of the system is not available
-  /job:
+  /jobs:
     get:
       tags:
-        - job
+        - jobs
       summary: Get a list of currently active jobs
       description: Get a list of all currently active jobs (no parameters) or a list of the currently active jobs in a page defined by the page index and size
       operationId: getJob
@@ -206,7 +209,7 @@ paths:
           description: Some or all of the system is not available
     delete:
       tags:
-        - job
+        - jobs
       summary: Delete all of the currently queued and active jobs
       description: Delete all of the currently queued and active jobs
       operationId: deleteJob
@@ -225,10 +228,10 @@ paths:
           description: Internal server error
         '503':
           description: Some or all of the system is not available
-  '/job/au/{auid}':
+  '/jobs/au/{auid}':
     get:
       tags:
-        - job
+        - jobs
       summary: Get the job for an AU
       description: Get the job for an AU given the AU identifier
       operationId: getJobAuAuid
@@ -254,7 +257,7 @@ paths:
           description: Some or all of the system is not available
     delete:
       tags:
-        - job
+        - jobs
       summary: Delete the job for an AU
       description: Delete the job for an AU given the AU identifier
       operationId: deleteJobAuAuid
@@ -282,10 +285,10 @@ paths:
           description: Internal server error
         '503':
           description: Some or all of the system is not available
-  '/job/{jobid}':
+  '/jobs/{jobid}':
     get:
       tags:
-        - job
+        - jobs
       summary: Get a job
       description: Get a job given the job identifier
       operationId: getJobJobid
@@ -311,7 +314,7 @@ paths:
           description: Some or all of the system is not available
     delete:
       tags:
-        - job
+        - jobs
       summary: Delete a job
       description: Delete a job given the job identifier, stopping any current processing, if necessary
       operationId: deleteJobJobid

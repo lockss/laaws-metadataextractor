@@ -32,6 +32,6 @@
   "apiPackage":"org.lockss.laaws.mdx.api",
   "invokerPackage":"org.lockss.laaws.mdx",
   "hideGenerationTimestamp": true,
-  "title": "Lockss Metadata Extractor"
+  "title": "LAAWS Metadata Extraction Service"
 }
 

@@ -27,25 +27,28 @@
  */
 package org.lockss.laaws.mdx.api;
 
-import io.swagger.annotations.Api;
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import org.lockss.laaws.mdx.api.factories.AuApiServiceFactory;
-import org.lockss.rs.auth.Roles;
 
 /**
- * Provider of access to the metadata of an AU.
+ * Base provider of access to the AU metadata jobs.
  */
-@Path("/au")
-@Api(value = "/au")
-public class AuApi  {
-  private final AuApiService delegate = AuApiServiceFactory.getAuApi();
+public abstract class JobsApiService {
 
   /**
-   * Deletes the metadata stored for an AU given the AU identifier.
+   * Deletes all of the queued jobs and stops any processing and deletes any
+   * active jobs.
+   * 
+   * @param securityContext
+   *          A SecurityContext providing access to security related
+   *          information.
+   * @return a Response with any data that needs to be returned to the runtime.
+   */
+  public abstract Response deleteJob(SecurityContext securityContext)
+      throws ApiException ;
+
+  /**
+   * Deletes the the job for an AU given the AU identifier.
    * 
    * @param auid
    *          A String with the AU identifier.
@@ -56,37 +59,41 @@ public class AuApi  {
    * @throws NotFoundException
    *           if the AU with the given identifier does not exist.
    */
-  @DELETE
-  @Path("/{auid}")
-  @Produces({"application/json"})
-  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response deleteAuAuid(@PathParam("auid") String auid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.deleteAuAuid(auid,securityContext);
-  }
+  public abstract Response deleteJobAuAuid(String auid,
+      SecurityContext securityContext) throws NotFoundException;
 
   /**
-   * Provides a list of existing AUs.
+   * Deletes a job given the job identifier if it's queued and it stops any
+   * processing and deletes it if it's active.
    * 
-   * @param page
-   *          An Integer with the index of the page to be returned.
-   * @param limit
-   *          An Integer with the maximum number of AUs to be returned.
+   * @param jobid
+   *          A String with the job identifier.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    * @throws NotFoundException
-   *           if the AUs could not be obtained.
+   *           if the job with the given identifier does not exist.
    */
-  @GET
-  @Produces({"application/json"})
-  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
-  public Response getAu(@QueryParam("page") Integer page,
-      @QueryParam("limit") Integer limit,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getAu(page,limit,securityContext);
-  }
+  public abstract Response deleteJobJobid(String jobid,
+      SecurityContext securityContext) throws NotFoundException;
+
+  /**
+   * Provides a list of existing jobs.
+   * 
+   * @param page
+   *          An Integer with the index of the page to be returned.
+   * @param limit
+   *          An Integer with the maximum number of jobs to be returned.
+   * @param securityContext
+   *          A SecurityContext providing access to security related
+   *          information.
+   * @return a Response with any data that needs to be returned to the runtime.
+   * @throws NotFoundException
+   *           if the job with the given identifier does not exist.
+   */
+  public abstract Response getJob(Integer page, Integer limit,
+      SecurityContext securityContext) throws NotFoundException;
 
   /**
    * Provides the job for an AU given the AU identifier.
@@ -100,34 +107,21 @@ public class AuApi  {
    * @throws NotFoundException
    *           if the AU with the given identifier does not exist.
    */
-  @GET
-  @Path("/{auid}/job")
-  @Produces({"application/json"})
-  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
-  public Response getAuAuidJob(@PathParam("auid") String auid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getAuAuidJob(auid,securityContext);
-  }
+  public abstract Response getJobAuAuid(String auid,
+      SecurityContext securityContext) throws NotFoundException;
 
   /**
-   * Extracts and stores all or part of the metadata for an AU given the AU
-   * identifier.
+   * Provides a job given the job identifier.
    * 
-   * @param auid
-   *          A String with the AU identifier.
+   * @param jobid
+   *          A String with the job identifier.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
+   *           if the job with the given identifier does not exist.
    */
-  @PUT
-  @Path("/{auid}")
-  @Produces({"application/json"})
-  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response putAuAuid(@PathParam("auid") String auid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.putAuAuid(auid,securityContext);
-  }
+  public abstract Response getJobJobid(String jobid,
+      SecurityContext securityContext) throws NotFoundException;
 }

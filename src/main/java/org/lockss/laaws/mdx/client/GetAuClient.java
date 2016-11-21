@@ -39,7 +39,7 @@ public class GetAuClient extends BaseClient {
       System.out.println("arg[" + i + "] = " + args[i]);
     }
 
-    WebTarget webTarget = getWebTarget().path("au");
+    WebTarget webTarget = getWebTarget().path("aus");
 
     if (args.length > 1) {
       webTarget = webTarget.queryParam(args[0], args[1]);

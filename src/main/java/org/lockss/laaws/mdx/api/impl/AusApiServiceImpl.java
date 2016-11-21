@@ -38,56 +38,21 @@ import org.lockss.app.LockssApp;
 //import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
 import org.lockss.job.JobManager;
-import org.lockss.laaws.mdx.api.ApiException;
-import org.lockss.laaws.mdx.api.ApiResponseMessage;
-import org.lockss.laaws.mdx.api.JobApiService;
+import org.lockss.laaws.mdx.api.AusApiService;
 import org.lockss.laaws.mdx.api.NotFoundException;
+import org.lockss.laaws.mdx.model.Au;
+import org.lockss.laaws.mdx.model.AuPageInfo;
 import org.lockss.laaws.mdx.model.Job;
-import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
-import org.lockss.laaws.mdx.model.Status;
 
 /**
- * Provider of access to the AU metadata jobs.
+ * Implementation of the base provider of access to the metadata of an AU.
  */
-public class JobApiServiceImpl extends JobApiService {
-  private static Logger log = Logger.getLogger(JobApiServiceImpl.class);
+public class AusApiServiceImpl extends AusApiService {
+  private static Logger log = Logger.getLogger(AusApiServiceImpl.class);
 
   /**
-   * Deletes all of the queued jobs and stops any processing and deletes any
-   * active jobs.
-   * 
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   */
-  @Override
-  public Response deleteJob(SecurityContext securityContext)
-      throws ApiException {
-    if (log.isDebugEnabled()) log.debug("Invoked");
-
-
-    try {
-//      int removedCount =
-//	  LockssDaemon.getLockssDaemon().getJobManager().removeAllJobs();
-      int removedCount = getJobManager().removeAllJobs();
-      String message = "Count of all jobs deleted: " + removedCount;
-      if (log.isDebugEnabled()) log.debug(message);
-      ApiResponseMessage result =
-	  new ApiResponseMessage(ApiResponseMessage.OK, message);
-
-      return Response.ok().entity(result).build();
-    } catch (Exception e) {
-      String message = "Cannot deleteJob()";
-      log.error(message, e);
-      throw new ApiException(1, message + ": " + e.getMessage());
-    }
-  }
-
-  /**
-   * Deletes the job for an AU given the AU identifier if it's queued and it
-   * stops any processing and deletes it if it's active.
+   * Deletes the metadata stored for an AU given the AU identifier.
    * 
    * @param auid
    *          A String with the AU identifier.
@@ -99,59 +64,14 @@ public class JobApiServiceImpl extends JobApiService {
    *           if the AU with the given identifier does not exist.
    */
   @Override
-  public Response deleteJobAuAuid(String auid, SecurityContext securityContext)
+  public Response deleteAuAuid(String auid, SecurityContext securityContext)
       throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
     try {
-//      JobAuStatus jobAuStatus =
-//	  LockssDaemon.getLockssDaemon().getJobManager().removeAuJob(auid);
-      JobAuStatus jobAuStatus = getJobManager().removeAuJob(auid);
-      if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
-
-      if (jobAuStatus != null) {
-	Job result = new Job(jobAuStatus);
-	if (log.isDebugEnabled()) log.debug("result = " + result);
-	
-	return Response.ok().entity(result).build();
-      }
-    } catch (IllegalArgumentException iae) {
-      String message = "No Archival Unit found for auid = '" + auid + "'";
-      log.error(message);
-      throw new NotFoundException(1, message);
-    } catch (Exception e) {
-      String message = "Cannot deleteJobAuAuid() for auid = '" + auid + "'";
-      log.error(message, e);
-      throw new NotFoundException(1, message + ": " + e.getMessage());
-    }
-
-    String message = "Found no job for auid = '" + auid + "'";
-    log.error(message);
-    throw new NotFoundException(1, message);
-  }
-
-  /**
-   * Deletes a job given the job identifier if it's queued and it stops any
-   * processing and deletes it if it's active.
-   * 
-   * @param jobid
-   *          A String with the job identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
-   */
-  @Override
-  public Response deleteJobJobid(String jobid, SecurityContext securityContext)
-      throws NotFoundException {
-    if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
-
-    try {
-//      JobAuStatus jobAuStatus =
-//	  LockssDaemon.getLockssDaemon().getJobManager().removeJob(jobid);
-      JobAuStatus jobAuStatus = getJobManager().removeJob(jobid);
+      //JobAuStatus jobAuStatus = LockssDaemon.getLockssDaemon().getJobManager().
+	//  scheduleMetadataRemoval(auid);
+      JobAuStatus jobAuStatus = getJobManager().scheduleMetadataRemoval(auid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Job result = new Job(jobAuStatus);
@@ -159,32 +79,32 @@ public class JobApiServiceImpl extends JobApiService {
 
       return Response.ok().entity(result).build();
     } catch (IllegalArgumentException iae) {
-      String message = "No job found for jobid = '" + jobid + "'";
+      String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot deleteJobJobid() for jobid = '" + jobid + "'";
+      String message = "Cannot deleteAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
-      throw new NotFoundException(1, message + ": " + e.getMessage());
+      throw new NotFoundException(3, message + ": " + e.getMessage());
     }
   }
 
   /**
-   * Provides a list of existing jobs.
+   * Provides a list of existing AUs.
    * 
    * @param page
    *          An Integer with the index of the page to be returned.
    * @param limit
-   *          An Integer with the maximum number of jobs to be returned.
+   *          An Integer with the maximum number of AUs to be returned.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   *           if the AU with the given identifier does not exist.
    */
   @Override
-  public Response getJob(Integer page, Integer limit,
+  public Response getAu(Integer page, Integer limit,
       SecurityContext securityContext) throws NotFoundException {
     if (log.isDebugEnabled()) {
       log.debug("page = " + page);
@@ -195,11 +115,12 @@ public class JobApiServiceImpl extends JobApiService {
 
     URI baseUri = UriBuilder.fromUri(System.getProperty("LAAWS_MDX_SERVER_HOST",
 	"http://localhost")).
-	port(Integer.getInteger(System.getProperty("LAAWS_MDX_SERVER_PORT"), 8888)).
+	port(Integer.getInteger(System.getProperty("LAAWS_MDX_SERVER_PORT"),
+	    8888)).
 	build();
 
-    String curLink = baseUri + "/job";
-    String nextLink = baseUri + "/job";
+    String curLink = baseUri + "/aus";
+    String nextLink = baseUri + "/aus";
 
     if (page != null) {
       curLink = curLink + "?page=" + page;
@@ -224,26 +145,26 @@ public class JobApiServiceImpl extends JobApiService {
     pi.setCurrentPage(page);
     pi.setResultsPerPage(limit);
 
-    JobPageInfo result = new JobPageInfo();
+    AuPageInfo result = new AuPageInfo();
     result.setPageInfo(pi);
 
     try {
 //      List<JobAuStatus> jobAuStatuses =
-//	  LockssDaemon.getLockssDaemon().getJobManager().getJobs(page, limit);
-      List<JobAuStatus> jobAuStatuses = getJobManager().getJobs(page, limit);
+//	  LockssDaemon.getLockssDaemon().getJobManager().getAus(page, limit);
+      List<JobAuStatus> jobAuStatuses = getJobManager().getAus(page, limit);
       if (log.isDebugEnabled()) log.debug("jobAuStatuses = " + jobAuStatuses);
 
-      List<Job> jobs = new ArrayList<Job>();
+      List<Au> aus = new ArrayList<Au>();
 
       for (JobAuStatus jobAuStatus : jobAuStatuses) {
-	jobs.add(new Job(jobAuStatus));
+	aus.add(new Au(jobAuStatus));
       }
 
-      if (log.isDebugEnabled()) log.debug("jobs = " + jobs);
-      result.setJobs(jobs);
+      if (log.isDebugEnabled()) log.debug("aus = " + aus);
+      result.setAus(aus);
     } catch (Exception e) {
       String message =
-	  "Cannot getJob() for page = " + page + ", limit = " + limit;
+	  "Cannot getAu() for page = " + page + ", limit = " + limit;
       log.error(message, e);
       throw new NotFoundException(2, message + ": " + e.getMessage());
     }
@@ -266,7 +187,7 @@ public class JobApiServiceImpl extends JobApiService {
    *           if the AU with the given identifier does not exist.
    */
   @Override
-  public Response getJobAuAuid(String auid, SecurityContext securityContext)
+  public Response getAuAuidJob(String auid, SecurityContext securityContext)
       throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
@@ -285,45 +206,47 @@ public class JobApiServiceImpl extends JobApiService {
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot getJobAuAuid() for auid = '" + auid + "'";
+      String message = "Cannot getAuAuidJob() for auid = '" + auid + "'";
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }
   }
 
   /**
-   * Provides the status of a job given the job identifier.
+   * Extracts and stores all or part of the metadata for an AU given the AU
+   * identifier.
    * 
-   * @param jobid
-   *          A String with the job identifier.
+   * @param auid
+   *          A String with the AU identifier.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   *           if the AU with the given identifier does not exist.
    */
   @Override
-  public Response getJobJobid(String jobid, SecurityContext securityContext)
+  public Response putAuAuid(String auid, SecurityContext securityContext)
       throws NotFoundException {
-    if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
+    if (log.isDebugEnabled()) log.debug("auid = " + auid);
 
     try {
-//      JobAuStatus jobAuStatus =
-//	  LockssDaemon.getLockssDaemon().getJobManager().getJobStatus(jobid);
-      JobAuStatus jobAuStatus = getJobManager().getJobStatus(jobid);
+//      JobAuStatus jobAuStatus = LockssDaemon.getLockssDaemon().getJobManager().
+//	  scheduleMetadataExtraction(auid);
+      JobAuStatus jobAuStatus =
+	  getJobManager().scheduleMetadataExtraction(auid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
-      Status result = new Status(jobAuStatus);
+      Job result = new Job(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
       return Response.ok().entity(result).build();
     } catch (IllegalArgumentException iae) {
-      String message = "No job found for jobid = '" + jobid + "'";
+      String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
       throw new NotFoundException(1, message);
     } catch (Exception e) {
-      String message = "Cannot getJobJobid() for jobid = '" + jobid + "'";
+      String message = "Cannot putAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
       throw new NotFoundException(1, message + ": " + e.getMessage());
     }

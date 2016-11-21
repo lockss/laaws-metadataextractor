@@ -25,16 +25,21 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.api.factories;
+package org.lockss.laaws.mdx.api;
 
-import org.lockss.laaws.mdx.api.JobApiService;
-import org.lockss.laaws.mdx.api.impl.JobApiServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import io.swagger.util.Json;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Provider;
 
-public class JobApiServiceFactory {
-   private final static JobApiService service = new JobApiServiceImpl();
+@Provider
+@Produces({MediaType.APPLICATION_JSON})
+public class JacksonJsonProvider extends JacksonJaxbJsonProvider {
+    private static ObjectMapper commonMapper = Json.mapper();
 
-   public static JobApiService getJobApi()
-   {
-      return service;
-   }
+    public JacksonJsonProvider() {
+        super.setMapper(commonMapper);
+    }
 }

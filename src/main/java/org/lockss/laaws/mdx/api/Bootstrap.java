@@ -25,31 +25,35 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.client;
+package org.lockss.laaws.mdx.api;
 
-import javax.ws.rs.client.WebTarget;
+import io.swagger.jaxrs.config.SwaggerContextService;
+import io.swagger.models.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
-/**
- * Client for the getJob() operation.
- */
-public class GetJobClient extends BaseClient {
+@SuppressWarnings("serial")
+public class Bootstrap extends HttpServlet {
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    System.out.println("Bootstrap.init(): Invoked.");
+    Info info = new Info()
+      .title("LAAWS Metadata Extraction Service")
+      .description("API of Metadata Extraction Service for LAAWS")
+      .termsOfService("http://www.lockss.org/terms/")
+      .contact(new Contact()
+        .email("support@lockss.org"))
+      .license(new License()
+        .name("Modified BSD License")
+        .url("http://www.lockss.org/support/open-source-license/"));
 
-  public static void main(String[] args) {
-    for (int i = 0; i < args.length; i++) {
-      System.out.println("arg[" + i + "] = " + args[i]);
-    }
+    ServletContext context = config.getServletContext();
+    Swagger swagger = new Swagger().info(info);
 
-    WebTarget webTarget = getWebTarget().path("jobs");
-
-    if (args.length > 1) {
-      webTarget = webTarget.queryParam(args[0], args[1]);
-
-      if (args.length > 3) {
-	webTarget = webTarget.queryParam(args[2], args[3]);
-      }
-    }
-
-    System.out.println("webTarget.getUri() = " + webTarget.getUri());
-    System.out.println(webTarget.request().get(String.class));
+    new SwaggerContextService().withServletConfig(config)
+    .updateSwagger(swagger);
+    System.out.println("Bootstrap.init(): Done.");
   }
 }

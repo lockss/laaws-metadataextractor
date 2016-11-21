@@ -45,7 +45,7 @@ public class GetAuAuidJobClient extends BaseClient {
 
     if (args.length > 0) {
       WebTarget webTarget =
-	  getWebTarget().path("job").path("au").path(encodedAuId);
+	  getWebTarget().path("jobs").path("au").path(encodedAuId);
 
       System.out.println(webTarget.request().get(String.class));
     } else {
