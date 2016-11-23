@@ -34,6 +34,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -178,6 +179,8 @@ public class JobsApi  {
    *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
+   * @param request
+   *          An HttpServletRequest providing access to the incoming request.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
@@ -205,8 +208,9 @@ public class JobsApi  {
       defaultValue="1") @DefaultValue("1") @QueryParam("page") Integer page,
       @ApiParam(value = "The number of jobs per page", defaultValue="50")
       @DefaultValue("50") @QueryParam("limit") Integer limit,
+      @Context HttpServletRequest request,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getJob(page,limit,securityContext);
+    return delegate.getJob(page,limit,request,securityContext);
   }
 
   /**

@@ -27,6 +27,7 @@
  */
 package org.lockss.laaws.mdx.api;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
@@ -85,6 +86,8 @@ public abstract class JobsApiService {
    *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
+   * @param request
+   *          An HttpServletRequest providing access to the incoming request.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
@@ -93,7 +96,8 @@ public abstract class JobsApiService {
    *           if the job with the given identifier does not exist.
    */
   public abstract Response getJob(Integer page, Integer limit,
-      SecurityContext securityContext) throws NotFoundException;
+      HttpServletRequest request, SecurityContext securityContext)
+	  throws NotFoundException;
 
   /**
    * Provides the job for an AU given the AU identifier.
