@@ -22,6 +22,13 @@
 # be used in advertising or otherwise to promote the sale, use or other dealings
 # in this Software without prior written authorization from Stanford University.
 #
+service_port=8888
+
+if [ $# -eq 1 ] 
+then
+    service_port=$1
+fi
+
 TDB_DIR=tdbxml/prod
 TITLE_DBS="`find ${TDB_DIR} -maxdepth 1 -name \*.xml | sort`"
 PROP_URL_LIST="common.xml ${TITLE_DBS} lockss.txt lockss.opt"
@@ -30,6 +37,6 @@ PROP_URL_LIST="common.xml ${TITLE_DBS} lockss.txt lockss.opt"
 PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/ -p /g'`
 sed "s@CONF_FILES_PLACEHOLDER@$PROP_ARGS@g" template-ejb-jar.xml > src/main/webapp/WEB-INF/ejb-jar.xml
 mvn clean package
-java -Dswarm.http.port=8888 -jar target/laaws-metadata-extraction-service-swarm.jar > logs/laawsmdx.log 2>&1 &
+java -Dswarm.http.port=$service_port -jar target/laaws-metadata-extraction-service-swarm.jar > logs/laawsmdx.log 2>&1 &
 echo $! > dpid
 tail -f logs/laawsmdx.log
