@@ -27,21 +27,21 @@
  */
 package org.lockss.laaws.mdx.ejb;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.Startup;
 import org.lockss.laaws.mdx.server.LaawsMdxApp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The code to be executed on server startup.
  */
 @Startup
 public class StartUpEjbImpl implements StartUpEjbLocal {
-  private static final Logger LOGGER =
-      Logger.getLogger(StartUpEjbImpl.class.getName());
+  private static final Logger log =
+      LoggerFactory.getLogger(StartUpEjbImpl.class);
 
   @Resource(name="confFiles")
   private String confFiles;
@@ -51,12 +51,14 @@ public class StartUpEjbImpl implements StartUpEjbLocal {
    */
   @PostConstruct
   public void runAfterConstruction() {
-    LOGGER.log(Level.INFO, "Starting StartUpEjbImpl");
-    LOGGER.log(Level.INFO, "confFiles = '" + confFiles + "'");
+    if (log.isInfoEnabled()) {
+      log.info("Invoked.");
+      log.info("confFiles = '" + confFiles + "'");
+    }
 
     // Configure the LAAWS-specific part of the web services server.
     LaawsMdxApp.main(confFiles.split(" "));
-    LOGGER.log(Level.INFO, "Done with StartUpEjbImpl.runAfterConstruction()");
+    if (log.isDebugEnabled()) log.debug("Done.");
   }
 
   /**
@@ -64,6 +66,6 @@ public class StartUpEjbImpl implements StartUpEjbLocal {
    */
   @PreDestroy
   public void runBeforeDestroy() {
-    LOGGER.log(Level.INFO, "Stopping StartUpEjbImpl");
+    if (log.isDebugEnabled()) log.debug("Stopping StartUpEjbImpl");
   }
 }

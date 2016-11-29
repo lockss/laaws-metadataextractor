@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * Startup code.
  */
 public class LaawsMdxApp extends LockssDaemon {
-  private static final Logger LOG = LoggerFactory.getLogger(LaawsMdxApp.class);
+  private static final Logger log = LoggerFactory.getLogger(LaawsMdxApp.class);
 
   // Manager descriptors.  The order of this table determines the order in
   // which managers are initialized and started.
@@ -72,7 +72,7 @@ public class LaawsMdxApp extends LockssDaemon {
   };
 
   public static void main( String[] args ) {
-    if (LOG.isDebugEnabled()) LOG.debug("args = " + Arrays.toString(args));
+    if (log.isDebugEnabled()) log.debug("args = " + Arrays.toString(args));
 
     LaawsMdxApp laawsMdxApp;
 
@@ -94,12 +94,12 @@ public class LaawsMdxApp extends LockssDaemon {
       Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 2);
 
     } catch (ResourceUnavailableException e) {
-      LOG.error("Exiting because required resource is unavailable", e);
+      log.error("Exiting because required resource is unavailable", e);
       System.exit(Constants.EXIT_CODE_RESOURCE_UNAVAILABLE);
       return;                           // compiler doesn't know that
                                         // System.exit() doesn't return
     } catch (Throwable e) {
-      LOG.error("Exception thrown in main loop", e);
+      log.error("Exception thrown in main loop", e);
       System.exit(Constants.EXIT_CODE_EXCEPTION_IN_MAIN);
       return;                           // compiler doesn't know that
                                         // System.exit() doesn't return
@@ -113,7 +113,7 @@ public class LaawsMdxApp extends LockssDaemon {
       }
       System.exit(Constants.EXIT_CODE_NORMAL);
     }
-    LOG.info("Done with LaawsMdxApp.main()");
+    if (log.isDebugEnabled()) log.debug("Done.");
   }
 
   public LaawsMdxApp(List<String> propUrls, String groupNames)

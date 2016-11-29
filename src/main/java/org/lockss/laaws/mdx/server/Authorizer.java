@@ -39,7 +39,8 @@ import javax.ws.rs.ext.Provider;
 //import javax.ws.rs.core.PathSegment;
 import org.lockss.rs.auth.AccessControlFilter;
 //import org.lockss.rs.auth.Roles;
-import org.lockss.util.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Access Control filter for this service.
@@ -47,7 +48,7 @@ import org.lockss.util.Logger;
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class Authorizer extends AccessControlFilter {
-  private static final Logger log = Logger.getLogger(Authorizer.class);
+  private static final Logger log = LoggerFactory.getLogger(Authorizer.class);
 
   /**
    * Provides the names of the roles permissible for the user to be able to
@@ -64,19 +65,17 @@ public class Authorizer extends AccessControlFilter {
   @Override
   protected Set<String> getPermissibleRoles(ResourceInfo resourceInfo,
       ContainerRequestContext requestContext) {
-    final String DEBUG_HEADER = "getPermissibleRoles(): ";
-    if (log.isDebug2()) log.debug2(DEBUG_HEADER + "Invoked.");
+    if (log.isDebugEnabled()) log.debug("Invoked.");
 
     Set<String> permissibleRoles = new HashSet<String>();
 
 //    Method method = resourceInfo.getResourceMethod();
-//    if (log.isDebug3()) log.debug3(DEBUG_HEADER + "method = " + method);
+//    if (log.isDebugEnabled()) log.debug("method = " + method);
 //
 //    // Get the request path segments.
 //    List<PathSegment> pathSegments = requestContext.getUriInfo()
 //	.getPathSegments();
-//    if (log.isDebug3())
-//      log.debug3(DEBUG_HEADER + "pathSegments = " + pathSegments);
+//    if (log.isDebugEnabled()) log.debug("pathSegments = " + pathSegments);
 //
 //    if ("GET".equals(requestContext.getMethod().toUpperCase())) {
 //      if (pathSegments.size() == 2
@@ -93,6 +92,8 @@ public class Authorizer extends AccessControlFilter {
 //      }
 //    }
 
+    if (log.isDebugEnabled())
+      log.debug("permissibleRoles = " + permissibleRoles);
     return permissibleRoles;
   }
 }
