@@ -28,6 +28,7 @@
 package org.lockss.laaws.mdx.client;
 
 import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.model.AuPageInfo;
 
 /**
  * Client for the getAu() operation.
@@ -50,6 +51,8 @@ public class GetAuClient extends BaseClient {
     }
 
     System.out.println("webTarget.getUri() = " + webTarget.getUri());
-    System.out.println(webTarget.request().get(String.class));
+
+    AuPageInfo result = webTarget.request().get(AuPageInfo.class);
+    System.out.println("result = " + result);
   }
 }

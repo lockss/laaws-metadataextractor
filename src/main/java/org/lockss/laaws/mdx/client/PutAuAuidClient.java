@@ -29,8 +29,8 @@ package org.lockss.laaws.mdx.client;
 
 import java.net.URLEncoder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MultivaluedHashMap;
+import org.lockss.laaws.mdx.model.Job;
 
 /**
  * Client for the putAuAuid() operation.
@@ -46,11 +46,10 @@ public class PutAuAuidClient extends BaseClient {
     System.out.println("encodedAuId = '" + encodedAuId + "'");
 
     if (args.length > 0) {
-      WebTarget webTarget = getWebTarget().path("aus").path(encodedAuId);
-
-      System.out.println(webTarget.request()
+      Job result = getWebTarget().path("aus").path(encodedAuId).request()
 	  .put(Entity.form(new MultivaluedHashMap<String, String>()),
-	      String.class));
+	      Job.class);
+      System.out.println("result = " + result);
     } else {
       System.err.println("ERROR: Missing command line argument with auId");
     }

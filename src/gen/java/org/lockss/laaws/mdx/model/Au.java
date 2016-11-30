@@ -42,6 +42,19 @@ public class Au   {
   private String job = null;
   private String name = null;
 
+  /**
+   * Default constructor.
+   */
+  public Au() {
+
+  }
+
+  /**
+   * Full constructor.
+   * 
+   * @param jobAuStatus
+   *          A JobAuStatus with the job status.
+   */
   public Au(JobAuStatus jobAuStatus) {
     id = jobAuStatus.getAuId();
     job = jobAuStatus.getId();

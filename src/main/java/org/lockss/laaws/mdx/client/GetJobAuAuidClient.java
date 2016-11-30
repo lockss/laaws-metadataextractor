@@ -28,7 +28,7 @@
 package org.lockss.laaws.mdx.client;
 
 import java.net.URLEncoder;
-import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.model.Job;
 
 /**
  * Client for the getJobAuAuid() operation.
@@ -44,10 +44,9 @@ public class GetJobAuAuidClient extends BaseClient {
     System.out.println("encodedAuId = '" + encodedAuId + "'");
 
     if (args.length > 0) {
-      WebTarget webTarget =
-	  getWebTarget().path("jobs").path("au").path(encodedAuId);
-
-      System.out.println(webTarget.request().get(String.class));
+      Job result = getWebTarget().path("jobs").path("au").path(encodedAuId)
+	  .request().get(Job.class);
+      System.out.println("result = " + result);
     } else {
       System.err.println("ERROR: Missing command line argument with auId");
     }

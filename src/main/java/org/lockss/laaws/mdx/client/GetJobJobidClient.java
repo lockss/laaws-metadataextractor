@@ -27,7 +27,7 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.model.Status;
 
 /**
  * Client for the getJobJobid() operation.
@@ -40,9 +40,9 @@ public class GetJobJobidClient extends BaseClient {
     }
 
     if (args.length > 0) {
-      WebTarget webTarget = getWebTarget().path("jobs").path(args[0]);
-
-      System.out.println(webTarget.request().get(String.class));
+      Status result =
+	  getWebTarget().path("jobs").path(args[0]).request().get(Status.class);
+      System.out.println("result = " + result);
     } else {
       System.err.println("ERROR: Missing command line argument with jobId");
     }

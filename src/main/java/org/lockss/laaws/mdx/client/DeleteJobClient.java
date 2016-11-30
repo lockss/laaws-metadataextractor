@@ -27,7 +27,7 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.api.ApiResponseMessage;
 
 /**
  * Client for the deleteJob() operation.
@@ -35,8 +35,8 @@ import javax.ws.rs.client.WebTarget;
 public class DeleteJobClient extends BaseClient {
 
   public static void main(String[] args) {
-    WebTarget webTarget = getWebTarget().path("jobs");
-
-    System.out.println(webTarget.request().delete(String.class));
+    ApiResponseMessage result =
+	getWebTarget().path("jobs").request().delete(ApiResponseMessage.class);
+    System.out.println("result = " + result);
   }
 }

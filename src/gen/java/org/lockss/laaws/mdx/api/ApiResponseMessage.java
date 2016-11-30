@@ -92,4 +92,10 @@ public class ApiResponseMessage {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+	@Override
+	public String toString() {
+	  return "ApiResponseMessage [code=" + code + ", type=" + type
+	      + ", message=" + message + "]";
+	}
 }

@@ -28,7 +28,7 @@
 package org.lockss.laaws.mdx.client;
 
 import java.net.URLEncoder;
-import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.model.Job;
 
 /**
  * Client for the deleteAuAuid() operation.
@@ -44,9 +44,9 @@ public class DeleteAuAuidClient extends BaseClient {
     System.out.println("encodedAuId = '" + encodedAuId + "'");
 
     if (args.length > 0) {
-      WebTarget webTarget = getWebTarget().path("aus").path(encodedAuId);
-
-      System.out.println(webTarget.request().delete(String.class));
+      Job result = getWebTarget().path("aus").path(encodedAuId).request()
+	  .delete(Job.class);
+      System.out.println("result = " + result);
     } else {
       System.err.println("ERROR: Missing command line argument with auId");
     }

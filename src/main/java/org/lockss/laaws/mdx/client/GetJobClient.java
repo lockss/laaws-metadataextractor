@@ -28,6 +28,7 @@
 package org.lockss.laaws.mdx.client;
 
 import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.model.JobPageInfo;
 
 /**
  * Client for the getJob() operation.
@@ -50,6 +51,8 @@ public class GetJobClient extends BaseClient {
     }
 
     System.out.println("webTarget.getUri() = " + webTarget.getUri());
-    System.out.println(webTarget.request().get(String.class));
+
+    JobPageInfo result = webTarget.request().get(JobPageInfo.class);
+    System.out.println("result = " + result);
   }
 }

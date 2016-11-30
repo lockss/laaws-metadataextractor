@@ -27,10 +27,10 @@
  */
 package org.lockss.laaws.mdx.model;
 
+import java.util.Date;
 import java.util.Objects;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.joda.time.LocalDate;
 import org.lockss.job.JobAuStatus;
 
 /**
@@ -42,11 +42,24 @@ public class Job   {
   private Au au = null;
   private String id = null;
   private String description = null;
-  private LocalDate creationDate = null;
-  private LocalDate startDate = null;
-  private LocalDate endDate = null;
+  private Date creationDate = null;
+  private Date startDate = null;
+  private Date endDate = null;
   private Status status = null;
 
+  /**
+   * Default constructor.
+   */
+  public Job() {
+
+  }
+
+  /**
+   * Full constructor.
+   * 
+   * @param jobAuStatus
+   *          A JobAuStatus with the job status.
+   */
   public Job(JobAuStatus jobAuStatus) {
     if (jobAuStatus != null) {
       au = new Au(jobAuStatus);
@@ -94,10 +107,10 @@ public class Job   {
    **/
   @ApiModelProperty(required = true,
       value = "The timestamp when this job was created.")
-  public LocalDate getCreationDate() {
+  public Date getCreationDate() {
     return creationDate;
   }
-  public void setCreationDate(LocalDate creationDate) {
+  public void setCreationDate(Date creationDate) {
     this.creationDate = creationDate;
   }
 
@@ -105,10 +118,10 @@ public class Job   {
    * The timestamp when this job processing started.
    **/
   @ApiModelProperty(value = "The timestamp when this job processing started.")
-  public LocalDate getStartDate() {
+  public Date getStartDate() {
     return startDate;
   }
-  public void setStartDate(LocalDate startDate) {
+  public void setStartDate(Date startDate) {
     this.startDate = startDate;
   }
 
@@ -116,10 +129,10 @@ public class Job   {
    * The timestamp when this job processing ended.
    **/
   @ApiModelProperty(value = "The timestamp when this job processing ended.")
-  public LocalDate getEndDate() {
+  public Date getEndDate() {
     return endDate;
   }
-  public void setEndDate(LocalDate endDate) {
+  public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
 

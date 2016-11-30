@@ -27,7 +27,7 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.WebTarget;
+import org.lockss.laaws.mdx.model.Job;
 
 /**
  * Client for the deleteJobJobid() operation.
@@ -40,9 +40,9 @@ public class DeleteJobJobidClient extends BaseClient {
     }
 
     if (args.length > 0) {
-      WebTarget webTarget = getWebTarget().path("jobs").path(args[0]);
-
-      System.out.println(webTarget.request().delete(String.class));
+      Job result =
+	  getWebTarget().path("jobs").path(args[0]).request().delete(Job.class);
+      System.out.println("result = " + result);
     } else {
       System.err.println("ERROR: Missing command line argument with jobId");
     }

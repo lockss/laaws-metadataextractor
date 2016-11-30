@@ -41,6 +41,19 @@ public class Status {
   private Integer code = null;
   private String msg = null;
 
+  /**
+   * Default constructor.
+   */
+  public Status() {
+
+  }
+
+  /**
+   * Full constructor.
+   * 
+   * @param jobAuStatus
+   *          A JobAuStatus with the job status.
+   */
   public Status(JobAuStatus jobAuStatus) {
     code = jobAuStatus.getStatusCode();
     msg = jobAuStatus.getStatusMessage();
