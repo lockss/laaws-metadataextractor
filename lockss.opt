@@ -89,3 +89,5 @@ org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.loc
 org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
 org.lockss.ui.port=8082
+
+org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8887
