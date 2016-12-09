@@ -430,6 +430,11 @@ in this Software without prior written authorization from Stanford University.
       <artifactId>commons-collections</artifactId>
       <version>3.2.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.sleepycat</groupId>
+      <artifactId>je</artifactId>
+      <version>5.0.73</version>
+    </dependency>
     <!-- The remaining third party libs are old or patched. Use init script to
         install before running maven -->
     <dependency>
@@ -481,6 +486,11 @@ in this Software without prior written authorization from Stanford University.
       <groupId>org.lockss.thirdparty.edu.stanford.db.rdf</groupId>
       <artifactId>rdf-api</artifactId>
       <version>20010119</version>
+    </dependency>
+    <dependency>
+      <groupId>org.lockss.thirdparty.it.unimi.dsi</groupId>
+      <artifactId>fastutil</artifactId>
+      <version>5.0.7</version>
     </dependency>
   </dependencies>
 </project>
