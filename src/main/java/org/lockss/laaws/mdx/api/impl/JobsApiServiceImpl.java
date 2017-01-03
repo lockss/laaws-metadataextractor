@@ -117,7 +117,7 @@ public class JobsApiServiceImpl extends JobsApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
-      throw new NotFoundException(1, message);
+      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
       String message = "Cannot deleteJobAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
@@ -160,7 +160,7 @@ public class JobsApiServiceImpl extends JobsApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
-      throw new NotFoundException(1, message);
+      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
       String message = "Cannot deleteJobJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
@@ -280,7 +280,7 @@ public class JobsApiServiceImpl extends JobsApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
-      throw new NotFoundException(1, message);
+      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
       String message = "Cannot getJobAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
@@ -318,7 +318,7 @@ public class JobsApiServiceImpl extends JobsApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
-      throw new NotFoundException(1, message);
+      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
       String message = "Cannot getJobJobid() for jobid = '" + jobid + "'";
       log.error(message, e);

@@ -80,7 +80,7 @@ public class AusApiServiceImpl extends AusApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
-      throw new NotFoundException(1, message);
+      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
       String message = "Cannot deleteAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
@@ -162,7 +162,7 @@ public class AusApiServiceImpl extends AusApiService {
       String message =
 	  "Cannot getAu() for page = " + page + ", limit = " + limit;
       log.error(message, e);
-      throw new NotFoundException(2, message + ": " + e.getMessage());
+      return Response.status(404).entity(message).type("text/plain").build();
     }
 
     if (log.isDebugEnabled()) log.debug("result = " + result);
@@ -200,7 +200,7 @@ public class AusApiServiceImpl extends AusApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
-      throw new NotFoundException(1, message);
+      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
       String message = "Cannot getAuAuidJob() for auid = '" + auid + "'";
       log.error(message, e);
@@ -240,7 +240,7 @@ public class AusApiServiceImpl extends AusApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
-      throw new NotFoundException(1, message);
+      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
       String message = "Cannot putAuAuid() for auid = '" + auid + "'";
       log.error(message, e);
