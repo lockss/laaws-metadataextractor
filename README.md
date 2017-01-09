@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,6 +41,11 @@ run `initBuild`
 ### Build and run:
 `./runLaawsMdx`
 
+This will listen to port 8888. To use, for example, port 8889, instead, either
+edit the value of $service_port in ./runLaawsMdx or run:
+
+`./runLaawsMdx 8889`
+
 The log is at ./laawsmdx.log
 
 ### Stop:
@@ -75,3 +80,11 @@ org.lockss.plugin.auContentFromWs.urlContentWs.serviceName=ContentServiceImplSer
 org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws.lockss.org/
 org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
+
+To use another REST web service to store and retrieve the extracted metadata,
+in ./lockss.opt add the following options with the appropriate values:
+
+org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889
+org.lockss.metadataManager.mdRest.timeoutValue=600
+org.lockss.metadataManager.mdRest.userName=the-correct-user
+org.lockss.metadataManager.mdRest.password=the-correct-password
