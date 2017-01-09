@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -76,18 +76,36 @@ org.lockss.jobManager.enabled=true
 org.lockss.metadataManager.mandatoryFields=publisher;provider
 org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
 org.lockss.plugin.auContentFromWs=true
+#
+# The web service used to get the contents linked to a URL.
+#
 org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
 org.lockss.plugin.auContentFromWs.urlContentWs.password=lockss-p
 org.lockss.plugin.auContentFromWs.urlContentWs.serviceName=ContentServiceImplService
 org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws.lockss.org/
 org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlContentWs.userName=lockss-u
-#org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
+#
+# The web service used to get the URLs for an Archival Unit.
+#
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
 org.lockss.plugin.auContentFromWs.urlListWs.password=lockss-p
-#org.lockss.plugin.auContentFromWs.urlListWs.serviceName=DaemonStatusServiceImplService
-#org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.lockss.org/
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlListWs.serviceName=DaemonStatusServiceImplService
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.lockss.org/
 org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
-org.lockss.ui.port=8082
+# Comment out the following line if a REST web service is NOT used.
+#org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8887
+#
+# The REST web service used to store and retrieve the metadata of an Archival Unit.
+#
+# Comment out this line if a REST service is NOT used.
+org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889
+org.lockss.metadataManager.mdRest.timeoutValue=600
+org.lockss.metadataManager.mdRest.userName=lockss-u
+org.lockss.metadataManager.mdRest.password=lockss-p
 
-org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8887
+org.lockss.ui.port=8082
