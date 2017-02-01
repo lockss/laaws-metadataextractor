@@ -103,7 +103,7 @@ org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
 # The REST web service used to store and retrieve the metadata of an Archival Unit.
 #
 # Comment out this line if a REST service is NOT used.
-org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889
+#org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889
 org.lockss.metadataManager.mdRest.timeoutValue=600
 org.lockss.metadataManager.mdRest.userName=lockss-u
 org.lockss.metadataManager.mdRest.password=lockss-p
