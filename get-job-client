@@ -1,0 +1,4 @@
+#!/bin/sh
+
+CP='target/laaws-metadata-extraction-service/WEB-INF/classes:/tmp/*'
+java -cp $CP org.lockss.laaws.mdx.client.GetJobClient "$@" | sed -e 's@\([{},]\)@\1\n@g'

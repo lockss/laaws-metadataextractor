@@ -1,4 +1,4 @@
 #!/bin/sh
 
-CP=target/laaws-metadata-extraction-service/WEB-INF/classes:`find /tmp -name '*.jar' | tr '\n' ':'`
-java -cp $CP org.lockss.laaws.mdx.client.PutAuAuidClient "$@" | sed -e 's/{/{\n/g' | sed -e 's/}/\n}/g' | sed -e 's/,/,\n/g'
+CP='target/laaws-metadata-extraction-service/WEB-INF/classes:/tmp/*'
+java -cp $CP org.lockss.laaws.mdx.client.PutAuAuidClient "$@" | sed -e 's@\([{},]\)@\1\n@g'
