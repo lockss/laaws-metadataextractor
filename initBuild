@@ -32,7 +32,9 @@ git checkout snafl-changes
 echo "Building LOCKSS jars...\n"
 ant jar-lockss
 ant jar-plugins
+ant tdb-pln -Dplnname=prod
 cd ..
+ln -s lockss-daemon/test/frameworks/tdbxml
 # make sure we install the missing mvn jars
 # the lockss libs we use
 echo "Installing LOCKSS jars to maven repo...\n"
