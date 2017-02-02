@@ -27,7 +27,7 @@ in this Software without prior written authorization from Stanford University.
 The wrapper around the metadata extractor and reporter.
 
 ### Clone the repo
-`git clone --recursive https://github.com/lockss/laaws-mdx.git`
+`git clone --recursive ssh://git@gitlab.lockss.org/laaws/laaws-metadataextractor.git`
 
 ### Create the Eclipse project (if so desired)
 File -> Import... -> Maven -> Existing Maven Projects
@@ -59,9 +59,9 @@ In ./lockss.opt add the following option:
 
 org.lockss.plugin.auContentFromWs=true
 
-To specify the properties of the web service used to get the URLs of an
-Archival Unit, in ./lockss.opt add the following options with the appropriate
-values:
+To specify the properties of the web service (like the classic LOCKSS daemon)
+used to get the URLs of an Archival Unit, in ./lockss.opt add the following
+options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
 org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
@@ -70,9 +70,9 @@ org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.loc
 org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
 
-To specify the properties of the web service used to get the URLs of an
-Archival Unit, in ./lockss.opt add the following options with the appropriate
-values:
+To specify the properties of the web service (like the classic LOCKSS daemon)
+used to get the content linked to a URL of an Archival Unit, in ./lockss.opt add
+the following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
 org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
@@ -81,8 +81,10 @@ org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws
 org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
 
-To use another REST web service to store and retrieve the extracted metadata,
-in ./lockss.opt add the following options with the appropriate values:
+### Using another REST web service for metadata stotage
+To use another REST web service to store the extracted metadata, instead of
+storing it in the configured database, in ./lockss.opt add the following options
+with the appropriate values:
 
 org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889
 org.lockss.metadataManager.mdRest.timeoutValue=600
