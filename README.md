@@ -24,7 +24,7 @@ be used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from Stanford University.
 --> 
 # laaws-metadata-extractor [![Build Status](https://travis-ci.org/lockss/laaws-metadata-extractor.svg?branch=master)](https://travis-ci.org/lockss/laaws-metadata-extractor)
-The wrapper around the metadata extractor and reporter.
+The wrapper around the metadata extractor.
 
 ### Clone the repo
 `git clone --recursive ssh://git@gitlab.lockss.org/laaws/laaws-metadataextractor.git`
@@ -81,7 +81,7 @@ org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws
 org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
 
-### Using another REST web service for metadata stotage
+### Using another REST web service for metadata storage
 To use another REST web service to store the extracted metadata, instead of
 storing it in the configured database, in ./lockss.opt add the following options
 with the appropriate values:
