@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,17 +29,11 @@ then
     service_port=$1
 fi
 
-log_dir=logs
+TDB_DIR=tdbxml/prod
+TITLE_DBS="`find ${TDB_DIR} -maxdepth 1 -name \*.xml | sort`"
+PROP_URL_LIST="common.xml ${TITLE_DBS} lockss.txt lockss.opt"
 
-if [ ! -d "$log_dir" ]; then
-	mkdir $log_dir
-fi
-
-log_file=$log_dir/laawsmdx.log
-touch $log_file
-
-uber_jar=target/laaws-metadata-extraction-service-swarm.jar
-
-java -Dswarm.http.port=$service_port -jar $uber_jar > $log_file 2>&1 &
-echo $! > dpid
-tail -f $log_file
+# NB leading space meaningful here
+PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/ -p /g'`
+sed "s@CONF_FILES_PLACEHOLDER@$PROP_ARGS@g" template-ejb-jar.xml > src/main/webapp/WEB-INF/ejb-jar.xml
+mvn clean package -Dswarm.http.port=$service_port

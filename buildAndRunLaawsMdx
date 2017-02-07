@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,17 +29,5 @@ then
     service_port=$1
 fi
 
-log_dir=logs
-
-if [ ! -d "$log_dir" ]; then
-	mkdir $log_dir
-fi
-
-log_file=$log_dir/laawsmdx.log
-touch $log_file
-
-uber_jar=target/laaws-metadata-extraction-service-swarm.jar
-
-java -Dswarm.http.port=$service_port -jar $uber_jar > $log_file 2>&1 &
-echo $! > dpid
-tail -f $log_file
+./buildLaawsMdx $service_port
+./runLaawsMdx $service_port

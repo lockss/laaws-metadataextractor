@@ -32,13 +32,26 @@ The wrapper around the metadata extractor.
 ### Create the Eclipse project (if so desired)
 File -> Import... -> Maven -> Existing Maven Projects
 
-### Set up the TDB tree:
-Edit ./runLaawsMdx and set the TDB_DIR variable properly.
-
 ### Build and install the required LOCKSS daemon jar files:
 run `initBuild`
 
-### Build and run:
+### Set up the TDB tree:
+Edit ./buildLaawsMdx and set the TDB_DIR variable properly.
+
+### Build the web service:
+`./buildLaawsMdx`
+
+This will use port 8888 during the build. To use, for example, port 8889,
+instead, either edit the value of $service_port in ./buildLaawsMdx or run:
+
+`./buildLaawsMdx 8889`
+
+The result of the build is a so-called "uber JAR" file which includes the
+project code plus all its dependencies and which is located at
+
+`./target/laaws-metadata-extraction-service-swarm.jar`
+
+### Run the web service:
 `./runLaawsMdx`
 
 This will listen to port 8888. To use, for example, port 8889, instead, either
@@ -46,7 +59,15 @@ edit the value of $service_port in ./runLaawsMdx or run:
 
 `./runLaawsMdx 8889`
 
-The log is at ./laawsmdx.log
+The log is at ./logs/laawsmdx.log
+
+### Build and run the web service:
+`./buildAndRunLaawsMdx`
+
+This will use port 8888 for both steps. To use, for example, port 8889, instead,
+either edit the value of $service_port in ./buildAndRunLaawsMdx or run:
+
+`./buildAndRunLaawsMdx 8889`
 
 ### Stop:
 `./stopLaawsMdx`
