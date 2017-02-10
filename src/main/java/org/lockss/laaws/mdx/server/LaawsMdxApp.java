@@ -51,6 +51,7 @@ public class LaawsMdxApp extends LockssDaemon {
   // which managers are initialized and started.
   protected final ManagerDesc[] managerDescs = {
       new ManagerDesc(RESOURCE_MANAGER, DEFAULT_RESOURCE_MANAGER),
+      new ManagerDesc(ALERT_MANAGER, "org.lockss.alert.AlertManagerImpl"),
       new ManagerDesc(STATUS_SERVICE, DEFAULT_STATUS_SERVICE),
       // keystore manager must be started before any others that need to
       // access managed keystores

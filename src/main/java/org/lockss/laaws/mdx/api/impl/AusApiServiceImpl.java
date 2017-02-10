@@ -76,7 +76,7 @@ public class AusApiServiceImpl extends AusApiService {
       Job result = new Job(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
-      return Response.ok().entity(result).build();
+      return Response.status(202).entity(result).build();
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
@@ -236,7 +236,7 @@ public class AusApiServiceImpl extends AusApiService {
       Job result = new Job(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
-      return Response.ok().entity(result).build();
+      return Response.status(202).entity(result).build();
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
