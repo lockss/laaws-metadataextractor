@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -90,6 +90,10 @@ public class LaawsMdxApp extends LockssDaemon {
     try {
       laawsMdxApp = new LaawsMdxApp(opts.getPropUrls(), opts.getGroupNames());
       laawsMdxApp.startDaemon();
+
+      // Install loadable plugin support
+      laawsMdxApp.getPluginManager().startLoadablePlugins();
+
       // raise priority after starting other threads, so we won't get
       // locked out and fail to exit when told.
       Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 2);
