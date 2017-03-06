@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,38 +23,38 @@
 # be used in advertising or otherwise to promote the sale, use or other dealings
 # in this Software without prior written authorization from Stanford University.
 #
-# make sure we have an update lockss-daemon git branch
-echo "Initializing lockss-daemon submodule...\n"
+# Make sure we have an updated laaws-daemon git branch
+echo "Initializing laaws-daemon submodule...\n"
 git submodule init
 git submodule update
-cd lockss-daemon
+cd laaws-daemon
 git checkout snafl-changes
-echo "Building LOCKSS jars...\n"
+echo "Building LAAWS jars...\n"
 ant jar-lockss
 ant jar-plugins
 ant tdb-pln -Dplnname=prod
 cd ..
-ln -s lockss-daemon/test/frameworks/tdbxml
+ln -s laaws-daemon/test/frameworks/tdbxml
 # make sure we install the missing mvn jars
-# the lockss libs we use
-echo "Installing LOCKSS jars to maven repo...\n"
-mvn install:install-file -Dfile=lockss-daemon/lib/lockss.jar -DpomFile=poms/lockss-2016.pom 
-mvn install:install-file -Dfile=lockss-daemon/lib/lockss-plugins.jar -DpomFile=poms/lockss-plugins-2016.pom
+# the LAAWS libs we use
+echo "Installing LAAWS jars to maven repo...\n"
+mvn install:install-file -Dfile=laaws-daemon/lib/lockss.jar -DpomFile=poms/lockss-2017.pom 
+mvn install:install-file -Dfile=laaws-daemon/lib/lockss-plugins.jar -DpomFile=poms/lockss-plugins-2017.pom
 echo "Installing old or patched jars to maven repo...\n"
 # - this is the pre-apache verision of the derby jars
-mvn install:install-file -Dfile=lockss-daemon/lib/derby.jar -DpomFile=poms/derby-9.1.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/derbyclient.jar -DpomFile=poms/derbyclient-9.1.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/derbynet.jar -DpomFile=poms/derbynet-9.1.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/derby.jar -DpomFile=poms/derby-9.1.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/derbyclient.jar -DpomFile=poms/derbyclient-9.1.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/derbynet.jar -DpomFile=poms/derbynet-9.1.pom
 # these are patched versions of older libs
-mvn install:install-file -Dfile=lockss-daemon/lib/heritrix-commons-3.1.0-p1.jar -DpomFile=poms/heritrix-commons-3.1.0-p1.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/htmlparser-1.6p.jar -DpomFile=poms/htmlparser-1.6p.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/jetty-5.1.5L.jar -DpomFile=poms/jetty-5.1.5L.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/JimiProClasses.jar -DpomFile=poms/JimiProClasses.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/JoSQL-2.2.jar -DpomFile=poms/JoSQL-2.2.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/oiosaml.java-21188-PATCHED.jar -DpomFile=poms/oiosaml.java-21188-PATCHED.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/PDFBox-0.7.3.jar -DpomFile=poms/PDFBox-0.7.3.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/rdf-api-2001-01-19.jar -DpomFile=poms/rdf-api-2001-01-19.pom
-mvn install:install-file -Dfile=lockss-daemon/lib/fastutil-5.0.7.jar -DpomFile=poms/fastutil-5.0.7.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/heritrix-commons-3.1.0-p1.jar -DpomFile=poms/heritrix-commons-3.1.0-p1.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/htmlparser-1.6p.jar -DpomFile=poms/htmlparser-1.6p.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/jetty-5.1.5L.jar -DpomFile=poms/jetty-5.1.5L.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/JimiProClasses.jar -DpomFile=poms/JimiProClasses.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/JoSQL-2.2.jar -DpomFile=poms/JoSQL-2.2.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/oiosaml.java-21188-PATCHED.jar -DpomFile=poms/oiosaml.java-21188-PATCHED.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/PDFBox-0.7.3.jar -DpomFile=poms/PDFBox-0.7.3.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/rdf-api-2001-01-19.jar -DpomFile=poms/rdf-api-2001-01-19.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/fastutil-5.0.7.jar -DpomFile=poms/fastutil-5.0.7.pom
 
 # run maven build and test
 echo "Running build and tests..."

@@ -222,12 +222,12 @@ in this Software without prior written authorization from Stanford University.
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss</artifactId>
-      <version>2016</version>
+      <version>2017</version>
     </dependency>
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss-plugins</artifactId>
-      <version>2016</version>
+      <version>2017</version>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>

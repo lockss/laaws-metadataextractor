@@ -29,6 +29,6 @@ in this Software without prior written authorization from Stanford University.
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lockss</groupId>
-    <artifactId>lockss-plugins</artifactId>
-    <version>2016</version>
+    <artifactId>lockss</artifactId>
+    <version>2017</version>
 </project>
