@@ -29,8 +29,8 @@
 ##org.lockss.metadataDbManager.derby.streamErrorFile=/tmp/derby.log
 #org.lockss.metadataDbManager.derby.streamErrorLogseveritylevel=0
 #org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
-#org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
-#org.lockss.metadataDbManager.datasource.password=goodPassword
+org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+org.lockss.metadataDbManager.datasource.password=goodPassword
 ##org.lockss.metadataDbManager.datasource.createDatabase=create
 ##org.lockss.metadataDbManager.datasource.databaseName=db/MetadataDbManager
 ##org.lockss.metadataDbManager.datasource.portNumber=1527
@@ -53,8 +53,8 @@
 ##org.lockss.jobDbManager.derby.streamErrorFile=/tmp/derby.log
 #org.lockss.jobDbManager.derby.streamErrorLogseveritylevel=0
 #org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
-#org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
-#org.lockss.jobDbManager.datasource.password=goodPassword
+org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+org.lockss.jobDbManager.datasource.password=goodPassword
 ##org.lockss.jobDbManager.datasource.createDatabase=create
 ##org.lockss.jobDbManager.datasource.databaseName=db/JobDbManager
 ##org.lockss.jobDbManager.datasource.portNumber=1527
