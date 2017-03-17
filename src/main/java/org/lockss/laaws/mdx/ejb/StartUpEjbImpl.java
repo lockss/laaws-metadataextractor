@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -43,21 +43,61 @@ public class StartUpEjbImpl implements StartUpEjbLocal {
   private static final Logger log =
       LoggerFactory.getLogger(StartUpEjbImpl.class);
 
+  // The configuration files.
   @Resource(name="confFiles")
   private String confFiles;
+
+  // The configuration REST service location.
+  @Resource(name="serviceLocation")
+  private String serviceLocation;
+
+  // The configuration REST service user name.
+  @Resource(name="serviceUser")
+  private String serviceUser;
+
+  // The configuration REST service user password.
+  @Resource(name="servicePassword")
+  private String servicePassword;
+
+  // The configuration REST service connection timeout, in seconds.
+  @Resource(name="serviceTimeout")
+  private String serviceTimeout;
 
   /**
    * Run immediately after this EJB is fully constructed.
    */
   @PostConstruct
   public void runAfterConstruction() {
-    if (log.isInfoEnabled()) {
-      log.info("Invoked.");
-      log.info("confFiles = '" + confFiles + "'");
+    if (log.isDebugEnabled()) {
+      log.debug("confFiles = '" + confFiles + "'");
+      log.debug("serviceLocation = '" + serviceLocation + "'");
+      log.debug("serviceUser = '" + serviceUser + "'");
+      log.debug("servicePassword = '" + servicePassword + "'");
+      log.debug("serviceTimeout = '" + serviceTimeout + "'");
+    }
+
+    String[] options = null;
+
+    // Check whether configuration files are used.
+    if (confFiles != null && confFiles.trim().length() > 0) {
+      // Yes.
+      options = confFiles.split(" ");
+    } else {
+      // No.
+      options = new String[5];
+      options[0] = LaawsMdxApp.USE_REST_WEB_SERVICE;
+      options[1] = serviceLocation;
+      options[2] = serviceUser;
+      options[3] = servicePassword;
+
+      if (!"null".equalsIgnoreCase(serviceTimeout)) {
+	options[4] = serviceTimeout;
+      }
     }
 
     // Configure the LAAWS-specific part of the web services server.
-    LaawsMdxApp.main(confFiles.split(" "));
+    LaawsMdxApp.main(options);
+
     if (log.isDebugEnabled()) log.debug("Done.");
   }
 
