@@ -1,4 +1,4 @@
-[submodule "lockss-daemon"]
-	path = lockss-daemon
-	url = https://github.com/lockss/lockss-daemon.git
+[submodule "laaws-daemon"]
+	path = laaws-daemon
+	url = https://gitlab.lockss.org/laaws/laaws-daemon.git
 	branch = snafl-changes
