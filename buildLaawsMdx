@@ -35,12 +35,12 @@ fi
 #### Comment out this block to get the configuration from a Configuration REST
 #### web service instead of local files.
 ####
-#cp laaws-daemon/lib/lockss-plugins.jar .
-#TDB_DIR=tdbxml/prod
-#TITLE_DBS="`find ${TDB_DIR} -maxdepth 1 -name \*.xml | sort`"
-#PROP_URL_LIST="common.xml ${TITLE_DBS} lockss.txt lockss.opt"
-## NB leading space meaningful here
-#PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/ -p /g'`
+cp laaws-daemon/lib/lockss-plugins.jar .
+TDB_DIR=tdbxml/prod
+TITLE_DBS="`find ${TDB_DIR} -maxdepth 1 -name \*.xml | sort`"
+PROP_URL_LIST="common.xml ${TITLE_DBS} lockss.txt lockss.opt"
+# NB leading space meaningful here
+PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/ -p /g'`
 ####
 #### End local files configuration setup.
 ####
@@ -51,8 +51,8 @@ fi
 #### Comment out this block to get the configuration from local files instead of
 #### a Configuration REST web service.
 ####
-rm -f lockss-plugins.jar
-PROP_ARGS=""
+#rm -f lockss-plugins.jar
+#PROP_ARGS=""
 ####
 #### End REST web service configuration setup.
 ####
