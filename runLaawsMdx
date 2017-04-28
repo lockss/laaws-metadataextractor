@@ -22,11 +22,10 @@
 # be used in advertising or otherwise to promote the sale, use or other dealings
 # in this Software without prior written authorization from Stanford University.
 #
-service_port=8888
-
-if [ $# -eq 1 ] 
-then
-    service_port=$1
+if [ $# -eq 0 ]; then
+    ARGS[0]='-Dswarm.http.port=8888'
+else
+    ARGS=$@
 fi
 
 log_dir=logs
@@ -40,6 +39,6 @@ touch $log_file
 
 uber_jar=target/laaws-metadata-extraction-service-swarm.jar
 
-java -Dswarm.http.port=$service_port -jar $uber_jar > $log_file 2>&1 &
+java ${ARGS} -jar $uber_jar > $log_file 2>&1 &
 echo $! > dpid
 tail -f $log_file
