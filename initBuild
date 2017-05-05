@@ -46,7 +46,7 @@ mvn install:install-file -Dfile=laaws-daemon/lib/derby.jar -DpomFile=poms/derby-
 mvn install:install-file -Dfile=laaws-daemon/lib/derbyclient.jar -DpomFile=poms/derbyclient-9.1.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/derbynet.jar -DpomFile=poms/derbynet-9.1.pom
 # these are patched versions of older libs
-mvn install:install-file -Dfile=laaws-daemon/lib/heritrix-commons-3.1.0-p1.jar -DpomFile=poms/heritrix-commons-3.1.0-p1.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/webarchive-commons-1.1.7-patch1.jar -DpomFile=poms/webarchive-commons-1.1.7-patch1.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/htmlparser-1.6p.jar -DpomFile=poms/htmlparser-1.6p.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/jetty-5.1.5L.jar -DpomFile=poms/jetty-5.1.5L.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/JimiProClasses.jar -DpomFile=poms/JimiProClasses.pom

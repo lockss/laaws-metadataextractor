@@ -108,4 +108,5 @@ org.lockss.metadataManager.mdRest.timeoutValue=600
 org.lockss.metadataManager.mdRest.userName=lockss-u
 org.lockss.metadataManager.mdRest.password=lockss-p
 
-org.lockss.ui.port=8082
+org.lockss.restAuth.authenticationType=basic
+org.lockss.ui.port=8083

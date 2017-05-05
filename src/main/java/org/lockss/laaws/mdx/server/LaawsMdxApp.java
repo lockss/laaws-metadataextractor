@@ -70,7 +70,11 @@ public class LaawsMdxApp extends LockssDaemon {
       // Start the job manager.
       new ManagerDesc(JobDbManager.getManagerKey(),
 	  "org.lockss.job.JobDbManager"),
-      new ManagerDesc(JobManager.getManagerKey(), "org.lockss.job.JobManager")
+      new ManagerDesc(JobManager.getManagerKey(), "org.lockss.job.JobManager"),
+      // NOTE: Any managers that are needed to decide whether a servlet is to be
+      // enabled or not (through ServletDescr.isEnabled()) need to appear before
+      // the AdminServletManager on the next line.
+      new ManagerDesc(SERVLET_MANAGER, "org.lockss.servlet.AdminServletManager")
   };
 
   public static void main( String[] args ) {
