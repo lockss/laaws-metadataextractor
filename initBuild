@@ -51,6 +51,7 @@ mvn install:install-file -Dfile=laaws-daemon/lib/htmlparser-1.6p.jar -DpomFile=p
 mvn install:install-file -Dfile=laaws-daemon/lib/jetty-5.1.5L.jar -DpomFile=poms/jetty-5.1.5L.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/JimiProClasses.jar -DpomFile=poms/JimiProClasses.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/JoSQL-2.2.jar -DpomFile=poms/JoSQL-2.2.pom
+mvn install:install-file -Dfile=laaws-daemon/lib/JoSQL-contrib-1.5_5.jar -DpomFile=poms/JoSQL-contrib-1.5_5.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/oiosaml.java-21188-PATCHED.jar -DpomFile=poms/oiosaml.java-21188-PATCHED.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/PDFBox-0.7.3.jar -DpomFile=poms/PDFBox-0.7.3.pom
 mvn install:install-file -Dfile=laaws-daemon/lib/rdf-api-2001-01-19.jar -DpomFile=poms/rdf-api-2001-01-19.pom

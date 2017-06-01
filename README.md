@@ -44,7 +44,7 @@ Edit ./buildLaawsMdx and set the TDB_DIR variable properly.
 This will use port 8888 during the build. To use, for example, port 8889,
 instead, either edit the value of $service_port in ./buildLaawsMdx or run:
 
-`./buildLaawsMdx 8889`
+`./buildLaawsMdx -Dswarm.http.port=8889`
 
 The result of the build is a so-called "uber JAR" file which includes the
 project code plus all its dependencies and which is located at
@@ -57,7 +57,7 @@ project code plus all its dependencies and which is located at
 This will listen to port 8888. To use, for example, port 8889, instead, either
 edit the value of $service_port in ./runLaawsMdx or run:
 
-`./runLaawsMdx 8889`
+`./runLaawsMdx -Dswarm.http.port=8889`
 
 The log is at ./logs/laawsmdx.log
 
@@ -67,13 +67,16 @@ The log is at ./logs/laawsmdx.log
 This will use port 8888 for both steps. To use, for example, port 8889, instead,
 either edit the value of $service_port in ./buildAndRunLaawsMdx or run:
 
-`./buildAndRunLaawsMdx 8889`
+`./buildAndRunLaawsMdx -Dswarm.http.port=8889`
 
 ### Stop:
 `./stopLaawsMdx`
 
 ### API is documented at:
-#### localhost:8888/docs/
+#### localhost:8888/swagger-ui/
+
+Type`http://localhost:8888/swagger.json` in the swagger instance to view
+the docs and test against running server.
 
 ### Getting Archival Unit contents from a web service, not the repository
 In ./lockss.opt add the following option:
@@ -81,7 +84,7 @@ In ./lockss.opt add the following option:
 org.lockss.plugin.auContentFromWs=true
 
 To specify the properties of the web service (like the classic LOCKSS daemon)
-used to get the URLs of an Archival Unit, in ./lockss.opt add the following
+used to get the URLs of an Archival Unit, add in ./lockss.opt the following
 options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
@@ -92,7 +95,7 @@ org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
 
 To specify the properties of the web service (like the classic LOCKSS daemon)
-used to get the content linked to a URL of an Archival Unit, in ./lockss.opt add
+used to get the content linked to a URL of an Archival Unit, add in ./lockss.opt
 the following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
@@ -104,7 +107,7 @@ org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
 
 ### Using another REST web service for metadata storage
 To use another REST web service to store the extracted metadata, instead of
-storing it in the configured database, in ./lockss.opt add the following options
+storing it in the configured database, add in ./lockss.opt the following options
 with the appropriate values:
 
 org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889

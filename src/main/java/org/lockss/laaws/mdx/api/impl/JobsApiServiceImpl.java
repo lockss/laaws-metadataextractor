@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,8 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
-import org.lockss.app.LockssApp;
-//import org.lockss.app.LockssDaemon;
+import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
 import org.lockss.job.JobManager;
 import org.lockss.laaws.mdx.api.ApiException;
@@ -332,6 +331,6 @@ public class JobsApiServiceImpl extends JobsApiService {
    * @return a JobManager with the job manager.
    */
   private JobManager getJobManager() {
-    return (JobManager)LockssApp.getManager(JobManager.getManagerKey());
+    return LockssDaemon.getLockssDaemon().getJobManager();
   }
 }
