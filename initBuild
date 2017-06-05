@@ -28,7 +28,7 @@ echo "Initializing laaws-daemon submodule...\n"
 git submodule init
 git submodule update
 cd laaws-daemon
-git checkout snafl-changes
+git checkout demo
 echo "Building LAAWS jars...\n"
 ant jar-lockss
 ant jar-plugins
