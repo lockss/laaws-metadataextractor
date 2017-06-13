@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,34 +30,53 @@ package org.lockss.laaws.mdx.api;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 
 /**
- * Base provider of access to the metadata of an AU.
+ * Base provider of access to the metadata jobs.
  */
-public abstract class AusApiService {
+public abstract class MdupdatesApiService {
+
+  public static final String MD_UPDATE_DELETE = "delete";
+  public static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
+  public static final String MD_UPDATE_INCREMENTAL_EXTRACTION =
+      "incremental_extraction";
 
   /**
-   * Deletes the metadata stored for an AU given the AU identifier.
+   * Deletes all of the queued jobs and stops any processing and deletes any
+   * active jobs.
    * 
-   * @param auid
-   *          A String with the AU identifier.
+   * @param securityContext
+   *          A SecurityContext providing access to security related
+   *          information.
+   * @return a Response with any data that needs to be returned to the runtime.
+   */
+  public abstract Response deleteMdupdates(SecurityContext securityContext)
+      throws ApiException ;
+
+  /**
+   * Deletes a job given the job identifier if it's queued and it stops any
+   * processing and deletes it if it's active.
+   * 
+   * @param jobid
+   *          A String with the job identifier.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
+   *           if the job with the given identifier does not exist.
    */
-  public abstract Response deleteAuAuid(String auid,
+  public abstract Response deleteMdupdatesJobid(String jobid,
       SecurityContext securityContext) throws NotFoundException;
 
   /**
-   * Provides a list of existing AUs.
+   * Provides a list of existing jobs.
    * 
    * @param page
    *          An Integer with the index of the page to be returned.
    * @param limit
-   *          An Integer with the maximum number of AUs to be returned.
+   *          An Integer with the maximum number of jobs to be returned.
    * @param request
    *          An HttpServletRequest providing access to the incoming request.
    * @param securityContext
@@ -65,33 +84,34 @@ public abstract class AusApiService {
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
+   *           if the job with the given identifier does not exist.
    */
-  public abstract Response getAu(Integer page, Integer limit,
+  public abstract Response getMdupdates(Integer page, Integer limit,
       HttpServletRequest request, SecurityContext securityContext)
 	  throws NotFoundException;
 
   /**
-   * Provides the job for an AU given the AU identifier.
+   * Provides a job given the job identifier.
    * 
-   * @param auid
-   *          A String with the AU identifier.
+   * @param jobid
+   *          A String with the job identifier.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
    * @return a Response with any data that needs to be returned to the runtime.
    * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
+   *           if the job with the given identifier does not exist.
    */
-  public abstract Response getAuAuidJob(String auid,
+  public abstract Response getMdupdatesJobid(String jobid,
       SecurityContext securityContext) throws NotFoundException;
 
   /**
-   * Extracts and stores all or part of the metadata for an AU given the AU
-   * identifier.
+   * Extracts and stores all or part of the metadata for an AU, or deletes the
+   * metadata for an AU.
    * 
-   * @param auid
-   *          A String with the AU identifier.
+   * @param metadataUpdateSpec
+   *          A MetadataUpdateSpec with the specification of the metadata update
+   *          operation.
    * @param securityContext
    *          A SecurityContext providing access to security related
    *          information.
@@ -99,6 +119,6 @@ public abstract class AusApiService {
    * @throws NotFoundException
    *           if the AU with the given identifier does not exist.
    */
-  public abstract Response putAuAuid(String auid,
+  public abstract Response postMdupdates(MetadataUpdateSpec metadataUpdateSpec,
       SecurityContext securityContext) throws NotFoundException;
 }

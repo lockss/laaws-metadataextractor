@@ -37,19 +37,19 @@ import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
 import org.lockss.job.JobManager;
 import org.lockss.laaws.mdx.api.ApiException;
-import org.lockss.laaws.mdx.api.ApiResponseMessage;
-import org.lockss.laaws.mdx.api.JobsApiService;
+import org.lockss.laaws.mdx.api.MdupdatesApiService;
 import org.lockss.laaws.mdx.api.NotFoundException;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
+import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
 
 /**
  * Provider of access to the AU metadata jobs.
  */
-public class JobsApiServiceImpl extends JobsApiService {
-  private static Logger log = Logger.getLogger(JobsApiServiceImpl.class);
+public class MdupdatesApiServiceImpl extends MdupdatesApiService {
+  private static Logger log = Logger.getLogger(MdupdatesApiServiceImpl.class);
 
   /**
    * Deletes all of the queued jobs and stops any processing and deletes any
@@ -61,71 +61,21 @@ public class JobsApiServiceImpl extends JobsApiService {
    * @return a Response with any data that needs to be returned to the runtime.
    */
   @Override
-  public Response deleteJob(SecurityContext securityContext)
+  public Response deleteMdupdates(SecurityContext securityContext)
       throws ApiException {
     if (log.isDebugEnabled()) log.debug("Invoked");
 
 
     try {
-//      int removedCount =
-//	  LockssDaemon.getLockssDaemon().getJobManager().removeAllJobs();
       int removedCount = getJobManager().removeAllJobs();
-      String message = "Count of all jobs deleted: " + removedCount;
-      if (log.isDebugEnabled()) log.debug(message);
-      ApiResponseMessage result =
-	  new ApiResponseMessage(ApiResponseMessage.OK, message);
+      if (log.isDebugEnabled()) log.debug("removedCount = " + removedCount);
 
-      return Response.ok().entity(result).build();
+      return Response.ok().entity(removedCount).build();
     } catch (Exception e) {
-      String message = "Cannot deleteJob()";
+      String message = "Cannot deleteMdupdates()";
       log.error(message, e);
-      throw new ApiException(1, message + ": " + e.getMessage());
+      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
     }
-  }
-
-  /**
-   * Deletes the job for an AU given the AU identifier if it's queued and it
-   * stops any processing and deletes it if it's active.
-   * 
-   * @param auid
-   *          A String with the AU identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
-   */
-  @Override
-  public Response deleteJobAuAuid(String auid, SecurityContext securityContext)
-      throws NotFoundException {
-    if (log.isDebugEnabled()) log.debug("auid = " + auid);
-
-    try {
-//      JobAuStatus jobAuStatus =
-//	  LockssDaemon.getLockssDaemon().getJobManager().removeAuJob(auid);
-      JobAuStatus jobAuStatus = getJobManager().removeAuJob(auid);
-      if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
-
-      if (jobAuStatus != null) {
-	Job result = new Job(jobAuStatus);
-	if (log.isDebugEnabled()) log.debug("result = " + result);
-	
-	return Response.ok().entity(result).build();
-      }
-    } catch (IllegalArgumentException iae) {
-      String message = "No Archival Unit found for auid = '" + auid + "'";
-      log.error(message);
-      return Response.status(404).entity(message).type("text/plain").build();
-    } catch (Exception e) {
-      String message = "Cannot deleteJobAuAuid() for auid = '" + auid + "'";
-      log.error(message, e);
-      throw new NotFoundException(1, message + ": " + e.getMessage());
-    }
-
-    String message = "Found no job for auid = '" + auid + "'";
-    log.error(message);
-    throw new NotFoundException(1, message);
   }
 
   /**
@@ -142,13 +92,11 @@ public class JobsApiServiceImpl extends JobsApiService {
    *           if the job with the given identifier does not exist.
    */
   @Override
-  public Response deleteJobJobid(String jobid, SecurityContext securityContext)
-      throws NotFoundException {
+  public Response deleteMdupdatesJobid(String jobid,
+      SecurityContext securityContext) throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
     try {
-//      JobAuStatus jobAuStatus =
-//	  LockssDaemon.getLockssDaemon().getJobManager().removeJob(jobid);
       JobAuStatus jobAuStatus = getJobManager().removeJob(jobid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
@@ -159,11 +107,12 @@ public class JobsApiServiceImpl extends JobsApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
-      return Response.status(404).entity(message).type("text/plain").build();
+      return getErrorResponse(Response.Status.NOT_FOUND, message);
     } catch (Exception e) {
-      String message = "Cannot deleteJobJobid() for jobid = '" + jobid + "'";
+      String message =
+	  "Cannot deleteMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      throw new NotFoundException(1, message + ": " + e.getMessage());
+      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
     }
   }
 
@@ -184,7 +133,7 @@ public class JobsApiServiceImpl extends JobsApiService {
    *           if the job with the given identifier does not exist.
    */
   @Override
-  public Response getJob(Integer page, Integer limit,
+  public Response getMdupdates(Integer page, Integer limit,
       HttpServletRequest request, SecurityContext securityContext)
 	  throws NotFoundException {
     if (log.isDebugEnabled()) {
@@ -192,40 +141,38 @@ public class JobsApiServiceImpl extends JobsApiService {
       log.debug("limit = " + limit);
     }
 
-    PageInfo pi = new PageInfo();
-
-    String curLink = request.getRequestURL().toString();
-    String nextLink = curLink;
-
-    if (page != null) {
-      curLink = curLink + "?page=" + page;
-      nextLink = nextLink + "?page=" + (page + 1);
-
-      if (limit != null) {
-	curLink = curLink + "&limit=" + limit;
-	nextLink = nextLink + "&limit=" + limit;
-      }
-    } else if (limit != null) {
-      curLink = curLink + "?limit=" + limit;
-      nextLink = nextLink + "?limit=" + limit;
-    }
-
-    if (log.isDebugEnabled()) {
-      log.debug("curLink = " + curLink);
-      log.debug("nextLink = " + nextLink);
-    }
-
-    pi.setCurLink(curLink);
-    pi.setNextLink(nextLink);
-    pi.setCurrentPage(page);
-    pi.setResultsPerPage(limit);
-
-    JobPageInfo result = new JobPageInfo();
-    result.setPageInfo(pi);
-
     try {
-//      List<JobAuStatus> jobAuStatuses =
-//	  LockssDaemon.getLockssDaemon().getJobManager().getJobs(page, limit);
+      PageInfo pi = new PageInfo();
+
+      String curLink = request.getRequestURL().toString();
+      String nextLink = curLink;
+
+      if (page != null) {
+	curLink = curLink + "?page=" + page;
+	nextLink = nextLink + "?page=" + (page + 1);
+
+	if (limit != null) {
+	  curLink = curLink + "&limit=" + limit;
+	  nextLink = nextLink + "&limit=" + limit;
+	}
+      } else if (limit != null) {
+	curLink = curLink + "?limit=" + limit;
+	nextLink = nextLink + "?limit=" + limit;
+      }
+
+      if (log.isDebugEnabled()) {
+	log.debug("curLink = " + curLink);
+	log.debug("nextLink = " + nextLink);
+      }
+
+      pi.setCurLink(curLink);
+      pi.setNextLink(nextLink);
+      pi.setCurrentPage(page);
+      pi.setResultsPerPage(limit);
+
+      JobPageInfo result = new JobPageInfo();
+      result.setPageInfo(pi);
+
       List<JobAuStatus> jobAuStatuses = getJobManager().getJobs(page, limit);
       if (log.isDebugEnabled()) log.debug("jobAuStatuses = " + jobAuStatuses);
 
@@ -237,53 +184,14 @@ public class JobsApiServiceImpl extends JobsApiService {
 
       if (log.isDebugEnabled()) log.debug("jobs = " + jobs);
       result.setJobs(jobs);
-    } catch (Exception e) {
-      String message =
-	  "Cannot getJob() for page = " + page + ", limit = " + limit;
-      log.error(message, e);
-      throw new NotFoundException(2, message + ": " + e.getMessage());
-    }
-
-    if (log.isDebugEnabled()) log.debug("result = " + result);
-
-    return Response.ok().entity(result).build();
-  }
-
-  /**
-   * Provides the job for an AU given the AU identifier.
-   * 
-   * @param auid
-   *          A String with the AU identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
-   */
-  @Override
-  public Response getJobAuAuid(String auid, SecurityContext securityContext)
-      throws NotFoundException {
-    if (log.isDebugEnabled()) log.debug("auid = " + auid);
-
-    try {
-//      JobAuStatus jobAuStatus =
-//	  LockssDaemon.getLockssDaemon().getJobManager().getAuJob(auid);
-      JobAuStatus jobAuStatus = getJobManager().getAuJob(auid);
-      if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
-
-      Job result = new Job(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
       return Response.ok().entity(result).build();
-    } catch (IllegalArgumentException iae) {
-      String message = "No Archival Unit found for auid = '" + auid + "'";
-      log.error(message);
-      return Response.status(404).entity(message).type("text/plain").build();
     } catch (Exception e) {
-      String message = "Cannot getJobAuAuid() for auid = '" + auid + "'";
+      String message =
+	  "Cannot getMdupdates() for page = " + page + ", limit = " + limit;
       log.error(message, e);
-      throw new NotFoundException(1, message + ": " + e.getMessage());
+      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
     }
   }
 
@@ -300,13 +208,11 @@ public class JobsApiServiceImpl extends JobsApiService {
    *           if the job with the given identifier does not exist.
    */
   @Override
-  public Response getJobJobid(String jobid, SecurityContext securityContext)
-      throws NotFoundException {
+  public Response getMdupdatesJobid(String jobid,
+      SecurityContext securityContext) throws NotFoundException {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
     try {
-//      JobAuStatus jobAuStatus =
-//	  LockssDaemon.getLockssDaemon().getJobManager().getJobStatus(jobid);
       JobAuStatus jobAuStatus = getJobManager().getJobStatus(jobid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
@@ -317,11 +223,94 @@ public class JobsApiServiceImpl extends JobsApiService {
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
-      return Response.status(404).entity(message).type("text/plain").build();
+      return getErrorResponse(Response.Status.NOT_FOUND, message);
     } catch (Exception e) {
-      String message = "Cannot getJobJobid() for jobid = '" + jobid + "'";
+      String message = "Cannot getMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      throw new NotFoundException(1, message + ": " + e.getMessage());
+      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
+    }
+  }
+
+  /**
+   * Extracts and stores all or part of the metadata for an AU, or deletes the
+   * metadata for an AU.
+   * 
+   * @param metadataUpdateSpec
+   *          A MetadataUpdateSpec with the specification of the metadata update
+   *          operation.
+   * @param securityContext
+   *          A SecurityContext providing access to security related
+   *          information.
+   * @return a Response with any data that needs to be returned to the runtime.
+   * @throws NotFoundException
+   *           if the AU with the given identifier does not exist.
+   */
+  @Override
+  public Response postMdupdates(MetadataUpdateSpec metadataUpdateSpec,
+      SecurityContext securityContext) throws NotFoundException {
+    if (log.isDebugEnabled())
+      log.debug("metadataUpdateSpec = " + metadataUpdateSpec);
+
+    String auid = null;
+
+    try {
+      if (metadataUpdateSpec == null) {
+	String message = "Invalid metadata update specification: null";
+	log.error(message);
+	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+      }
+
+      auid = metadataUpdateSpec.getAuid();
+      if (log.isDebugEnabled()) log.debug("auid = " + auid);
+
+      if (auid == null || auid.isEmpty()) {
+	String message = "Invalid auid = '" + auid + "'";
+	log.error(message);
+	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+      }
+
+      String updateType = metadataUpdateSpec.getUpdateType();
+      if (log.isDebugEnabled()) log.debug("updateType = " + updateType);
+
+      if (updateType == null || updateType.isEmpty()) {
+	String message = "Invalid updateType = '" + updateType + "'";
+	log.error(message);
+	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+      }
+
+      String canonicalUpdateType = updateType.toLowerCase();
+      if (log.isDebugEnabled())
+	log.debug("canonicalUpdateType = " + canonicalUpdateType);
+
+      JobAuStatus jobAuStatus = null;
+
+      if (canonicalUpdateType.equals(MD_UPDATE_FULL_EXTRACTION)) {
+	jobAuStatus = getJobManager().scheduleMetadataExtraction(auid, true);
+      } else if (canonicalUpdateType.equals(MD_UPDATE_INCREMENTAL_EXTRACTION)) {
+	jobAuStatus = getJobManager().scheduleMetadataExtraction(auid, false);
+      } else if (canonicalUpdateType.equals(MD_UPDATE_DELETE)) {
+	jobAuStatus = getJobManager().scheduleMetadataRemoval(auid);
+      } else {
+	String message = "Invalid updateType = '" + updateType + "'";
+	log.error(message);
+	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+      }
+
+      if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
+
+      Job result = new Job(jobAuStatus);
+      if (log.isDebugEnabled()) log.debug("result = " + result);
+
+      return Response.status(Response.Status.ACCEPTED).entity(result).build();
+    } catch (IllegalArgumentException iae) {
+      String message = "No Archival Unit found for auid = '" + auid + "'";
+      log.error(message);
+      return getErrorResponse(Response.Status.NOT_FOUND, message);
+    } catch (Exception e) {
+      String message = "Cannot postMdupdates() for metadataUpdateSpec = '"
+	  + metadataUpdateSpec + "'";
+      log.error(message, e);
+      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
     }
   }
 
@@ -332,5 +321,29 @@ public class JobsApiServiceImpl extends JobsApiService {
    */
   private JobManager getJobManager() {
     return LockssDaemon.getLockssDaemon().getJobManager();
+  }
+
+  /**
+   * Provides the appropriate response in case of an error.
+   * 
+   * @param statusCode
+   *          A Response.Status with the error status code.
+   * @param message
+   *          A String with the error message.
+   * @return a Response with the error response.
+   */
+  private Response getErrorResponse(Response.Status status, String message) {
+    return Response.status(status).entity(toJsonMessage(message)).build();
+  }
+
+  /**
+   * Formats to JSON any message to be returned.
+   * 
+   * @param message
+   *          A String with the message to be formatted.
+   * @return a String with the JSON-formatted message.
+   */
+  private String toJsonMessage(String message) {
+    return "{\"message\":\"" + message + "\"}"; 
   }
 }

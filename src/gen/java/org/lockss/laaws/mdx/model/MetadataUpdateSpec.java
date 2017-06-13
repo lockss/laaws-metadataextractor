@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,64 +27,70 @@
  */
 package org.lockss.laaws.mdx.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * A display page of jobs.
- **/
-@ApiModel(description = "A display page of jobs")
-public class JobPageInfo   {
-  
-  private List<Job> jobs = new ArrayList<Job>();
-  private PageInfo pageInfo = null;
-  
+ * The information defining an AU metadata update operation.
+ */
+@ApiModel(description =
+"The information defining an AU metadata update operation")
+public class MetadataUpdateSpec {
+
+  private String auid = null;
+  private String updateType = null;
+
   /**
-   * The jobs displayed in the page.
+   * The identifier of the AU for which the metadata is to be reindexed.
    **/
-  @ApiModelProperty(required = true, value = "The jobs displayed in the page")
-  public List<Job> getJobs() {
-    return jobs;
+  @ApiModelProperty(required = true, value =
+      "The identifier of the AU for which the metadata update is to be performed")
+  public String getAuid() {
+    return auid;
   }
-  public void setJobs(List<Job> jobs) {
-    this.jobs = jobs;
+  public void setAuid(String auid) {
+    this.auid = auid;
   }
 
-  public PageInfo getPageInfo() {
-    return pageInfo;
+  /**
+   * The type of metadata update to be performed.
+   **/
+  @ApiModelProperty(required = true,
+      value = "The type of metadata update to be performed")
+  public String getUpdateType() {
+    return updateType;
   }
-  public void setPageInfo(PageInfo pageInfo) {
-    this.pageInfo = pageInfo;
+  public void setUpdateType(String updateType) {
+    this.updateType = updateType;
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    JobPageInfo jobPageInfo = (JobPageInfo) o;
-    return Objects.equals(jobs, jobPageInfo.jobs) &&
-        Objects.equals(pageInfo, jobPageInfo.pageInfo);
+    MetadataUpdateSpec reindexParams = (MetadataUpdateSpec) o;
+    return Objects.equals(this.auid, reindexParams.auid) &&
+        Objects.equals(this.updateType, reindexParams.updateType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(jobs, pageInfo);
+    return Objects.hash(auid, updateType);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class JobPageInfo {\n");
+    sb.append("class ReindexParams {\n");
     
-    sb.append("    jobs: ").append(toIndentedString(jobs)).append("\n");
-    sb.append("    pageInfo: ").append(toIndentedString(pageInfo)).append("\n");
+    sb.append("    auid: ").append(toIndentedString(auid)).append("\n");
+    sb.append("    updateType: ").append(toIndentedString(updateType))
+    .append("\n");
     sb.append("}");
     return sb.toString();
   }

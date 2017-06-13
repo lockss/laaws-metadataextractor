@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,7 +35,7 @@ import org.lockss.job.JobAuStatus;
 /**
  * An Archival Unit.
  **/
-@ApiModel(description = "An Archival Unit.")
+@ApiModel(description = "An Archival Unit")
 public class Au   {
   
   private String id = null;
@@ -64,7 +64,7 @@ public class Au   {
   /**
    * The identifier of this AU.
    **/
-  @ApiModelProperty(required = true, value = "The identifier of this AU.")
+  @ApiModelProperty(required = true, value = "The identifier of this AU")
   public String getId() {
     return id;
   }
@@ -76,7 +76,7 @@ public class Au   {
    * The identifier of the job associated with this AU.
    **/
   @ApiModelProperty(value =
-      "The identifier of the job associated with this AU.")
+      "The identifier of the job associated with this AU")
   public String getJob() {
     return job;
   }
@@ -87,7 +87,7 @@ public class Au   {
   /**
    * The name of the AU, for display purposes.
    **/
-  @ApiModelProperty(value = "The name of the AU, for display purposes.")
+  @ApiModelProperty(value = "The name of the AU, for display purposes")
   public String getName() {
     return name;
   }

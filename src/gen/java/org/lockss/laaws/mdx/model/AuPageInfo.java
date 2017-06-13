@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * A display page of AUs.
  **/
-@ApiModel(description = "A display page of AUs.")
+@ApiModel(description = "A display page of AUs")
 public class AuPageInfo   {
   
   private List<Au> aus = new ArrayList<Au>();
@@ -46,7 +46,7 @@ public class AuPageInfo   {
    * The AUs displayed in the page.
    **/
   
-  @ApiModelProperty(required = true, value = "The AUs displayed in the page.")
+  @ApiModelProperty(required = true, value = "The AUs displayed in the page")
   public List<Au> getAus() {
     return aus;
   }
@@ -101,4 +101,3 @@ public class AuPageInfo   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

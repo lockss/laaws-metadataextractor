@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,7 +35,7 @@ import org.lockss.job.JobAuStatus;
 /**
  * The existing state of a job.
  **/
-@ApiModel(description = "The existing state of a job.")
+@ApiModel(description = "The existing state of a job")
 public class Status {
 
   private Integer code = null;
@@ -63,7 +63,7 @@ public class Status {
    * The numeric value for the current state.
    **/
   @ApiModelProperty(required = true,
-      value = "The numeric value for the current state.")
+      value = "The numeric value for the current state")
   public Integer getCode() {
     return code;
   }
@@ -75,7 +75,7 @@ public class Status {
    * A text message defining the current state.
    **/
   @ApiModelProperty(required = true,
-      value = "A text message defining the current state.")
+      value = "A text message defining the current state")
   public String getMsg() {
     return msg;
   }

@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,28 +27,39 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import java.net.URLEncoder;
-import org.lockss.laaws.mdx.model.Job;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import org.lockss.laaws.mdx.model.Status;
 
 /**
- * Client for the getJobAuAuid() operation.
+ * Client for the getMdupdatesJobid() operation.
  */
-public class GetJobAuAuidClient extends BaseClient {
+public class GetMdupdatesJobidClient extends BaseClient {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     for (int i = 0; i < args.length; i++) {
-      System.out.println("arg[" + i + "] = " + args[i]);
+      System.out.println("args[" + i + "] = " + args[i]);
     }
 
-    String encodedAuId = URLEncoder.encode(args[0], "UTF-8");
-    System.out.println("encodedAuId = '" + encodedAuId + "'");
+    if (args.length < 1) {
+      System.err.println("ERROR: Missing command line argument with the "
+	  + "identifier of the job for which the status is requested.");
+    }
 
-    if (args.length > 0) {
-      Job result = getWebTarget().path("jobs").path("au").path(encodedAuId)
-	  .request().get(Job.class);
+    WebTarget webTarget = getWebTarget().path("mdupdates").path(args[0]);
+    System.out.println("webTarget.getUri() = " + webTarget.getUri());
+
+    Response response = webTarget.request().get();
+    int status = response.getStatus();
+    System.out.println("status = " + status);
+    System.out.println("statusInfo = " + response.getStatusInfo());
+
+    if (status == 200) {
+      Status result = response.readEntity(Status.class);
       System.out.println("result = " + result);
     } else {
-      System.err.println("ERROR: Missing command line argument with auId");
+      Object result = response.readEntity(Object.class);
+      System.out.println("result = " + result);
     }
   }
 }

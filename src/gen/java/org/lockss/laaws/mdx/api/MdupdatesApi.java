@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,20 +39,24 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import org.lockss.laaws.mdx.api.factories.JobsApiServiceFactory;
+import org.lockss.laaws.mdx.api.NotFoundException;
+import org.lockss.laaws.mdx.api.factories.MdupdatesApiServiceFactory;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
+import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
 import org.lockss.rs.auth.Roles;
 
 /**
  * Provider of access to the AU metadata jobs.
  */
-@Path("/jobs")
+@Path("/mdupdates")
+@Consumes({ "application/json" })
 @Produces({ "application/json" })
-@Api(value = "/jobs")
-public class JobsApi  {
-  private final JobsApiService delegate = JobsApiServiceFactory.getJobApi();
+@Api(value = "/mdupdates")
+public class MdupdatesApi  {
+  private final MdupdatesApiService delegate =
+      MdupdatesApiServiceFactory.getMdupdatesApi();
 
   /**
    * Deletes all of the queued jobs and stops any processing and deletes any
@@ -64,6 +68,7 @@ public class JobsApi  {
    * @return a Response with any data that needs to be returned to the runtime.
    */
   @DELETE
+  @Consumes({"application/json"})
   @Produces({"application/json"})
   @ApiOperation(value = "Delete all of the currently queued and active jobs",
   notes = "Delete all of the currently queued and active jobs",
@@ -84,50 +89,9 @@ public class JobsApi  {
       message = "Some or all of the system is not available",
       response = void.class) })
   @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response deleteJob(@Context SecurityContext securityContext)
+  public Response deleteMdupdates(@Context SecurityContext securityContext)
       throws ApiException {
-    return delegate.deleteJob(securityContext);
-  }
-
-  /**
-   * Deletes the job for an AU given the AU identifier.
-   * 
-   * @param auid
-   *          A String with the AU identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
-   */
-  @DELETE
-  @Path("/au/{auid}")
-  @Produces({"application/json"})
-  @ApiOperation(value = "Delete the job for an AU",
-  notes = "Delete the job for an AU given the AU identifier",
-  response = Job.class,
-  authorizations = {@Authorization(value = "basicAuth")}, tags={ "jobs", })
-  @ApiResponses(value = { 
-      @ApiResponse(code = 200, message = "The deleted AU job",
-	  response = Job.class),
-      @ApiResponse(code = 401, message = "Unauthorized request",
-      response = Job.class),
-      @ApiResponse(code = 403, message = "Forbidden request",
-      response = Job.class),
-      @ApiResponse(code = 404, message = "AU not found",
-      response = Job.class),
-      @ApiResponse(code = 500, message = "Internal server error",
-      response = Job.class),
-      @ApiResponse(code = 503,
-      message = "Some or all of the system is not available",
-      response = Job.class) })
-  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response deleteJobAuAuid(
-      @ApiParam(value = "The identifier of the AU whose job is to be deleted",
-      required=true) @PathParam("auid") String auid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.deleteJobAuAuid(auid,securityContext);
+    return delegate.deleteMdupdates(securityContext);
   }
 
   /**
@@ -145,6 +109,7 @@ public class JobsApi  {
    */
   @DELETE
   @Path("/{jobid}")
+  @Consumes({"application/json"})
   @Produces({"application/json"})
   @ApiOperation(value = "Delete a job",
   notes = "Delete a job given the job identifier, stopping any current processing, if necessary",
@@ -165,11 +130,11 @@ public class JobsApi  {
       message = "Some or all of the system is not available",
       response = Job.class) })
   @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response deleteJobJobid(
+  public Response deleteMdupdatesJobid(
       @ApiParam(value = "The identifier of the job to be deleted",
       required=true) @PathParam("jobid") String jobid,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.deleteJobJobid(jobid,securityContext);
+    return delegate.deleteMdupdatesJobid(jobid, securityContext);
   }
 
   /**
@@ -189,6 +154,7 @@ public class JobsApi  {
    *           if the job with the given identifier does not exist.
    */
   @GET
+  @Consumes({"application/json"})
   @Produces({"application/json"})
   @ApiOperation(value = "Get a list of currently active jobs",
   notes = "Get a list of all currently active jobs (no parameters) or a list of the currently active jobs in a page defined by the page index and size",
@@ -203,51 +169,14 @@ public class JobsApi  {
       message = "Some or all of the system is not available",
       response = JobPageInfo.class) })
   @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
-  public Response getJob(
+  public Response getMdupdates(
       @ApiParam(value = "The identifier of the page of jobs to be returned",
       defaultValue="1") @DefaultValue("1") @QueryParam("page") Integer page,
       @ApiParam(value = "The number of jobs per page", defaultValue="50")
       @DefaultValue("50") @QueryParam("limit") Integer limit,
       @Context HttpServletRequest request,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getJob(page,limit,request,securityContext);
-  }
-
-  /**
-   * Provides the job for an AU given the AU identifier.
-   * 
-   * @param auid
-   *          A String with the AU identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
-   */
-  @GET
-  @Path("/au/{auid}")
-  @Produces({"application/json"})
-  @ApiOperation(value = "Get the job for an AU",
-  notes = "Get the job for an AU given the AU identifier", response = Job.class,
-  authorizations = {@Authorization(value = "basicAuth")}, tags={ "jobs", })
-  @ApiResponses(value = { 
-      @ApiResponse(code = 200, message = "The job for the AU",
-	  response = Job.class),
-      @ApiResponse(code = 404, message = "AU not found",
-      response = Job.class),
-      @ApiResponse(code = 500, message = "Internal server error",
-      response = Job.class),
-      @ApiResponse(code = 503,
-      message = "Some or all of the system is not available",
-      response = Job.class) })
-  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
-  public Response getJobAuAuid(
-      @ApiParam(
-	  value = "The identifier of the AU for which the job is requested",
-      required=true) @PathParam("auid") String auid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getJobAuAuid(auid,securityContext);
+    return delegate.getMdupdates(page, limit, request, securityContext);
   }
 
   /**
@@ -264,6 +193,7 @@ public class JobsApi  {
    */
   @GET
   @Path("/{jobid}")
+  @Consumes({"application/json"})
   @Produces({"application/json"})
   @ApiOperation(value = "Get a job",
   notes = "Get a job given the job identifier", response = Status.class,
@@ -279,10 +209,58 @@ public class JobsApi  {
       message = "Some or all of the system is not available",
       response = Status.class) })
   @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
-  public Response getJobJobid(
+  public Response getMdupdatesJobid(
       @ApiParam(value = "The identifier of the requested job", required=true)
       @PathParam("jobid") String jobid,
       @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getJobJobid(jobid,securityContext);
+    return delegate.getMdupdatesJobid(jobid, securityContext);
+  }
+
+  /**
+   * Extracts and stores all or part of the metadata for an AU, or deletes the
+   * metadata for an AU.
+   * 
+   * @param metadataUpdateSpec
+   *          A MetadataUpdateSpec with the specification of the metadata update
+   *          operation.
+   * @param securityContext
+   *          A SecurityContext providing access to security related
+   *          information.
+   * @return a Response with any data that needs to be returned to the runtime.
+   * @throws NotFoundException
+   *           if the AU with the given identifier does not exist.
+   */
+  @POST
+  @Consumes({"application/json"})
+  @Produces({"application/json"})
+  @ApiOperation(value = "Perform an AU metadata update operation",
+  notes =
+  "Perform an AU metadata update operation given the update specification",
+  response = Job.class,
+  authorizations = {@Authorization(value = "basicAuth")}, tags={ "aus", })
+  @ApiResponses(value = { 
+      @ApiResponse(code = 202, message =
+	  "The job created to perform the AU metadata update operation",
+	  response = Job.class),
+      @ApiResponse(code = 400, message = "Bad request",
+      response = Job.class),
+      @ApiResponse(code = 401, message = "Unauthorized request",
+      response = Job.class),
+      @ApiResponse(code = 403, message = "Forbidden request",
+      response = Job.class),
+      @ApiResponse(code = 404, message = "AU not found",
+      response = Job.class),
+      @ApiResponse(code = 500, message = "Internal server error",
+      response = Job.class),
+      @ApiResponse(code = 503,
+      message = "Some or all of the system is not available",
+      response = Job.class) })
+  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
+  public Response postMdupdates(@ApiParam(
+      value =
+      "The information defining the AU metadata update operation",
+      required=true) MetadataUpdateSpec metadataUpdateSpec,
+      @Context SecurityContext securityContext) throws NotFoundException {
+    return delegate.postMdupdates(metadataUpdateSpec, securityContext);
   }
 }

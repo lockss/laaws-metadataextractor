@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,18 +25,16 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.client;
+package org.lockss.laaws.mdx.api.factories;
 
-import org.lockss.laaws.mdx.api.ApiResponseMessage;
+import org.lockss.laaws.mdx.api.MdupdatesApiService;
+import org.lockss.laaws.mdx.api.impl.MdupdatesApiServiceImpl;
 
-/**
- * Client for the deleteJob() operation.
- */
-public class DeleteJobClient extends BaseClient {
+public class MdupdatesApiServiceFactory {
+   private final static MdupdatesApiService service =
+       new MdupdatesApiServiceImpl();
 
-  public static void main(String[] args) {
-    ApiResponseMessage result =
-	getWebTarget().path("jobs").request().delete(ApiResponseMessage.class);
-    System.out.println("result = " + result);
-  }
+   public static MdupdatesApiService getMdupdatesApi() {
+      return service;
+   }
 }

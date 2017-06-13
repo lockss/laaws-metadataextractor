@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,7 +36,7 @@ import org.lockss.job.JobAuStatus;
 /**
  * An asynchronous task to be performed.
  **/
-@ApiModel(description = "An asynchronous task to be performed.")
+@ApiModel(description = "An asynchronous task to be performed")
 public class Job   {
   
   private Au au = null;
@@ -82,7 +82,7 @@ public class Job   {
   /**
    * The identifier of this job.
    **/
-  @ApiModelProperty(required = true, value = "The identifier of this job.")
+  @ApiModelProperty(required = true, value = "The identifier of this job")
   public String getId() {
     return id;
   }
@@ -94,7 +94,7 @@ public class Job   {
    * A description of the task being performed by this job.
    **/
   @ApiModelProperty(value =
-      "A description of the task being performed by this job.")
+      "A description of the task being performed by this job")
   public String getDescription() {
     return description;
   }
@@ -106,7 +106,7 @@ public class Job   {
    * The timestamp when this job was created.
    **/
   @ApiModelProperty(required = true,
-      value = "The timestamp when this job was created.")
+      value = "The timestamp when this job was created")
   public Date getCreationDate() {
     return creationDate;
   }
@@ -117,7 +117,7 @@ public class Job   {
   /**
    * The timestamp when this job processing started.
    **/
-  @ApiModelProperty(value = "The timestamp when this job processing started.")
+  @ApiModelProperty(value = "The timestamp when this job processing started")
   public Date getStartDate() {
     return startDate;
   }
@@ -128,7 +128,7 @@ public class Job   {
   /**
    * The timestamp when this job processing ended.
    **/
-  @ApiModelProperty(value = "The timestamp when this job processing ended.")
+  @ApiModelProperty(value = "The timestamp when this job processing ended")
   public Date getEndDate() {
     return endDate;
   }

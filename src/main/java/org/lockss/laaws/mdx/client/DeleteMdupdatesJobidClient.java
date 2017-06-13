@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,24 +27,39 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import org.lockss.laaws.mdx.model.Status;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import org.lockss.laaws.mdx.model.Job;
 
 /**
- * Client for the getJobJobid() operation.
+ * Client for the deleteMdupdatesJobid() operation.
  */
-public class GetJobJobidClient extends BaseClient {
+public class DeleteMdupdatesJobidClient extends BaseClient {
 
   public static void main(String[] args) {
     for (int i = 0; i < args.length; i++) {
-      System.out.println("arg[" + i + "] = " + args[i]);
+      System.out.println("args[" + i + "] = " + args[i]);
     }
 
-    if (args.length > 0) {
-      Status result =
-	  getWebTarget().path("jobs").path(args[0]).request().get(Status.class);
+    if (args.length < 1) {
+      System.err.println("ERROR: Missing command line argument with the "
+	  + "identifier of the job to be deleted.");
+    }
+
+    WebTarget webTarget = getWebTarget().path("mdupdates").path(args[0]);
+    System.out.println("webTarget.getUri() = " + webTarget.getUri());
+
+    Response response = webTarget.request().delete();
+    int status = response.getStatus();
+    System.out.println("status = " + status);
+    System.out.println("statusInfo = " + response.getStatusInfo());
+
+    if (status == 200) {
+      Job result = response.readEntity(Job.class);
       System.out.println("result = " + result);
     } else {
-      System.err.println("ERROR: Missing command line argument with jobId");
+      Object result = response.readEntity(Object.class);
+      System.out.println("result = " + result);
     }
   }
 }

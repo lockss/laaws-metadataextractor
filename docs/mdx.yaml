@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,437 +24,303 @@
 #
 swagger: '2.0'
 info:
-  description: API of Metadata Extraction Service for LAAWS
-  version: 1.0.0
-  title: LAAWS Metadata Extraction Service API
-  termsOfService: http://www.lockss.org/terms/
+  description: "API of Metadata Extraction Service for LAAWS"
+  version: "1.0.0"
+  title: "LAAWS Metadata Extraction Service API"
+  termsOfService: "http://www.lockss.org/terms/"
   contact:
-    name: 'LOCKSS Support'
-    url: 'http://www.lockss.org/'
-    email: 'support@lockss.org'
+    name: "LOCKSS Support"
+    url: "http://www.lockss.org/"
+    email: "support@lockss.org"
   license:
-    name: 'Modified BSD License'
-    url: 'http://www.lockss.org/support/open-source-license/'
-host: 'laaws.lockss.org:443'
-basePath: /
+    name: "Modified BSD License"
+    url: "http://www.lockss.org/support/open-source-license/"
+host: "laaws.lockss.org:443"
+basePath: "/"
 tags:
-  - name: Default
-    description: Default section
-  - name: aus
-    description: Tasks on AUs
-  - name: jobs
-    description: Tasks on jobs
+- name: "aus"
+  description: "Tasks on AUs"
+- name: "jobs"
+  description: "Tasks on jobs"
 schemes:
-  - https
+- "https"
+consumes:
+- "application/json"
 produces:
-  - application/json
-securityDefinitions:
-  basicAuth:
-    type: basic
-    description: HTTP Basic Authentication. Works over `HTTP` and `HTTPS`
+- "application/json"
 security:
-  - basicAuth: []
+- basicAuth: []
 paths:
-  /aus:
+  /mdupdates:
     get:
       tags:
-        - aus
-      summary: Get a list of existing AUs
-      description: Get a list of all existing AUs (no parameters) or a list of the AUs in a page defined by the page index and size
-      operationId: getAu
-      consumes: []
+      - "jobs"
+      summary: "Get a list of currently active jobs"
+      description: "Get a list of all currently active jobs (no parameters) or\
+        \ a list of the currently active jobs in a page defined by the page\
+        \ index and size"
+      operationId: "getMdupdates"
+      consumes:
+      - "application/json"
       produces:
-        - application/json
+      - "application/json"
       parameters:
-        - name: 'page'
-          in: query
-          description: The identifier of the page of AUs to be returned
-          required: false
-          type: integer
-          default: 1
-        - name: 'limit'
-          in: query
-          description: The number of AUs per page
-          required: false
-          type: integer
-          default: 50
+      - name: "page"
+        in: "query"
+        description: "The identifier of the page of jobs to be returned"
+        required: false
+        type: "integer"
+        default: 1
+      - name: "limit"
+        in: "query"
+        description: "The number of jobs per page"
+        required: false
+        type: "integer"
+        default: 50
       responses:
-        '200':
-          description: The requested AUs
+        200:
+          description: "The requested jobs"
           schema:
-            $ref: '#/definitions/auPageInfo'
-        '500':
-            description: Internal server error
-        '503':
-          description: Some or all of the system is not available
-  '/aus/{auid}':
-    put:
+            $ref: '#/definitions/jobPageInfo'
+        500:
+          description: "Internal server error"
+        503:
+          description: "Some or all of the system is not available"
+    post:
       tags:
-        - aus
-      summary: Reindex the metadata for an AU
-      description: Reindex the metadata for an AU given the AU identifier
-      operationId: putAuAuid
-      consumes: []
+      - "aus"
+      summary: "Perform an AU metadata update operation"
+      description: "Perform an AU metadata update operation given the update\
+        \ specification"
+      operationId: "postMdupdates"
+      consumes:
+      - "application/json"
       produces:
-        - application/json
+      - "application/json"
       parameters:
-        - name: auid
-          in: path
-          description: The identifier of the AU for which the metadata is to be reindexed
-          required: true
-          type: string
+      - name: "metadataUpdateSpec"
+        in: "body"
+        description: "The information defining the AU metadata update operation"
+        required: true
+        schema:
+          $ref: "#/definitions/metadataUpdateSpec"
       responses:
-        '202':
-          description: The job created to reindex the AU metadata
+        202:
+          description: "The job created to perform the AU metadata update\
+            \ operation"
           schema:
-            $ref: '#/definitions/job'
-        '401':
-          description: Unauthorized request
-        '403':
-          description: Forbidden request
-        '404':
-          description: AU not found
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
+            $ref: "#/definitions/job"
+        400:
+          description: "Bad request"
+        401:
+          description: "Unauthorized request"
+        403:
+          description: "Forbidden request"
+        404:
+          description: "AU not found"
+        500:
+          description: "Internal server error"
+        503:
+          description: "Some or all of the system is not available"
     delete:
       tags:
-        - aus
-      summary: Delete the metadata stored for an AU
-      description: Delete the metadata stored for an AU given the AU identifier
-      operationId: deleteAuAuid
-      consumes: []
-      produces: 
-        - application/json
-      parameters:
-        - name: auid
-          in: path
-          description: The identifier of the AU for which the metadata is to be deleted
-          required: true
-          type: string
-      responses:
-        '202':
-          description: The job created to delete the AU metadata
-          schema:
-            $ref: '#/definitions/job'
-        '401':
-          description: Unauthorized request
-        '403':
-          description: Forbidden request
-        '404':
-          description: AU not found
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
-  '/aus/{auid}/job':
-    get:
-      tags:
-        - aus
-      summary: Get the job for an AU
-      description: Get the job for an AU given the AU identifier
-      operationId: getAuAuidJob
-      consumes: []
+      - "jobs"
+      summary: "Delete all of the currently queued and active jobs"
+      description: "Delete all of the currently queued and active jobs"
+      operationId: "deleteMdupdates"
+      consumes:
+      - "application/json"
       produces:
-        - application/json
-      parameters:
-        - name: auid
-          in: path
-          description: The identifier of the AU for which the job is requested
-          required: true
-          type: string
-      responses:
-        '200':
-          description: The job for the AU
-          schema:
-            $ref: '#/definitions/job'
-        '404':
-          description: AU not found
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
-  /jobs:
-    get:
-      tags:
-        - jobs
-      summary: Get a list of currently active jobs
-      description: Get a list of all currently active jobs (no parameters) or a list of the currently active jobs in a page defined by the page index and size
-      operationId: getJob
-      consumes: []
-      produces:
-        - application/json
-      parameters:
-        - name: 'page'
-          in: query
-          description: The identifier of the page of jobs to be returned
-          required: false
-          type: integer
-          default: 1
-        - name: 'limit'
-          in: query
-          description: The number of jobs per page
-          required: false
-          type: integer
-          default: 50
-      responses:
-        '200':
-          description: The requested jobs
-          schema:
-              $ref: '#/definitions/jobPageInfo'
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
-    delete:
-      tags:
-        - jobs
-      summary: Delete all of the currently queued and active jobs
-      description: Delete all of the currently queued and active jobs
-      operationId: deleteJob
-      consumes: []
-      produces: 
-       - application/json
+      - "application/json"
       parameters: []
       responses:
-        '200':
-          description: Jobs were successfully deleted
-        '401':
-          description: Unauthorized request
-        '403':
-          description: Forbidden request
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
-  '/jobs/au/{auid}':
+        200:
+          description: "Jobs were successfully deleted"
+        401:
+          description: "Unauthorized request"
+        403:
+          description: "Forbidden request"
+        500:
+          description: "Internal server error"
+        503:
+          description: "Some or all of the system is not available"
+  /mdupdates/{jobid}:
     get:
       tags:
-        - jobs
-      summary: Get the job for an AU
-      description: Get the job for an AU given the AU identifier
-      operationId: getJobAuAuid
-      consumes: []
+      - "jobs"
+      summary: "Get a job"
+      description: "Get a job given the job identifier"
+      operationId: "getMdupdatesJobid"
+      consumes:
+      - "application/json"
       produces:
-        - application/json
+      - "application/json"
       parameters:
-        - name: auid
-          in: path
-          description: The identifier of the AU for which the job is requested
-          required: true
-          type: string
+      - name: "jobid"
+        in: "path"
+        description: "The identifier of the requested job"
+        required: true
+        type: "string"
       responses:
-        '200':
-          description: The job for the AU
+        200:
+          description: "The status of the requested job"
           schema:
-            $ref: '#/definitions/job'
-        '404':
-          description: AU not found
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
+            $ref: "#/definitions/status"
+        404:
+          description: "Job not found"
+        500:
+          description: "Internal server error"
+        503:
+          description: "Some or all of the system is not available"
     delete:
       tags:
-        - jobs
-      summary: Delete the job for an AU
-      description: Delete the job for an AU given the AU identifier
-      operationId: deleteJobAuAuid
-      consumes: []
+      - "jobs"
+      summary: "Delete a job"
+      description: "Delete a job given the job identifier, stopping any current\
+        \ processing, if necessary"
+      operationId: deleteMdupdatesJobid
+      consumes:
+      - "application/json"
       produces:
-        - application/json
+      - "application/json"
       parameters:
-        - name: auid
-          in: path
-          description: The identifier of the AU whose job is to be deleted
-          required: true
-          type: string
+      - name: "jobid"
+        in: "path"
+        description: "The identifier of the job to be deleted"
+        required: true
+        type: "string"
       responses:
-        '200':
-          description: The deleted AU job
+        200:
+          description: "The deleted job"
           schema:
-            $ref: '#/definitions/job'
-        '401':
-          description: Unauthorized request
-        '403':
-          description: Forbidden request
-        '404':
-          description: AU not found
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
-  '/jobs/{jobid}':
-    get:
-      tags:
-        - jobs
-      summary: Get a job
-      description: Get a job given the job identifier
-      operationId: getJobJobid
-      consumes: []
-      produces:
-        - application/json
-      parameters:
-        - name: jobid
-          in: path
-          description: The identifier of the requested job
-          required: true
-          type: string
-      responses:
-        '200':
-          description: The status of the requested job
-          schema:
-            $ref: '#/definitions/status'
-        '404':
-          description: Job not found
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
-    delete:
-      tags:
-        - jobs
-      summary: Delete a job
-      description: Delete a job given the job identifier, stopping any current processing, if necessary
-      operationId: deleteJobJobid
-      consumes: []
-      produces:
-        - application/json
-      parameters:
-        - name: jobid
-          in: path
-          description: The identifier of the job to be deleted
-          required: true
-          type: string
-      responses:
-        '200':
-          description: The deleted job
-          schema:
-            $ref: '#/definitions/job'
-        '401':
-          description: Unauthorized request
-        '403':
-          description: Forbidden request
-        '404':
-          description: Job not found.
-        '500':
-          description: Internal server error
-        '503':
-          description: Some or all of the system is not available
+            $ref: "#/definitions/job"
+        401:
+          description: "Unauthorized request"
+        403:
+          description: "Forbidden request"
+        404:
+          description: "Job not found"
+        500:
+          description: "Internal server error"
+        503:
+          description: "Some or all of the system is not available"
+securityDefinitions:
+  basicAuth:
+    description: "HTTP Basic Authentication. Works over `HTTP` and `HTTPS`"
+    type: "basic"
 definitions:
   status:
-    type: object
+    type: "object"
     required:
-      - code
-      - msg
+    - "code"
+    - "msg"
     properties:
       code:
-        type: integer
-        format: int32
-        description: The numeric value for the current state.
+        type: "integer"
+        format: "int32"
+        description: "The numeric value for the current state"
       msg:
-        type: string
-        description: A text message defining the current state.
-    description: The existing state of a job.
+        type: "string"
+        description: "A text message defining the current state"
+    description: "The existing state of a job"
   job:
-    type: object
+    type: "object"
     required:
-      - au
-      - creationDate
-      - id
-      - status
+    - "au"
+    - "creationDate"
+    - "id"
+    - "status"
     properties:
       au:
-        $ref: '#/definitions/au'
+        $ref: "#/definitions/au"
       id:
-        type: string
-        description: The identifier of this job.
+        type: "string"
+        description: "The identifier of this job"
       description:
-        type: string
-        description: A description of the task being performed by this job.
+        type: "string"
+        description: "A description of the task being performed by this job"
       creationDate:
-        type: string
-        format: date
-        description: The timestamp when this job was created.
+        type: "string"
+        format: "date"
+        description: "The timestamp when this job was created"
       startDate:
-        type: string
-        format: date
-        description: The timestamp when this job processing started.
+        type: "string"
+        format: "date"
+        description: "The timestamp when this job processing started"
       endDate:
-        type: string
-        format: date
-        description: The timestamp when this job processing ended.
+        type: "string"
+        format: "date"
+        description: "The timestamp when this job processing ended"
       status:
-        $ref: '#/definitions/status'
-    description: An asynchronous task to be performed.
+        $ref: "#/definitions/status"
+    description: "An asynchronous task to be performed"
   au:
-    type: object
+    type: "object"
     required:
-      - id
+    - "id"
     properties:
       id:
-        type: string
-        description: The identifier of this AU.
+        type: "string"
+        description: "The identifier of this AU"
       job:
-        type: string
-        description: The identifier of the job associated with this AU.
+        type: "string"
+        description: "The identifier of the job associated with this AU"
       name:
-        type: string
-        description: The name of the AU, for display purposes.
-    description: An Archival Unit.
-  auPageInfo:
-    type: object
-    required:
-      - aus
-      - pageInfo
-    properties:
-      aus:
-        type: array
-        description: The AUs displayed in the page.
-        items:
-          $ref: '#/definitions/au'
-      pageInfo:
-        $ref: '#/definitions/pageInfo'
-    description: A display page of AUs.
+        type: "string"
+        description: "The name of the AU, for display purposes"
+    description: "An Archival Unit"
   jobPageInfo:
-    type: object
+    type: "object"
     required:
-      - jobs
-      - pageInfo
+    - "jobs"
+    - "pageInfo"
     properties:
       jobs:
-        type: array
-        description: The jobs displayed in the page.
+        type: "array"
+        description: "The jobs displayed in the page"
         items:
-          $ref: '#/definitions/job'
+          $ref: "#/definitions/job"
       pageInfo:
-        $ref: '#/definitions/pageInfo'
-    description: A display page of jobs.
+        $ref: "#/definitions/pageInfo"
+    description: "A display page of jobs"
   pageInfo:
-    type: object
+    type: "object"
     required:
-      - curLink
-      - currentPage
-      - resultsPerPage
-      - totalCount
+    - "curLink"
+    - "currentPage"
+    - "resultsPerPage"
+    - "totalCount"
     properties:
       totalCount:
-        type: integer
-        format: int32
-        description: The total number of elements to be paginated.
+        type: "integer"
+        format: "int32"
+        description: "The total number of elements to be paginated"
       resultsPerPage:
-        type: integer
-        format: int32
-        description: The number of results per page.
+        type: "integer"
+        format: "int32"
+        description: "The number of results per page"
       currentPage:
-        type: integer
-        format: int32
-        description: The current page number.
+        type: "integer"
+        format: "int32"
+        description: "The current page number"
       curLink:
-        type: string
-        description: The link to the current page.
+        type: "string"
+        description: "The link to the current page"
       nextLink:
-        type: string
-        description: The link to the next page.
-    description: The information related to pagination of content.
+        type: "string"
+        description: "The link to the next page"
+    description: "The information related to pagination of content"
+  metadataUpdateSpec:
+    type: "object"
+    required:
+    - "auid"
+    - "updateType"
+    properties:
+      auid:
+        type: "string"
+        description: "The identifier of the AU for which the metadata update is\
+          \ to be performed"
+      updateType:
+        type: "string"
+        description: "The type of metadata update to be performed"
+    description: "The information defining an AU metadata update operation"
