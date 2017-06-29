@@ -98,7 +98,7 @@ org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.loc
 org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
 # Comment out the following line if a REST web service is NOT used.
-#org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8887
+#org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8086/repos/demorepo/artifacts?committed=false&auid={auid}
 #
 # The REST web service used to store and retrieve the metadata of an Archival Unit.
 #
