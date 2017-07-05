@@ -77,15 +77,6 @@ org.lockss.metadataManager.mandatoryFields=publisher;provider
 org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
 org.lockss.plugin.auContentFromWs=true
 #
-# The web service used to get the contents linked to a URL.
-#
-org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
-org.lockss.plugin.auContentFromWs.urlContentWs.password=lockss-p
-org.lockss.plugin.auContentFromWs.urlContentWs.serviceName=ContentServiceImplService
-org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws.lockss.org/
-org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlContentWs.userName=lockss-u
-#
 # The web service used to get the URLs for an Archival Unit.
 #
 # Comment out the following line if a REST web service is used.
@@ -99,6 +90,34 @@ org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
 # Comment out the following line if a REST web service is NOT used.
 #org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8086/repos/demorepo/artifacts?committed=false&auid={auid}
+#
+# The web service used to get artifact properties of a URL.
+#
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlArtifactWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
+org.lockss.plugin.auContentFromWs.urlArtifactWs.password=lockss-p
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlArtifactWs.serviceName=ContentServiceImplService
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlArtifactWs.targetNameSpace=http://content.ws.lockss.org/
+org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=lockss-u
+# Comment out the following line if a REST web service is NOT used.
+#org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:8086/repos/demorepo/artifacts?committed=false&uri={uri}
+#
+# The web service used to get the contents linked to a URL.
+#
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
+org.lockss.plugin.auContentFromWs.urlContentWs.password=lockss-p
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlContentWs.serviceName=ContentServiceImplService
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws.lockss.org/
+org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlContentWs.userName=lockss-u
+# Comment out the following line if a REST web service is NOT used.
+#org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:8086/repos/demorepo/artifacts/{artifactid}
 #
 # The REST web service used to store and retrieve the metadata of an Archival Unit.
 #
