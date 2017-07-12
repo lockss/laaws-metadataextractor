@@ -86,7 +86,7 @@ public class MetadataUpdateSpec {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ReindexParams {\n");
+    sb.append("class MetadataUpdateSpec {\n");
     
     sb.append("    auid: ").append(toIndentedString(auid)).append("\n");
     sb.append("    updateType: ").append(toIndentedString(updateType))
