@@ -41,7 +41,7 @@ org.lockss.metadataDbManager.datasource.className=org.postgresql.ds.PGSimpleData
 ##org.lockss.metadataDbManager.datasource.databaseName=MetadataDbManager
 ##org.lockss.metadataDbManager.datasource.password=goodPassword
 org.lockss.metadataDbManager.datasource.portNumber=5432
-##org.lockss.metadataDbManager.datasource.serverName=localhost
+org.lockss.metadataDbManager.datasource.serverName=laaws-metadata-pgsql
 ##org.lockss.metadataDbManager.datasource.user=LOCKSS
 # Using MySQL
 #org.lockss.metadataDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
@@ -65,7 +65,7 @@ org.lockss.jobDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSourc
 ##org.lockss.jobDbManager.datasource.databaseName=JobDbManager
 ##org.lockss.jobDbManager.datasource.password=goodPassword
 org.lockss.jobDbManager.datasource.portNumber=5432
-##org.lockss.jobDbManager.datasource.serverName=localhost
+org.lockss.jobDbManager.datasource.serverName=laaws-metadata-pgsql
 ##org.lockss.jobDbManager.datasource.user=LOCKSS
 # Using MySQL
 #org.lockss.jobDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
