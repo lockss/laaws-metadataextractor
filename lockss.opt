@@ -39,7 +39,7 @@
 # Using PostgreSQL.
 org.lockss.metadataDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
 ##org.lockss.metadataDbManager.datasource.databaseName=MetadataDbManager
-##org.lockss.metadataDbManager.datasource.password=goodPassword
+org.lockss.metadataDbManager.datasource.password=goodPassword
 org.lockss.metadataDbManager.datasource.portNumber=5432
 org.lockss.metadataDbManager.datasource.serverName=laaws-metadata-pgsql
 ##org.lockss.metadataDbManager.datasource.user=LOCKSS
@@ -63,7 +63,7 @@ org.lockss.metadataDbManager.datasource.serverName=laaws-metadata-pgsql
 # Using PostgreSQL.
 org.lockss.jobDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
 ##org.lockss.jobDbManager.datasource.databaseName=JobDbManager
-##org.lockss.jobDbManager.datasource.password=goodPassword
+org.lockss.jobDbManager.datasource.password=goodPassword
 org.lockss.jobDbManager.datasource.portNumber=5432
 org.lockss.jobDbManager.datasource.serverName=laaws-metadata-pgsql
 ##org.lockss.jobDbManager.datasource.user=LOCKSS
@@ -128,7 +128,7 @@ org.lockss.metadataManager.mdRest.userName=lockss-u
 org.lockss.metadataManager.mdRest.password=lockss-p
 
 #org.lockss.restAuth.authenticationType=basic
-org.lockss.ui.port=88083
+org.lockss.ui.port=18083
 
 org.lockss.log.FetchFileClient.level=debug3
 org.lockss.log.GetArtifactContentClient.level=debug3
