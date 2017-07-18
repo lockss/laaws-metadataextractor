@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,56 +25,71 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.api.impl;
+package org.lockss.laaws.mdx.api;
 
+import io.swagger.annotations.ApiParam;
+import java.lang.reflect.MalformedParametersException;
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
 import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
 import org.lockss.job.JobManager;
-import org.lockss.laaws.mdx.api.ApiException;
-import org.lockss.laaws.mdx.api.MdupdatesApiService;
-import org.lockss.laaws.mdx.api.NotFoundException;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
+import org.lockss.laaws.mdx.security.SpringAuthenticationFilter;
+import org.lockss.rs.auth.Roles;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Provider of access to the AU metadata jobs.
+ * Controller for access to the AU metadata jobs.
  */
-public class MdupdatesApiServiceImpl extends MdupdatesApiService {
-  private static Logger log = Logger.getLogger(MdupdatesApiServiceImpl.class);
+@RestController
+public class MdupdatesApiController implements MdupdatesApi {
+  private static Logger log = Logger.getLogger(MdupdatesApiController.class);
+
+  @Autowired
+  private HttpServletRequest request;
 
   /**
    * Deletes all of the queued jobs and stops any processing and deletes any
    * active jobs.
    * 
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
+   * @return a ResponseEntity<Integer> with the count of jobs deleted.
    */
   @Override
-  public Response deleteMdupdates(SecurityContext securityContext)
-      throws ApiException {
+  @RequestMapping(value = "/mdupdates",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.DELETE)
+  public ResponseEntity<Integer> deleteMdupdates() {
     if (log.isDebugEnabled()) log.debug("Invoked");
 
+    SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
 
     try {
       int removedCount = getJobManager().removeAllJobs();
       if (log.isDebugEnabled()) log.debug("removedCount = " + removedCount);
 
-      return Response.ok().entity(removedCount).build();
+      return new ResponseEntity<Integer>(removedCount, HttpStatus.OK);
     } catch (Exception e) {
       String message = "Cannot deleteMdupdates()";
       log.error(message, e);
-      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
+      throw new RuntimeException(message);
     }
   }
 
@@ -84,17 +99,17 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   * @return a ResponseEntity<Job> with information about the deleted job.
    */
   @Override
-  public Response deleteMdupdatesJobid(String jobid,
-      SecurityContext securityContext) throws NotFoundException {
+  @RequestMapping(value = "/mdupdates/{jobid}",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.DELETE)
+  public ResponseEntity<Job> deleteMdupdatesJobid(@PathVariable("jobid")
+  String jobid) {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
+
+    SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
 
     try {
       JobAuStatus jobAuStatus = getJobManager().removeJob(jobid);
@@ -103,16 +118,16 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       Job result = new Job(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
-      return Response.ok().entity(result).build();
+      return new ResponseEntity<Job>(result, HttpStatus.OK);
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
-      return getErrorResponse(Response.Status.NOT_FOUND, message);
+      throw new IllegalArgumentException(message);
     } catch (Exception e) {
       String message =
 	  "Cannot deleteMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
+      throw new RuntimeException(message);
     }
   }
 
@@ -123,19 +138,13 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
    *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
-   * @param request
-   *          An HttpServletRequest providing access to the incoming request.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   * @return a ResponseEntity<JobPageInfo> with the list of jobs.
    */
   @Override
-  public Response getMdupdates(Integer page, Integer limit,
-      HttpServletRequest request, SecurityContext securityContext)
-	  throws NotFoundException {
+  public ResponseEntity<JobPageInfo> getMdupdates(@RequestParam(value = "page",
+	 required = false, defaultValue="1") Integer page,
+	 @RequestParam(value = "limit", required = false, defaultValue="50")
+	 Integer limit) {
     if (log.isDebugEnabled()) {
       log.debug("page = " + page);
       log.debug("limit = " + limit);
@@ -186,12 +195,12 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       result.setJobs(jobs);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
-      return Response.ok().entity(result).build();
+      return new ResponseEntity<JobPageInfo>(result, HttpStatus.OK);
     } catch (Exception e) {
       String message =
 	  "Cannot getMdupdates() for page = " + page + ", limit = " + limit;
       log.error(message, e);
-      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
+      throw new RuntimeException(message);
     }
   }
 
@@ -200,16 +209,14 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   * @return a ResponseEntity<Status> with the job information.
    */
   @Override
-  public Response getMdupdatesJobid(String jobid,
-      SecurityContext securityContext) throws NotFoundException {
+  @RequestMapping(value = "/mdupdates/{jobid}",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.GET)
+  public ResponseEntity<Status> getMdupdatesJobid(@PathVariable("jobid")
+      String jobid) {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
     try {
@@ -219,15 +226,15 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       Status result = new Status(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
-      return Response.ok().entity(result).build();
+      return new ResponseEntity<Status>(result, HttpStatus.OK);
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
-      return getErrorResponse(Response.Status.NOT_FOUND, message);
+      throw new IllegalArgumentException(message);
     } catch (Exception e) {
       String message = "Cannot getMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
+      throw new RuntimeException(message);
     }
   }
 
@@ -238,18 +245,18 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
    * @param metadataUpdateSpec
    *          A MetadataUpdateSpec with the specification of the metadata update
    *          operation.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
+   * @return a ResponseEntity<Job> with the information of the job created.
    */
   @Override
-  public Response postMdupdates(MetadataUpdateSpec metadataUpdateSpec,
-      SecurityContext securityContext) throws NotFoundException {
+  @RequestMapping(value = "/mdupdates",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.POST)
+  public ResponseEntity<Job> postMdupdates(@ApiParam(required=true) @RequestBody
+      MetadataUpdateSpec metadataUpdateSpec) {
     if (log.isDebugEnabled())
       log.debug("metadataUpdateSpec = " + metadataUpdateSpec);
+
+    SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
 
     String auid = null;
 
@@ -257,7 +264,7 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       if (metadataUpdateSpec == null) {
 	String message = "Invalid metadata update specification: null";
 	log.error(message);
-	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+	throw new MalformedParametersException(message);
       }
 
       auid = metadataUpdateSpec.getAuid();
@@ -266,7 +273,7 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       if (auid == null || auid.isEmpty()) {
 	String message = "Invalid auid = '" + auid + "'";
 	log.error(message);
-	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+	throw new MalformedParametersException(message);
       }
 
       String updateType = metadataUpdateSpec.getUpdateType();
@@ -275,7 +282,7 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       if (updateType == null || updateType.isEmpty()) {
 	String message = "Invalid updateType = '" + updateType + "'";
 	log.error(message);
-	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+	throw new MalformedParametersException(message);
       }
 
       String canonicalUpdateType = updateType.toLowerCase();
@@ -293,7 +300,7 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       } else {
 	String message = "Invalid updateType = '" + updateType + "'";
 	log.error(message);
-	return getErrorResponse(Response.Status.BAD_REQUEST, message);
+	throw new MalformedParametersException(message);
       }
 
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
@@ -301,17 +308,42 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
       Job result = new Job(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
-      return Response.status(Response.Status.ACCEPTED).entity(result).build();
+      return new ResponseEntity<Job>(result, HttpStatus.ACCEPTED);
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.error(message);
-      return getErrorResponse(Response.Status.NOT_FOUND, message);
+      throw new IllegalArgumentException(message);
     } catch (Exception e) {
       String message = "Cannot postMdupdates() for metadataUpdateSpec = '"
 	  + metadataUpdateSpec + "'";
       log.error(message, e);
-      return getErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, message);
+      throw new RuntimeException(message);
     }
+  }
+
+  @ExceptionHandler(AccessControlException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ErrorResponse authorizationExceptionHandler(AccessControlException e) {
+    return new ErrorResponse(e.getMessage()); 	
+  }
+
+  @ExceptionHandler(MalformedParametersException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorResponse authorizationExceptionHandler(
+      MalformedParametersException e) {
+    return new ErrorResponse(e.getMessage()); 	
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ErrorResponse notFoundExceptionHandler(IllegalArgumentException e) {
+    return new ErrorResponse(e.getMessage()); 	
+  }
+
+  @ExceptionHandler(RuntimeException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ErrorResponse internalExceptionHandler(RuntimeException e) {
+    return new ErrorResponse(e.getMessage()); 	
   }
 
   /**
@@ -323,27 +355,27 @@ public class MdupdatesApiServiceImpl extends MdupdatesApiService {
     return LockssDaemon.getLockssDaemon().getJobManager();
   }
 
-  /**
-   * Provides the appropriate response in case of an error.
-   * 
-   * @param statusCode
-   *          A Response.Status with the error status code.
-   * @param message
-   *          A String with the error message.
-   * @return a Response with the error response.
-   */
-  private Response getErrorResponse(Response.Status status, String message) {
-    return Response.status(status).entity(toJsonMessage(message)).build();
-  }
+  //  /**
+  //   * Provides the appropriate response in case of an error.
+  //   * 
+  //   * @param statusCode
+  //   *          A Response.Status with the error status code.
+  //   * @param message
+  //   *          A String with the error message.
+  //   * @return a Response with the error response.
+  //   */
+  //  private Response getErrorResponse(Response.Status status, String message) {
+  //    return Response.status(status).entity(toJsonMessage(message)).build();
+  //  }
 
-  /**
-   * Formats to JSON any message to be returned.
-   * 
-   * @param message
-   *          A String with the message to be formatted.
-   * @return a String with the JSON-formatted message.
-   */
-  private String toJsonMessage(String message) {
-    return "{\"message\":\"" + message + "\"}"; 
-  }
+  //  /**
+  //   * Formats to JSON any message to be returned.
+  //   * 
+  //   * @param message
+  //   *          A String with the message to be formatted.
+  //   * @return a String with the JSON-formatted message.
+  //   */
+  //  private String toJsonMessage(String message) {
+  //    return "{\"message\":\"" + message + "\"}"; 
+  //  }
 }

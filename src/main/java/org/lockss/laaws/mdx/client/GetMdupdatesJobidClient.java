@@ -28,6 +28,7 @@
 package org.lockss.laaws.mdx.client;
 
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.lockss.laaws.mdx.model.Status;
 
@@ -49,7 +50,9 @@ public class GetMdupdatesJobidClient extends BaseClient {
     WebTarget webTarget = getWebTarget().path("mdupdates").path(args[0]);
     System.out.println("webTarget.getUri() = " + webTarget.getUri());
 
-    Response response = webTarget.request().get();
+    Response response = webTarget.request().header("Content-Type",
+	MediaType.APPLICATION_JSON_TYPE).get();
+
     int status = response.getStatus();
     System.out.println("status = " + status);
     System.out.println("statusInfo = " + response.getStatusInfo());

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright (c) 2016 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,15 +24,27 @@ Except as contained in this notice, the name of Stanford University shall not
 be used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from Stanford University.
 --> 
-<!DOCTYPE xml>
-<jboss-deployment-structure>
-  <deployment>
-    <exclusions>
-      <module name="org.jboss.resteasy.resteasy-jackson-provider"/>
-    </exclusions>
-    <dependencies>
-      <module name="org.jboss.resteasy.resteasy-jackson2-provider"
-              services="import"/>
-    </dependencies>
-  </deployment>
-</jboss-deployment-structure>
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- Log message format -->
+    <encoder>
+      <pattern>%date [%thread] %-5level %logger{36}.%M\(\): %msg%n</pattern>
+    </encoder>
+  </appender>
+  <!-- Need appender to write to file -->
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <!-- Name of the file where the log messages are written -->
+    <file>logs/mdx.log</file>
+    <encoder>
+      <pattern>%date [%thread] %-5level %logger{36}.%M\(\): %msg%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="org.lockss" level="debug">
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <!-- Setting the root level of logging to INFO -->
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

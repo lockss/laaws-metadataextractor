@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,65 +33,56 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import org.lockss.laaws.mdx.api.NotFoundException;
-import org.lockss.laaws.mdx.api.factories.MdupdatesApiServiceFactory;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
-import org.lockss.rs.auth.Roles;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Provider of access to the AU metadata jobs.
  */
-@Path("/mdupdates")
-@Consumes({ "application/json" })
-@Produces({ "application/json" })
-@Api(value = "/mdupdates")
-public class MdupdatesApi  {
-  private final MdupdatesApiService delegate =
-      MdupdatesApiServiceFactory.getMdupdatesApi();
+@Api(value = "mdupdates")
+public interface MdupdatesApi  {
+
+  public static final String MD_UPDATE_DELETE = "delete";
+  public static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
+  public static final String MD_UPDATE_INCREMENTAL_EXTRACTION =
+      "incremental_extraction";
 
   /**
    * Deletes all of the queued jobs and stops any processing and deletes any
    * active jobs.
    * 
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
+   * @return a ResponseEntity<Integer> with the count of jobs deleted.
    */
-  @DELETE
-  @Consumes({"application/json"})
-  @Produces({"application/json"})
   @ApiOperation(value = "Delete all of the currently queued and active jobs",
   notes = "Delete all of the currently queued and active jobs",
-  response = void.class,
-  authorizations = {@Authorization(value = "basicAuth")}, tags={ "jobs", })
+  response = Integer.class,
+  authorizations = {@Authorization(value = "basicAuth")}, tags={ "mdupdates", })
   @ApiResponses(value = { 
       @ApiResponse(code = 200, message = "Jobs were successfully deleted",
-	  response = void.class),
+	  response = Integer.class),
       @ApiResponse(code = 401, message = "Unauthorized request",
-      response = void.class),
+      response = Integer.class),
       @ApiResponse(code = 403, message = "Forbidden request",
-      response = void.class),
-      @ApiResponse(code = 404, message = "AU not found",
-      response = void.class),
+      response = Integer.class),
       @ApiResponse(code = 500, message = "Internal server error",
-      response = void.class),
+      response = Integer.class),
       @ApiResponse(code = 503,
       message = "Some or all of the system is not available",
-      response = void.class) })
-  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response deleteMdupdates(@Context SecurityContext securityContext)
-      throws ApiException {
-    return delegate.deleteMdupdates(securityContext);
+      response = Integer.class) })
+  @RequestMapping(value = "/mdupdates",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.DELETE)
+  default ResponseEntity<Integer> deleteMdupdates() {
+    return new ResponseEntity<Integer>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -100,21 +91,12 @@ public class MdupdatesApi  {
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   * @return a ResponseEntity<Job> with information about the deleted job.
    */
-  @DELETE
-  @Path("/{jobid}")
-  @Consumes({"application/json"})
-  @Produces({"application/json"})
   @ApiOperation(value = "Delete a job",
   notes = "Delete a job given the job identifier, stopping any current processing, if necessary",
   response = Job.class,
-  authorizations = {@Authorization(value = "basicAuth")}, tags={ "jobs", })
+  authorizations = {@Authorization(value = "basicAuth")}, tags={ "mdupdates", })
   @ApiResponses(value = { 
       @ApiResponse(code = 200, message = "The deleted job",
 	  response = Job.class),
@@ -129,12 +111,13 @@ public class MdupdatesApi  {
       @ApiResponse(code = 503,
       message = "Some or all of the system is not available",
       response = Job.class) })
-  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response deleteMdupdatesJobid(
+  @RequestMapping(value = "/mdupdates/{jobid}",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.DELETE)
+  default ResponseEntity<Job> deleteMdupdatesJobid(
       @ApiParam(value = "The identifier of the job to be deleted",
-      required=true) @PathParam("jobid") String jobid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.deleteMdupdatesJobid(jobid, securityContext);
+      required=true) @PathVariable("jobid") String jobid) {
+    return new ResponseEntity<Job>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -144,39 +127,33 @@ public class MdupdatesApi  {
    *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
-   * @param request
-   *          An HttpServletRequest providing access to the incoming request.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   * @return a ResponseEntity<JobPageInfo> with the list of jobs.
    */
-  @GET
-  @Consumes({"application/json"})
-  @Produces({"application/json"})
   @ApiOperation(value = "Get a list of currently active jobs",
   notes = "Get a list of all currently active jobs (no parameters) or a list of the currently active jobs in a page defined by the page index and size",
   response = JobPageInfo.class,
-  authorizations = {@Authorization(value = "basicAuth")}, tags={ "jobs", })
+  authorizations = {@Authorization(value = "basicAuth")}, tags={ "mdupdates", })
   @ApiResponses(value = { 
       @ApiResponse(code = 200, message = "The requested jobs",
 	  response = JobPageInfo.class),
+      @ApiResponse(code = 401, message = "Unauthorized request",
+      response = JobPageInfo.class),
       @ApiResponse(code = 500, message = "Internal server error",
       response = JobPageInfo.class),
       @ApiResponse(code = 503,
       message = "Some or all of the system is not available",
       response = JobPageInfo.class) })
-  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
-  public Response getMdupdates(
+  @RequestMapping(value = "/mdupdates",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.GET)
+  default public ResponseEntity<JobPageInfo> getMdupdates(
       @ApiParam(value = "The identifier of the page of jobs to be returned",
-      defaultValue="1") @DefaultValue("1") @QueryParam("page") Integer page,
+      defaultValue="1") @RequestParam(value = "page", required = false,
+      defaultValue="1") Integer page,
       @ApiParam(value = "The number of jobs per page", defaultValue="50")
-      @DefaultValue("50") @QueryParam("limit") Integer limit,
-      @Context HttpServletRequest request,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getMdupdates(page, limit, request, securityContext);
+      @RequestParam(value = "limit", required = false, defaultValue="50")
+      Integer limit) {
+    return new ResponseEntity<JobPageInfo>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -184,23 +161,16 @@ public class MdupdatesApi  {
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the job with the given identifier does not exist.
+   * @return a ResponseEntity<Status> with the job information.
    */
-  @GET
-  @Path("/{jobid}")
-  @Consumes({"application/json"})
-  @Produces({"application/json"})
   @ApiOperation(value = "Get a job",
   notes = "Get a job given the job identifier", response = Status.class,
-  authorizations = {@Authorization(value = "basicAuth")}, tags={ "jobs", })
+  authorizations = {@Authorization(value = "basicAuth")}, tags={ "mdupdates", })
   @ApiResponses(value = { 
       @ApiResponse(code = 200, message = "The status of the requested job",
 	  response = Status.class),
+      @ApiResponse(code = 401, message = "Unauthorized request",
+      response = Status.class),
       @ApiResponse(code = 404, message = "Job not found",
       response = Status.class),
       @ApiResponse(code = 500, message = "Internal server error",
@@ -208,12 +178,13 @@ public class MdupdatesApi  {
       @ApiResponse(code = 503,
       message = "Some or all of the system is not available",
       response = Status.class) })
-  @RolesAllowed(Roles.ROLE_ANY) // Allow any authenticated user.
-  public Response getMdupdatesJobid(
+  @RequestMapping(value = "/mdupdates/{jobid}",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.GET)
+  default ResponseEntity<Status> getMdupdatesJobid(
       @ApiParam(value = "The identifier of the requested job", required=true)
-      @PathParam("jobid") String jobid,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.getMdupdatesJobid(jobid, securityContext);
+      @PathVariable("jobid") String jobid) {
+    return new ResponseEntity<Status>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -223,21 +194,13 @@ public class MdupdatesApi  {
    * @param metadataUpdateSpec
    *          A MetadataUpdateSpec with the specification of the metadata update
    *          operation.
-   * @param securityContext
-   *          A SecurityContext providing access to security related
-   *          information.
-   * @return a Response with any data that needs to be returned to the runtime.
-   * @throws NotFoundException
-   *           if the AU with the given identifier does not exist.
+   * @return a ResponseEntity<Job> with the information of the job created.
    */
-  @POST
-  @Consumes({"application/json"})
-  @Produces({"application/json"})
   @ApiOperation(value = "Perform an AU metadata update operation",
   notes =
   "Perform an AU metadata update operation given the update specification",
   response = Job.class,
-  authorizations = {@Authorization(value = "basicAuth")}, tags={ "aus", })
+  authorizations = {@Authorization(value = "basicAuth")}, tags={ "mdupdates", })
   @ApiResponses(value = { 
       @ApiResponse(code = 202, message =
 	  "The job created to perform the AU metadata update operation",
@@ -255,12 +218,12 @@ public class MdupdatesApi  {
       @ApiResponse(code = 503,
       message = "Some or all of the system is not available",
       response = Job.class) })
-  @RolesAllowed(Roles.ROLE_CONTENT_ADMIN) // Allow this role.
-  public Response postMdupdates(@ApiParam(
-      value =
-      "The information defining the AU metadata update operation",
-      required=true) MetadataUpdateSpec metadataUpdateSpec,
-      @Context SecurityContext securityContext) throws NotFoundException {
-    return delegate.postMdupdates(metadataUpdateSpec, securityContext);
+  @RequestMapping(value = "/mdupdates",
+  produces = { "application/json" }, consumes = { "application/json" },
+  method = RequestMethod.POST)
+  default ResponseEntity<Job> postMdupdates(@ApiParam(
+      value = "The information defining the AU metadata update operation",
+      required=true) @RequestBody MetadataUpdateSpec metadataUpdateSpec) {
+    return new ResponseEntity<Job>(HttpStatus.NOT_IMPLEMENTED);
   }
 }
