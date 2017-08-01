@@ -38,10 +38,8 @@ info:
 host: "laaws.lockss.org:443"
 basePath: "/"
 tags:
-- name: "aus"
-  description: "Tasks on AUs"
-- name: "jobs"
-  description: "Tasks on jobs"
+- name: "mdupdates"
+  description: "Metadata updates"
 schemes:
 - "https"
 consumes:
@@ -54,7 +52,7 @@ paths:
   /mdupdates:
     get:
       tags:
-      - "jobs"
+      - "mdupdates"
       summary: "Get a list of currently active jobs"
       description: "Get a list of all currently active jobs (no parameters) or\
         \ a list of the currently active jobs in a page defined by the page\
@@ -88,7 +86,7 @@ paths:
           description: "Some or all of the system is not available"
     post:
       tags:
-      - "aus"
+      - "mdupdates"
       summary: "Perform an AU metadata update operation"
       description: "Perform an AU metadata update operation given the update\
         \ specification"
@@ -124,7 +122,7 @@ paths:
           description: "Some or all of the system is not available"
     delete:
       tags:
-      - "jobs"
+      - "mdupdates"
       summary: "Delete all of the currently queued and active jobs"
       description: "Delete all of the currently queued and active jobs"
       operationId: "deleteMdupdates"
@@ -136,6 +134,9 @@ paths:
       responses:
         200:
           description: "Jobs were successfully deleted"
+          schema:
+            type: "integer"
+            format: "int32"
         401:
           description: "Unauthorized request"
         403:
@@ -147,7 +148,7 @@ paths:
   /mdupdates/{jobid}:
     get:
       tags:
-      - "jobs"
+      - "mdupdates"
       summary: "Get a job"
       description: "Get a job given the job identifier"
       operationId: "getMdupdatesJobid"
@@ -174,7 +175,7 @@ paths:
           description: "Some or all of the system is not available"
     delete:
       tags:
-      - "jobs"
+      - "mdupdates"
       summary: "Delete a job"
       description: "Delete a job given the job identifier, stopping any current\
         \ processing, if necessary"
