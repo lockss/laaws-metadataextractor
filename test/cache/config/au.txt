@@ -1,0 +1,9 @@
+#AU Configuration
+#Fri Jul 21 14:18:06 HST 2017
+org.lockss.au.org|lockss|plugin|taylorandfrancis|TaylorAndFrancisPlugin.base_url~http%3A%2F%2Fwww%2Etandfonline%2Ecom%2F&journal_id~rafr20&volume_name~8.base_url=http\://www.tandfonline.com/
+org.lockss.au.org|lockss|plugin|taylorandfrancis|TaylorAndFrancisPlugin.base_url~http%3A%2F%2Fwww%2Etandfonline%2Ecom%2F&journal_id~rafr20&volume_name~8.journal_id=rafr20
+org.lockss.au.org|lockss|plugin|taylorandfrancis|TaylorAndFrancisPlugin.base_url~http%3A%2F%2Fwww%2Etandfonline%2Ecom%2F&journal_id~rafr20&volume_name~8.reserved.disabled=false
+org.lockss.au.org|lockss|plugin|taylorandfrancis|TaylorAndFrancisPlugin.base_url~http%3A%2F%2Fwww%2Etandfonline%2Ecom%2F&journal_id~rafr20&volume_name~8.reserved.displayName=Africa Review Volume 8
+org.lockss.au.org|lockss|plugin|taylorandfrancis|TaylorAndFrancisPlugin.base_url~http%3A%2F%2Fwww%2Etandfonline%2Ecom%2F&journal_id~rafr20&volume_name~8.reserved.repository=local\:./cache
+org.lockss.au.org|lockss|plugin|taylorandfrancis|TaylorAndFrancisPlugin.base_url~http%3A%2F%2Fwww%2Etandfonline%2Ecom%2F&journal_id~rafr20&volume_name~8.volume_name=8
+org.lockss.config.fileVersion.au=1

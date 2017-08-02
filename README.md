@@ -24,7 +24,7 @@ be used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from Stanford University.
 --> 
 # laaws-metadata-extractor [![Build Status](https://travis-ci.org/lockss/laaws-metadata-extractor.svg?branch=master)](https://travis-ci.org/lockss/laaws-metadata-extractor)
-The wrapper around the metadata extractor.
+The LAAWS Metadata Extraction REST Web Service.
 
 ### Clone the repo
 `git clone --recursive ssh://git@gitlab.lockss.org/laaws/laaws-metadataextractor.git`
@@ -36,56 +36,44 @@ File -> Import... -> Maven -> Existing Maven Projects
 run `initBuild`
 
 ### Set up the TDB tree:
-Edit ./buildLaawsMdx and set the TDB_DIR variable properly.
+Edit ./runLaawsMdx and set the TDB_DIR variable properly.
 
 ### Build the web service:
 `./buildLaawsMdx`
 
-This will use port 8888 during the build. To use, for example, port 8889,
-instead, either edit the value of $service_port in ./buildLaawsMdx or run:
-
-`./buildLaawsMdx -Dswarm.http.port=8889`
+This will run the tests as a pre-requisite for the build.
 
 The result of the build is a so-called "uber JAR" file which includes the
 project code plus all its dependencies and which is located at
 
-`./target/laaws-metadata-extraction-service-swarm.jar`
+`./target/laaws-metadata-extraction-service-0.0.1-SNAPSHOT.jar`
 
 ### Run the web service:
 `./runLaawsMdx`
 
-This will listen to port 8888. To use, for example, port 8889, instead, either
-edit the value of $service_port in ./runLaawsMdx or run:
-
-`./runLaawsMdx -Dswarm.http.port=8889`
+This will use port 28120. To use another port, edit the value of the
+`server.port` property in file
+`src/main/resources/application.properties`.
 
 The log is at ./logs/laawsmdx.log
 
 ### Build and run the web service:
 `./buildAndRunLaawsMdx`
 
-This will use port 8888 for both steps. To use, for example, port 8889, instead,
-either edit the value of $service_port in ./buildAndRunLaawsMdx or run:
+This will use port 28120. To use another port, edit the value of the
+`server.port` property in file
+`src/main/resources/application.properties`.
 
-`./buildAndRunLaawsMdx -Dswarm.http.port=8889`
+### API is documented at:
+#### http://localhost:28120/swagger-ui.html
 
 ### Stop:
 `./stopLaawsMdx`
 
-### API is documented at:
-#### localhost:8888/swagger-ui/
-
-Type`http://localhost:8888/swagger.json` in the swagger instance to view
-the docs and test against running server.
-
-### Getting Archival Unit contents from a web service, not the repository
-In ./lockss.opt add the following option:
-
-org.lockss.plugin.auContentFromWs=true
-
-To specify the properties of the web service (like the classic LOCKSS daemon)
-used to get the URLs of an Archival Unit, add in ./lockss.opt the following
-options with the appropriate values:
+### Getting Archival Unit contents from a SOAP web service
+To specify the properties of the SOAP web service (like the classic LOCKSS
+daemon) used to get the URLs of an Archival Unit, add in config/lockss.opt the
+following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
 org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
@@ -94,9 +82,20 @@ org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.loc
 org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
 
-To specify the properties of the web service (like the classic LOCKSS daemon)
-used to get the content linked to a URL of an Archival Unit, add in ./lockss.opt
+To specify the properties of the SOAP web service (like the classic LOCKSS
+daemon) used to get the artifact properties of a URL, add in config/lockss.opt
 the following options with the appropriate values:
+
+org.lockss.plugin.auContentFromWs.urlArtifactWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
+org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
+org.lockss.plugin.auContentFromWs.urlArtifactWs.serviceName=ContentServiceImplService
+org.lockss.plugin.auContentFromWs.urlArtifactWs.targetNameSpace=http://content.ws.lockss.org/
+org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
+
+To specify the properties of the SOAP web service (like the classic LOCKSS
+daemon) used to get the content linked to a URL of an Archival Unit, add in
+config/lockss.opt the following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
 org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
@@ -105,12 +104,40 @@ org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws
 org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
 
-### Using another REST web service for metadata storage
-To use another REST web service to store the extracted metadata, instead of
-storing it in the configured database, add in ./lockss.opt the following options
+### Getting Archival Unit contents from a REST web service
+To specify the properties of the REST web service used to get the URLs of an
+Archival Unit, add in config/lockss.opt the following options with the
+appropriate values:
+
+org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
+org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&auid={auid}
+org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
+
+To specify the properties of the REST web service used to get the artifact
+properties of a URL, add in config/lockss.opt the following options with the
+appropriate values:
+
+org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
+org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&uri={uri}
+org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
+
+To specify the properties of the REST web service used to get the content linked
+to a URL of an Archival Unit, add in config/lockss.opt the following options
 with the appropriate values:
 
-org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889
+org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
+org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts/{artifactid}
+org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
+
+### Using another REST web service for metadata storage
+To use another REST web service to store the extracted metadata, instead of
+storing it in the configured database, add in config/lockss.opt the following
+options with the appropriate values:
+
+org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:the-correct-port
 org.lockss.metadataManager.mdRest.timeoutValue=600
 org.lockss.metadataManager.mdRest.userName=the-correct-user
 org.lockss.metadataManager.mdRest.password=the-correct-password

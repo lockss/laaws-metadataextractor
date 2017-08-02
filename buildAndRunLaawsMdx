@@ -22,11 +22,5 @@
 # be used in advertising or otherwise to promote the sale, use or other dealings
 # in this Software without prior written authorization from Stanford University.
 #
-if [ $# -eq 0 ]; then
-    ARGS[0]='-Dswarm.http.port=8888'
-else
-    ARGS=$@
-fi
-
-./buildLaawsMdx ${ARGS}
-./runLaawsMdx ${ARGS}
+./buildLaawsMdx
+./runLaawsMdx

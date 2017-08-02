@@ -46,7 +46,7 @@ public class BaseClient {
   private static final String userName = "lockss-u";
   private static final String password = "lockss-p";
 
-  private static final String baseUri = "http://localhost:8888";
+  private static final String baseUri = "http://localhost:28120";
 
   protected static WebTarget getWebTarget() {
     ClientConfig config = new ClientConfig();

@@ -86,10 +86,13 @@ public class MdupdatesApiControllerTest {
    */
   @Test
   public void runUnAuthenticatedTests() throws Exception {
-    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+    if (logger.isDebugEnabled()) logger.debug("port = " + port);
 
     // Specify the command line parameters to be used for the tests.
     List<String> cmdLineArgs = getCommandLineArguments();
+    cmdLineArgs.add("-p");
+    cmdLineArgs.add("config/mdupdatesApiControllerTestAuthOff.opt");
+
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
@@ -109,12 +112,12 @@ public class MdupdatesApiControllerTest {
    */
   @Test
   public void runAuthenticatedTests() throws Exception {
-    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+    if (logger.isDebugEnabled()) logger.debug("port = " + port);
 
     // Specify the command line parameters to be used for the tests.
     List<String> cmdLineArgs = getCommandLineArguments();
     cmdLineArgs.add("-p");
-    cmdLineArgs.add("config/testAuthOn.opt");
+    cmdLineArgs.add("config/mdupdatesApiControllerTestAuthOn.opt");
 
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
@@ -151,8 +154,6 @@ public class MdupdatesApiControllerTest {
 
     cmdLineArgs.add("-p");
     cmdLineArgs.add("config/lockss.txt");
-    cmdLineArgs.add("-p");
-    cmdLineArgs.add("config/lockss.opt");
 
     return cmdLineArgs;
   }

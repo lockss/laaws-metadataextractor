@@ -75,3 +75,114 @@ org.lockss.crawler.enabled=false
 org.lockss.poll.v3.enableV3Poller=false
 org.lockss.poll.v3.enableV3Voter=false
 
+# Disable the SOAP web services.
+org.lockss.ws.enabled=false
+
+# No Repository Manager.
+org.lockss.plugin.auContentFromWs=true
+
+org.lockss.ui.port=28121
+
+# Using Derby.
+#org.lockss.metadataDbManager.derby.infologAppend=true
+##org.lockss.metadataDbManager.derby.languageLogqueryplan=true
+#org.lockss.metadataDbManager.derby.languageLogstatementtext=true
+##org.lockss.metadataDbManager.derby.streamErrorFile=/tmp/derby.log
+#org.lockss.metadataDbManager.derby.streamErrorLogseveritylevel=0
+#org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
+org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+org.lockss.metadataDbManager.datasource.password=goodPassword
+##org.lockss.metadataDbManager.datasource.createDatabase=create
+##org.lockss.metadataDbManager.datasource.databaseName=db/MetadataDbManager
+##org.lockss.metadataDbManager.datasource.portNumber=1527
+##org.lockss.metadataDbManager.datasource.serverName=localhost
+##org.lockss.metadataDbManager.datasource.user=LOCKSS
+# Using PostgreSQL.
+#org.lockss.metadataDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
+##org.lockss.metadataDbManager.datasource.databaseName=MetadataDbManager
+##org.lockss.metadataDbManager.datasource.password=goodPassword
+#org.lockss.metadataDbManager.datasource.portNumber=5432
+##org.lockss.metadataDbManager.datasource.serverName=localhost
+##org.lockss.metadataDbManager.datasource.user=LOCKSS
+# Using MySQL
+#org.lockss.metadataDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+#
+# Using Derby.
+#org.lockss.jobDbManager.derby.infologAppend=true
+##org.lockss.jobDbManager.derby.languageLogqueryplan=true
+#org.lockss.jobDbManager.derby.languageLogstatementtext=true
+##org.lockss.jobDbManager.derby.streamErrorFile=/tmp/derby.log
+#org.lockss.jobDbManager.derby.streamErrorLogseveritylevel=0
+#org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
+org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+org.lockss.jobDbManager.datasource.password=goodPassword
+##org.lockss.jobDbManager.datasource.createDatabase=create
+##org.lockss.jobDbManager.datasource.databaseName=db/JobDbManager
+##org.lockss.jobDbManager.datasource.portNumber=1527
+##org.lockss.jobDbManager.datasource.serverName=localhost
+##org.lockss.jobDbManager.datasource.user=LOCKSS
+# Using PostgreSQL.
+#org.lockss.jobDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
+##org.lockss.jobDbManager.datasource.databaseName=JobDbManager
+##org.lockss.jobDbManager.datasource.password=goodPassword
+#org.lockss.jobDbManager.datasource.portNumber=5432
+##org.lockss.jobDbManager.datasource.serverName=localhost
+##org.lockss.jobDbManager.datasource.user=LOCKSS
+# Using MySQL
+#org.lockss.jobDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+#
+org.lockss.jobManager.enabled=true
+#org.lockss.jobManager.taskListSize=1
+#org.lockss.jobManager.sleepDelaySeconds=60
+org.lockss.metadataManager.mandatoryFields=publisher;provider
+org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
+#
+# The web service used to get the URLs for an Archival Unit.
+#
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
+org.lockss.plugin.auContentFromWs.urlListWs.password=lockss-p
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlListWs.serviceName=DaemonStatusServiceImplService
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.lockss.org/
+org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
+# Comment out the following line if a REST web service is NOT used.
+#org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8086/repos/demorepo/artifacts?committed=false&auid={auid}
+#
+# The web service used to get artifact properties of a URL.
+#
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlArtifactWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
+org.lockss.plugin.auContentFromWs.urlArtifactWs.password=lockss-p
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlArtifactWs.serviceName=ContentServiceImplService
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlArtifactWs.targetNameSpace=http://content.ws.lockss.org/
+org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=lockss-u
+# Comment out the following line if a REST web service is NOT used.
+#org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:8086/repos/demorepo/artifacts?committed=false&uri={uri}
+#
+# The web service used to get the contents linked to a URL.
+#
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
+org.lockss.plugin.auContentFromWs.urlContentWs.password=lockss-p
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlContentWs.serviceName=ContentServiceImplService
+# Comment out the following line if a REST web service is used.
+org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws.lockss.org/
+org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlContentWs.userName=lockss-u
+# Comment out the following line if a REST web service is NOT used.
+#org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:8086/repos/demorepo/artifacts/{artifactid}
+#
+# The REST web service used to store and retrieve the metadata of an Archival Unit.
+#
+# Comment out this line if a REST service is NOT used.
+#org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:8889
+org.lockss.metadataManager.mdRest.timeoutValue=600
+org.lockss.metadataManager.mdRest.userName=lockss-u
+org.lockss.metadataManager.mdRest.password=lockss-p
