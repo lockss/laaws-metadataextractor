@@ -76,8 +76,11 @@ in this Software without prior written authorization from Stanford University.
   </dependencyManagement>
 
   <build>
+
     <finalName>laaws-metadata-extraction-service</finalName>
+
     <plugins>
+
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
@@ -90,6 +93,7 @@ in this Software without prior written authorization from Stanford University.
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -109,7 +113,26 @@ in this Software without prior written authorization from Stanford University.
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-codegen-maven-plugin</artifactId>
+        <version>2.2.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>docs/swagger.yaml</inputSpec>
+              <language>dynamic-html</language>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
+
   </build>
 
   <dependencies>
