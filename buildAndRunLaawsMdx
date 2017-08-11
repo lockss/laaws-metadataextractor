@@ -23,4 +23,10 @@
 # in this Software without prior written authorization from Stanford University.
 #
 ./buildLaawsMdx
-./runLaawsMdx
+
+if [ -f "target/laaws-metadata-extraction-service-0.0.1-SNAPSHOT.jar" ]
+then
+  ./runLaawsMdx
+else
+  echo Not running service: Build did not create JAR file.
+fi

@@ -27,17 +27,18 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.lockss.laaws.mdx.model.Job;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Client for the deleteMdupdatesJobid() operation.
  */
 public class DeleteMdupdatesJobidClient extends BaseClient {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     for (int i = 0; i < args.length; i++) {
       System.out.println("args[" + i + "] = " + args[i]);
     }
@@ -47,22 +48,17 @@ public class DeleteMdupdatesJobidClient extends BaseClient {
 	  + "identifier of the job to be deleted.");
     }
 
-    WebTarget webTarget = getWebTarget().path("mdupdates").path(args[0]);
-    System.out.println("webTarget.getUri() = " + webTarget.getUri());
+    String url = baseUri + "/mdupdates/"
+	+ UriUtils.encodePathSegment(args[0], "UTF-8");
+    System.out.println("url = " + url);
 
-    Response response = webTarget.request().header("Content-Type",
-	MediaType.APPLICATION_JSON_TYPE).delete();
+    ResponseEntity<Job> response = getRestTemplate().exchange(url,
+	HttpMethod.GET, new HttpEntity<String>(null, getHttpHeaders()),
+	Job.class);
 
-    int status = response.getStatus();
+    int status = response.getStatusCodeValue();
     System.out.println("status = " + status);
-    System.out.println("statusInfo = " + response.getStatusInfo());
-
-    if (status == 200) {
-      Job result = response.readEntity(Job.class);
-      System.out.println("result = " + result);
-    } else {
-      Object result = response.readEntity(Object.class);
-      System.out.println("result = " + result);
-    }
+    Job result = response.getBody();
+    System.out.println("result = " + result);
   }
 }

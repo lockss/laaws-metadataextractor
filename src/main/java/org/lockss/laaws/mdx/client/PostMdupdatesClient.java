@@ -27,12 +27,11 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Client for the postMdupdates() operation.
@@ -58,21 +57,15 @@ public class PostMdupdatesClient extends BaseClient {
     params.setUpdateType(args[1]);
     System.out.println("params = '" + params + "'");
 
-    WebTarget webTarget = getWebTarget().path("mdupdates");
-    System.out.println("webTarget.getUri() = " + webTarget.getUri());
+    String url = baseUri + "/mdupdates";
 
-    Response response = webTarget.request().post(Entity.entity(params,
-	MediaType.APPLICATION_JSON_TYPE));
-    int status = response.getStatus();
+    ResponseEntity<Job> response = getRestTemplate().exchange(url,
+	HttpMethod.POST, new HttpEntity<MetadataUpdateSpec>(params,
+	    getHttpHeaders()), Job.class);
+
+    int status = response.getStatusCodeValue();
     System.out.println("status = " + status);
-    System.out.println("statusInfo = " + response.getStatusInfo());
-
-    if (status == 202) {
-      Job result = response.readEntity(Job.class);
-      System.out.println("result = " + result);
-    } else {
-      Object result = response.readEntity(Object.class);
-      System.out.println("result = " + result);
-    }
+    Job result = response.getBody();
+    System.out.println("result = " + result);
   }
 }

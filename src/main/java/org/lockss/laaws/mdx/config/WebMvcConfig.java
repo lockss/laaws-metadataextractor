@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,40 +25,33 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.client;
+package org.lockss.laaws.mdx.config;
 
-import org.lockss.laaws.mdx.model.Status;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriUtils;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
- * Client for the getMdupdatesJobid() operation.
+ * Spring MVC customization.
  */
-public class GetMdupdatesJobidClient extends BaseClient {
+@Configuration
+public class WebMvcConfig extends WebMvcConfigurationSupport {
 
-  public static void main(String[] args) throws Exception {
-    for (int i = 0; i < args.length; i++) {
-      System.out.println("args[" + i + "] = " + args[i]);
-    }
+  /**
+   * Avoids non-standard handling of URL patterns.
+   * 
+   * @return a RequestMappingHandlerMapping with the non-standard handling of
+   *         URL patterns turned off.
+   */
+  @Bean
+  public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+      RequestMappingHandlerMapping requestMappingHandlerMapping =
+	  super.requestMappingHandlerMapping();
 
-    if (args.length < 1) {
-      System.err.println("ERROR: Missing command line argument with the "
-	  + "identifier of the job for which the status is requested.");
-    }
+      requestMappingHandlerMapping.setUseSuffixPatternMatch(false);
+      requestMappingHandlerMapping.setUseTrailingSlashMatch(false);
 
-    String url = baseUri + "/mdupdates/"
-	+ UriUtils.encodePathSegment(args[0], "UTF-8");
-    System.out.println("url = " + url);
-
-    ResponseEntity<Status> response = getRestTemplate()
-	.exchange(url, HttpMethod.GET,
-	    new HttpEntity<String>(null, getHttpHeaders()), Status.class);
-
-    int status = response.getStatusCodeValue();
-    System.out.println("status = " + status);
-    Status result = response.getBody();
-    System.out.println("result = " + result);
+      return requestMappingHandlerMapping;
   }
 }

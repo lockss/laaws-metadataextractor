@@ -27,9 +27,9 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Client for the deleteMdupdates() operation.
@@ -37,22 +37,16 @@ import javax.ws.rs.core.Response;
 public class DeleteMdupdatesClient extends BaseClient {
 
   public static void main(String[] args) {
-    WebTarget webTarget = getWebTarget().path("mdupdates");
-    System.out.println("webTarget.getUri() = " + webTarget.getUri());
+    String url = baseUri + "/mdupdates";
+    System.out.println("url = " + url);
 
-    Response response = webTarget.request().header("Content-Type",
-	MediaType.APPLICATION_JSON_TYPE).delete();
+    ResponseEntity<Integer> response = getRestTemplate().exchange(url,
+	HttpMethod.DELETE, new HttpEntity<String>(null, getHttpHeaders()),
+	Integer.class);
 
-    int status = response.getStatus();
+    int status = response.getStatusCodeValue();
     System.out.println("status = " + status);
-    System.out.println("statusInfo = " + response.getStatusInfo());
-
-    if (status == 200) {
-      Integer result = response.readEntity(Integer.class);
-      System.out.println("result = " + result);
-    } else {
-      Object result = response.readEntity(Object.class);
-      System.out.println("result = " + result);
-    }
+    Integer result = response.getBody();
+    System.out.println("result = " + result);
   }
 }

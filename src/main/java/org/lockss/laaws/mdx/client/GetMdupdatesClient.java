@@ -27,10 +27,11 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.lockss.laaws.mdx.model.JobPageInfo;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Client for the getMdupdates() operation.
@@ -42,31 +43,26 @@ public class GetMdupdatesClient extends BaseClient {
       System.out.println("arg[" + i + "] = " + args[i]);
     }
 
-    WebTarget webTarget = getWebTarget().path("mdupdates");
+    String url = baseUri + "/mdupdates";
+    System.out.println("url = " + url);
+
+    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
     if (args.length > 1) {
-      webTarget = webTarget.queryParam(args[0], args[1]);
+      builder = builder.queryParam(args[1], args[2]);
 
       if (args.length > 3) {
-	webTarget = webTarget.queryParam(args[2], args[3]);
+	builder = builder.queryParam(args[3], args[4]);
       }
     }
 
-    System.out.println("webTarget.getUri() = " + webTarget.getUri());
+    ResponseEntity<JobPageInfo> response = getRestTemplate()
+	.exchange(builder.build().encode().toUri(), HttpMethod.GET,
+	    new HttpEntity<String>(null, getHttpHeaders()), JobPageInfo.class);
 
-    Response response = webTarget.request().header("Content-Type",
-	MediaType.APPLICATION_JSON_TYPE).get();
-
-    int status = response.getStatus();
+    int status = response.getStatusCodeValue();
     System.out.println("status = " + status);
-    System.out.println("statusInfo = " + response.getStatusInfo());
-
-    if (status == 200) {
-      JobPageInfo result = response.readEntity(JobPageInfo.class);
-      System.out.println("result = " + result);
-    } else {
-      Object result = response.readEntity(Object.class);
-      System.out.println("result = " + result);
-    }
+    JobPageInfo result = response.getBody();
+    System.out.println("result = " + result);
   }
 }

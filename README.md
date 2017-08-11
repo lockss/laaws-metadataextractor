@@ -67,12 +67,12 @@ This will use port 28120. To use another port, edit the value of the
 ### API is documented at:
 #### http://localhost:28120/swagger-ui.html
 
-### Stop:
+### Stop the web service:
 `./stopLaawsMdx`
 
 ### Getting Archival Unit contents from a SOAP web service
 To specify the properties of the SOAP web service (like the classic LOCKSS
-daemon) used to get the URLs of an Archival Unit, add in config/lockss.opt the
+daemon) used to get the URLs of an Archival Unit, edit in config/lockss.txt the
 following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
@@ -83,7 +83,7 @@ org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
 
 To specify the properties of the SOAP web service (like the classic LOCKSS
-daemon) used to get the artifact properties of a URL, add in config/lockss.opt
+daemon) used to get the artifact properties of a URL, edit in config/lockss.txt
 the following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlArtifactWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
@@ -94,8 +94,8 @@ org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
 
 To specify the properties of the SOAP web service (like the classic LOCKSS
-daemon) used to get the content linked to a URL of an Archival Unit, add in
-config/lockss.opt the following options with the appropriate values:
+daemon) used to get the content linked to a URL of an Archival Unit, edit in
+config/lockss.txt the following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
 org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
@@ -106,7 +106,7 @@ org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
 
 ### Getting Archival Unit contents from a REST web service
 To specify the properties of the REST web service used to get the URLs of an
-Archival Unit, add in config/lockss.opt the following options with the
+Archival Unit, edit in config/lockss.txt the following options with the
 appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
@@ -115,7 +115,7 @@ org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
 
 To specify the properties of the REST web service used to get the artifact
-properties of a URL, add in config/lockss.opt the following options with the
+properties of a URL, edit in config/lockss.txt the following options with the
 appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
@@ -124,7 +124,7 @@ org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
 
 To specify the properties of the REST web service used to get the content linked
-to a URL of an Archival Unit, add in config/lockss.opt the following options
+to a URL of an Archival Unit, edit in config/lockss.txt the following options
 with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
@@ -134,7 +134,7 @@ org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
 
 ### Using another REST web service for metadata storage
 To use another REST web service to store the extracted metadata, instead of
-storing it in the configured database, add in config/lockss.opt the following
+storing it in the configured database, edit in config/lockss.txt the following
 options with the appropriate values:
 
 org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:the-correct-port

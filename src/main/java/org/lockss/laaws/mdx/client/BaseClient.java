@@ -27,17 +27,13 @@
  */
 package org.lockss.laaws.mdx.client;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Base64;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
-import org.glassfish.jersey.client.ClientConfig;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 
 /**
  * A base client for all of the LAAWS-MDX web service operations.
@@ -46,41 +42,41 @@ public class BaseClient {
   private static final String userName = "lockss-u";
   private static final String password = "lockss-p";
 
-  private static final String baseUri = "http://localhost:28120";
+  protected static final String baseUri = "http://localhost:28120";
 
-  protected static WebTarget getWebTarget() {
-    ClientConfig config = new ClientConfig();
-    config.register(JacksonJsonProvider.class);
-    Client client = ClientBuilder.newClient(config);
-    WebTarget webTarget = client.target(baseUri);
-    webTarget.register(new BasicAuthenticator(userName, password));
+  /**
+   * Provides a RestTemplate that does not throw exceptions when the received
+   * status code is not 2xx.
+   * 
+   * @return a RestTemplate that does not throw exceptions when the received
+   *         status code is not 2xx.
+   */
+  protected static RestTemplate getRestTemplate() {
+    RestTemplate template = new RestTemplate();
+    template.setErrorHandler(new DefaultResponseErrorHandler(){
+      protected boolean hasError(HttpStatus statusCode) {
+	return false;
+      }
+    });
 
-    return webTarget;
+    return template;
   }
 
-  public static class BasicAuthenticator implements ClientRequestFilter {
-    private final String authenticationHeader;
+  /**
+   * Provides the basic HTTP headers to be used in a request.
+   * 
+   * @return a HttpHeaders with the Basic Authorization and Content Type
+   *         headers.
+   */
+  protected static HttpHeaders getHttpHeaders() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
 
-    public BasicAuthenticator(String username, String password) {
-      authenticationHeader = getAutheticationHeader(username, password);
-    }
+    String credentials = userName + ":" + password;
+    String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString(
+	credentials.getBytes(Charset.forName("US-ASCII")));
+    headers.set("Authorization", authHeaderValue);
 
-    @Override
-    public void filter(ClientRequestContext requestContext) throws IOException {
-      requestContext.getHeaders().putSingle(HttpHeaders.AUTHORIZATION,
-	  authenticationHeader);
-    }
-
-    private String getAutheticationHeader(String username, String password) {
-      StringBuffer sb = new StringBuffer(username);
-      sb.append(':').append(password);
-
-      try {
-	return "Basic " + Base64.getEncoder()
-	.encodeToString(sb.toString().getBytes("UTF-8"));
-      } catch (UnsupportedEncodingException uee) {
-	throw new RuntimeException(uee);
-      }
-    }
+    return headers;
   }
 }

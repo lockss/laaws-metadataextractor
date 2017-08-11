@@ -54,6 +54,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Test class for org.lockss.laaws.mdx.api.MdupdatesApiController.
@@ -181,7 +182,7 @@ public class MdupdatesApiControllerTest {
   /**
    * Runs the postMetadataAusItem()-related un-authenticated-specific tests.
    */
-  private void postMdupdatesUnAuthenticatedTest() {
+  private void postMdupdatesUnAuthenticatedTest() throws Exception {
     String uri = "/mdupdates";
 
     ResponseEntity<String> errorResponse = new TestRestTemplate()
@@ -221,7 +222,7 @@ public class MdupdatesApiControllerTest {
   /**
    * Runs the postMetadataAusItem()-related authenticated-specific tests.
    */
-  private void postMdupdatesAuthenticatedTest() {
+  private void postMdupdatesAuthenticatedTest() throws Exception {
     String uri = "/mdupdates";
 
     ResponseEntity<String> errorResponse = new TestRestTemplate()
@@ -261,7 +262,7 @@ public class MdupdatesApiControllerTest {
   /**
    * Runs the postMetadataAusItem()-related authentication-independent tests.
    */
-  private void postMdupdatesCommonTest() {
+  private void postMdupdatesCommonTest() throws Exception {
     String uri = "/mdupdates";
 
     ResponseEntity<String> errorResponse =
@@ -338,7 +339,8 @@ public class MdupdatesApiControllerTest {
    * @param expectedJobStatus
    *          A String with the expected job status.
    */
-  private void waitForJobStatus(String jobId, String expectedJobStatus) {
+  private void waitForJobStatus(String jobId, String expectedJobStatus)
+      throws Exception {
     Status jobStatus = null;
     int tries = 0;
 
@@ -365,8 +367,8 @@ public class MdupdatesApiControllerTest {
    *          A String with the identifier of the job.
    * @return a Status with the job status.
    */
-  private Status getJobStatus(String jobId) {
-    String uri = "/mdupdates/" + jobId;
+  private Status getJobStatus(String jobId) throws Exception {
+    String uri = "/mdupdates/" + UriUtils.encodePathSegment(jobId, "UTF-8");
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -483,7 +485,7 @@ public class MdupdatesApiControllerTest {
    * @return a JobPageInfo with the existing jobs.
    */
   private JobPageInfo getJobs() {
-    String uri = "/mdupdates/";
+    String uri = "/mdupdates";
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
