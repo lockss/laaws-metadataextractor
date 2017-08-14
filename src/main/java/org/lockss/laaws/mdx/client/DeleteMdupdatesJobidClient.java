@@ -53,7 +53,7 @@ public class DeleteMdupdatesJobidClient extends BaseClient {
     System.out.println("url = " + url);
 
     ResponseEntity<Job> response = getRestTemplate().exchange(url,
-	HttpMethod.GET, new HttpEntity<String>(null, getHttpHeaders()),
+	HttpMethod.DELETE, new HttpEntity<String>(null, getHttpHeaders()),
 	Job.class);
 
     int status = response.getStatusCodeValue();
