@@ -30,33 +30,9 @@ git submodule update
 cd laaws-daemon
 git checkout snafl-changes
 echo "Building LAAWS jars...\n"
-ant jar-lockss
-ant jar-plugins
 ant tdb-pln -Dplnname=prod
 cd ..
 ln -s laaws-daemon/test/frameworks/tdbxml
-# make sure we install the missing mvn jars
-# the LAAWS libs we use
-echo "Installing LAAWS jars to maven repo...\n"
-mvn install:install-file -Dfile=laaws-daemon/lib/lockss.jar -DpomFile=poms/lockss-2017.pom 
-mvn install:install-file -Dfile=laaws-daemon/lib/lockss-plugins.jar -DpomFile=poms/lockss-plugins-2017.pom
-echo "Installing old or patched jars to maven repo...\n"
-# - this is the pre-apache verision of the derby jars
-mvn install:install-file -Dfile=laaws-daemon/lib/derby.jar -DpomFile=poms/derby-9.1.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/derbyclient.jar -DpomFile=poms/derbyclient-9.1.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/derbynet.jar -DpomFile=poms/derbynet-9.1.pom
-# these are patched versions of older libs
-mvn install:install-file -Dfile=laaws-daemon/lib/webarchive-commons-1.1.7-patch1.jar -DpomFile=poms/webarchive-commons-1.1.7-patch1.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/htmlparser-1.6p.jar -DpomFile=poms/htmlparser-1.6p.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/jetty-5.1.5L.jar -DpomFile=poms/jetty-5.1.5L.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/JimiProClasses.jar -DpomFile=poms/JimiProClasses.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/JoSQL-2.2.jar -DpomFile=poms/JoSQL-2.2.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/JoSQL-contrib-1.5_5.jar -DpomFile=poms/JoSQL-contrib-1.5_5.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/oiosaml.java-21188-PATCHED.jar -DpomFile=poms/oiosaml.java-21188-PATCHED.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/PDFBox-0.7.3.jar -DpomFile=poms/PDFBox-0.7.3.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/rdf-api-2001-01-19.jar -DpomFile=poms/rdf-api-2001-01-19.pom
-mvn install:install-file -Dfile=laaws-daemon/lib/fastutil-5.0.7.jar -DpomFile=poms/fastutil-5.0.7.pom
-
 # run maven build and test
 echo "Running build and tests..."
 mvn clean package
