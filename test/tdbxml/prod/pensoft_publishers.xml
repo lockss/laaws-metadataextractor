@@ -1,0 +1,1375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE lockss-config [
+<!ELEMENT lockss-config (if|property)*>
+<!ELEMENT property (property|list|value|if)*>
+<!ELEMENT list (value)+>
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT test EMPTY>
+<!ELEMENT and (and|or|not|test)*>
+<!ELEMENT or (and|or|not|test)*>
+<!ELEMENT not (and|or|not|test)*>
+<!ELEMENT if (and|or|not|then|else|test|property)*>
+<!ELEMENT then (if|property)*>
+<!ELEMENT else (if|property)*>
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property value CDATA #IMPLIED>
+<!ATTLIST test hostname CDATA #IMPLIED>
+<!ATTLIST test group CDATA #IMPLIED>
+<!ATTLIST test daemonVersionMin CDATA #IMPLIED>
+<!ATTLIST test daemonVersionMax CDATA #IMPLIED>
+<!ATTLIST test daemonVersion CDATA #IMPLIED>
+<!ATTLIST test platformVersionMin CDATA #IMPLIED>
+<!ATTLIST test platformVersionMax CDATA #IMPLIED>
+<!ATTLIST test platformVersion CDATA #IMPLIED>
+<!ATTLIST test platformName CDATA #IMPLIED>
+<!ATTLIST if hostname CDATA #IMPLIED>
+<!ATTLIST if group CDATA #IMPLIED>
+<!ATTLIST if daemonVersionMin CDATA #IMPLIED>
+<!ATTLIST if daemonVersionMax CDATA #IMPLIED>
+<!ATTLIST if daemonVersion CDATA #IMPLIED>
+<!ATTLIST if platformVersionMin CDATA #IMPLIED>
+<!ATTLIST if platformVersionMax CDATA #IMPLIED>
+<!ATTLIST if platformVersion CDATA #IMPLIED>
+<!ATTLIST if platformName CDATA #IMPLIED>
+<!ATTLIST list append CDATA #IMPLIED>
+]>
+
+<!-- Aug 1, 2017 9:59:58 AM -->
+
+<lockss-config>
+
+ <property name="org.lockss.titleSet">
+
+  <property name="Pensoft Publishers">
+   <property name="name" value="All Pensoft Publishers AUs" />
+   <property name="class" value="xpath" />
+   <property name="xpath" value='[attributes/publisher="Pensoft Publishers"]' />
+  </property>
+
+ </property>
+
+ <property name="org.lockss.title">
+
+  <property name="PensoftOaiPluginBiodiversityDataJournal2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Biodiversity Data Journal" />
+   <property name="issn" value="1314-2836" />
+   <property name="eissn" value="1314-2828" />
+   <property name="issnl" value="1314-2836" />
+   <property name="type" value="journal" />
+   <property name="title" value="Biodiversity Data Journal Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://bdj.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="bdj" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="1" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginBiodiversityDataJournal2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Biodiversity Data Journal" />
+   <property name="issn" value="1314-2836" />
+   <property name="eissn" value="1314-2828" />
+   <property name="issnl" value="1314-2836" />
+   <property name="type" value="journal" />
+   <property name="title" value="Biodiversity Data Journal Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://bdj.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="bdj" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="2" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginBiodiversityDataJournal2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Biodiversity Data Journal" />
+   <property name="issn" value="1314-2836" />
+   <property name="eissn" value="1314-2828" />
+   <property name="issnl" value="1314-2836" />
+   <property name="type" value="journal" />
+   <property name="title" value="Biodiversity Data Journal Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://bdj.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="bdj" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="3" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginBiodiversityDataJournal2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Biodiversity Data Journal" />
+   <property name="issn" value="1314-2836" />
+   <property name="eissn" value="1314-2828" />
+   <property name="issnl" value="1314-2836" />
+   <property name="type" value="journal" />
+   <property name="title" value="Biodiversity Data Journal Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://bdj.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="bdj" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="4" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginBioRisk2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="BioRisk" />
+   <property name="issn" value="1313-2644" />
+   <property name="eissn" value="1313-2652" />
+   <property name="issnl" value="1313-2644" />
+   <property name="type" value="journal" />
+   <property name="title" value="BioRisk Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://biorisk.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="biorisk" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="8" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginBioRisk2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="BioRisk" />
+   <property name="issn" value="1313-2644" />
+   <property name="eissn" value="1313-2652" />
+   <property name="issnl" value="1313-2644" />
+   <property name="type" value="journal" />
+   <property name="title" value="BioRisk Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://biorisk.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="biorisk" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="9" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginBioRisk2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="BioRisk" />
+   <property name="issn" value="1313-2644" />
+   <property name="eissn" value="1313-2652" />
+   <property name="issnl" value="1313-2644" />
+   <property name="type" value="journal" />
+   <property name="title" value="BioRisk Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://biorisk.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="biorisk" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="10" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginBioRisk2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="BioRisk" />
+   <property name="issn" value="1313-2644" />
+   <property name="eissn" value="1313-2652" />
+   <property name="issnl" value="1313-2644" />
+   <property name="type" value="journal" />
+   <property name="title" value="BioRisk Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://biorisk.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="biorisk" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="11" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginComparativeCytogenetics2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Comparative Cytogenetics" />
+   <property name="issn" value="1993-0771" />
+   <property name="eissn" value="1993-078X" />
+   <property name="issnl" value="1993-0771" />
+   <property name="type" value="journal" />
+   <property name="title" value="Comparative Cytogenetics Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://compcytogen.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="compcytogen" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="7" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginComparativeCytogenetics2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Comparative Cytogenetics" />
+   <property name="issn" value="1993-0771" />
+   <property name="eissn" value="1993-078X" />
+   <property name="issnl" value="1993-0771" />
+   <property name="type" value="journal" />
+   <property name="title" value="Comparative Cytogenetics Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://compcytogen.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="compcytogen" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="8" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginComparativeCytogenetics2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Comparative Cytogenetics" />
+   <property name="issn" value="1993-0771" />
+   <property name="eissn" value="1993-078X" />
+   <property name="issnl" value="1993-0771" />
+   <property name="type" value="journal" />
+   <property name="title" value="Comparative Cytogenetics Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://compcytogen.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="compcytogen" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="9" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginComparativeCytogenetics2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Comparative Cytogenetics" />
+   <property name="issn" value="1993-0771" />
+   <property name="eissn" value="1993-078X" />
+   <property name="issnl" value="1993-0771" />
+   <property name="type" value="journal" />
+   <property name="title" value="Comparative Cytogenetics Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://compcytogen.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="compcytogen" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="10" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginDeutscheEntomologischeZeitschrift2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Deutsche Entomologische Zeitschrift" />
+   <property name="issn" value="1435-1951" />
+   <property name="eissn" value="1860-1324" />
+   <property name="issnl" value="1435-1951" />
+   <property name="type" value="journal" />
+   <property name="title" value="Deutsche Entomologische Zeitschrift Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://dez.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="dez" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="61" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginDeutscheEntomologischeZeitschrift2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Deutsche Entomologische Zeitschrift" />
+   <property name="issn" value="1435-1951" />
+   <property name="eissn" value="1860-1324" />
+   <property name="issnl" value="1435-1951" />
+   <property name="type" value="journal" />
+   <property name="title" value="Deutsche Entomologische Zeitschrift Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://dez.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="dez" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="62" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginDeutscheEntomologischeZeitschrift2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Deutsche Entomologische Zeitschrift" />
+   <property name="issn" value="1435-1951" />
+   <property name="eissn" value="1860-1324" />
+   <property name="issnl" value="1435-1951" />
+   <property name="type" value="journal" />
+   <property name="title" value="Deutsche Entomologische Zeitschrift Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://dez.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="dez" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="63" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginJournalofHymenopteraResearch2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Journal of Hymenoptera Research" />
+   <property name="issn" value="1070-9428" />
+   <property name="eissn" value="1314-2607" />
+   <property name="issnl" value="1070-9428" />
+   <property name="type" value="journal" />
+   <property name="title" value="Journal of Hymenoptera Research Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://jhr.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="jhr" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="30-35" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginJournalofHymenopteraResearch2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Journal of Hymenoptera Research" />
+   <property name="issn" value="1070-9428" />
+   <property name="eissn" value="1314-2607" />
+   <property name="issnl" value="1070-9428" />
+   <property name="type" value="journal" />
+   <property name="title" value="Journal of Hymenoptera Research Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://jhr.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="jhr" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="36-41" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginJournalofHymenopteraResearch2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Journal of Hymenoptera Research" />
+   <property name="issn" value="1070-9428" />
+   <property name="eissn" value="1314-2607" />
+   <property name="issnl" value="1070-9428" />
+   <property name="type" value="journal" />
+   <property name="title" value="Journal of Hymenoptera Research Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://jhr.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="jhr" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="42-47" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginJournalofHymenopteraResearch2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Journal of Hymenoptera Research" />
+   <property name="issn" value="1070-9428" />
+   <property name="eissn" value="1314-2607" />
+   <property name="issnl" value="1070-9428" />
+   <property name="type" value="journal" />
+   <property name="title" value="Journal of Hymenoptera Research Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://jhr.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="jhr" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="48-53" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginMycoKeys2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="MycoKeys" />
+   <property name="issn" value="1314-4057" />
+   <property name="eissn" value="1314-4049" />
+   <property name="issnl" value="1314-4057" />
+   <property name="type" value="journal" />
+   <property name="title" value="MycoKeys Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://mycokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="mycokeys" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="6-7" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginMycoKeys2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="MycoKeys" />
+   <property name="issn" value="1314-4057" />
+   <property name="eissn" value="1314-4049" />
+   <property name="issnl" value="1314-4057" />
+   <property name="type" value="journal" />
+   <property name="title" value="MycoKeys Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://mycokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="mycokeys" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="8" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginMycoKeys2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="MycoKeys" />
+   <property name="issn" value="1314-4057" />
+   <property name="eissn" value="1314-4049" />
+   <property name="issnl" value="1314-4057" />
+   <property name="type" value="journal" />
+   <property name="title" value="MycoKeys Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://mycokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="mycokeys" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="9-11" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginMycoKeys2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="MycoKeys" />
+   <property name="issn" value="1314-4057" />
+   <property name="eissn" value="1314-4049" />
+   <property name="issnl" value="1314-4057" />
+   <property name="type" value="journal" />
+   <property name="title" value="MycoKeys Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://mycokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="mycokeys" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="12-18" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNatureConservation2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Nature Conservation" />
+   <property name="eissn" value="1314-3301" />
+   <property name="type" value="journal" />
+   <property name="title" value="Nature Conservation Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://natureconservation.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="natureconservation" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="4-6" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNatureConservation2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Nature Conservation" />
+   <property name="eissn" value="1314-3301" />
+   <property name="type" value="journal" />
+   <property name="title" value="Nature Conservation Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://natureconservation.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="natureconservation" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="7-9" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNatureConservation2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Nature Conservation" />
+   <property name="eissn" value="1314-3301" />
+   <property name="type" value="journal" />
+   <property name="title" value="Nature Conservation Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://natureconservation.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="natureconservation" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="10-13" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNeoBiota2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="NeoBiota" />
+   <property name="issn" value="1619-0033" />
+   <property name="eissn" value="1314-2488" />
+   <property name="issnl" value="1619-0033" />
+   <property name="type" value="journal" />
+   <property name="title" value="NeoBiota Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://neobiota.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="neobiota" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="16-19" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNeoBiota2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="NeoBiota" />
+   <property name="issn" value="1619-0033" />
+   <property name="eissn" value="1314-2488" />
+   <property name="issnl" value="1619-0033" />
+   <property name="type" value="journal" />
+   <property name="title" value="NeoBiota Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://neobiota.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="neobiota" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="20-23" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNeoBiota2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="NeoBiota" />
+   <property name="issn" value="1619-0033" />
+   <property name="eissn" value="1314-2488" />
+   <property name="issnl" value="1619-0033" />
+   <property name="type" value="journal" />
+   <property name="title" value="NeoBiota Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://neobiota.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="neobiota" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="24-27" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNeoBiota2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="NeoBiota" />
+   <property name="issn" value="1619-0033" />
+   <property name="eissn" value="1314-2488" />
+   <property name="issnl" value="1619-0033" />
+   <property name="type" value="journal" />
+   <property name="title" value="NeoBiota Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://neobiota.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="neobiota" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="28-31" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNotaLepidopterologica2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Nota Lepidopterologica" />
+   <property name="issn" value="0342-7536" />
+   <property name="eissn" value="2367-5365" />
+   <property name="issnl" value="0342-7536" />
+   <property name="type" value="journal" />
+   <property name="title" value="Nota Lepidopterologica Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://nl.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="nl" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="37" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNotaLepidopterologica2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Nota Lepidopterologica" />
+   <property name="issn" value="0342-7536" />
+   <property name="eissn" value="2367-5365" />
+   <property name="issnl" value="0342-7536" />
+   <property name="type" value="journal" />
+   <property name="title" value="Nota Lepidopterologica Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://nl.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="nl" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="38" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginNotaLepidopterologica2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Nota Lepidopterologica" />
+   <property name="issn" value="0342-7536" />
+   <property name="eissn" value="2367-5365" />
+   <property name="issnl" value="0342-7536" />
+   <property name="type" value="journal" />
+   <property name="title" value="Nota Lepidopterologica Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://nl.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="nl" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="39" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginPhytoKeys2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="PhytoKeys" />
+   <property name="issn" value="1314-2011" />
+   <property name="eissn" value="1314-2003" />
+   <property name="issnl" value="1314-2011" />
+   <property name="type" value="journal" />
+   <property name="title" value="PhytoKeys Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://phytokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="phytokeys" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="20-32" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginPhytoKeys2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="PhytoKeys" />
+   <property name="issn" value="1314-2011" />
+   <property name="eissn" value="1314-2003" />
+   <property name="issnl" value="1314-2011" />
+   <property name="type" value="journal" />
+   <property name="title" value="PhytoKeys Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://phytokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="phytokeys" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="33-43" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginPhytoKeys2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="PhytoKeys" />
+   <property name="issn" value="1314-2011" />
+   <property name="eissn" value="1314-2003" />
+   <property name="issnl" value="1314-2011" />
+   <property name="type" value="journal" />
+   <property name="title" value="PhytoKeys Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://phytokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="phytokeys" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="44-57" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginPhytoKeys2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="PhytoKeys" />
+   <property name="issn" value="1314-2011" />
+   <property name="eissn" value="1314-2003" />
+   <property name="issnl" value="1314-2011" />
+   <property name="type" value="journal" />
+   <property name="title" value="PhytoKeys Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://phytokeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="phytokeys" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="58-75" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginSubterraneanBiology2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Subterranean Biology" />
+   <property name="issn" value="1768-1448" />
+   <property name="eissn" value="1314-2615" />
+   <property name="issnl" value="1768-1448" />
+   <property name="type" value="journal" />
+   <property name="title" value="Subterranean Biology Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://subtbiol.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="subtbiol" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="10-12" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginSubterraneanBiology2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Subterranean Biology" />
+   <property name="issn" value="1768-1448" />
+   <property name="eissn" value="1314-2615" />
+   <property name="issnl" value="1768-1448" />
+   <property name="type" value="journal" />
+   <property name="title" value="Subterranean Biology Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://subtbiol.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="subtbiol" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="13-14" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginSubterraneanBiology2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Subterranean Biology" />
+   <property name="issn" value="1768-1448" />
+   <property name="eissn" value="1314-2615" />
+   <property name="issnl" value="1768-1448" />
+   <property name="type" value="journal" />
+   <property name="title" value="Subterranean Biology Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://subtbiol.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="subtbiol" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="15-16" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginSubterraneanBiology2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Subterranean Biology" />
+   <property name="issn" value="1768-1448" />
+   <property name="eissn" value="1314-2615" />
+   <property name="issnl" value="1768-1448" />
+   <property name="type" value="journal" />
+   <property name="title" value="Subterranean Biology Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://subtbiol.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="subtbiol" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="17-20" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZooKeys2010">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="ZooKeys" />
+   <property name="issn" value="1313-2989" />
+   <property name="eissn" value="1313-2970" />
+   <property name="issnl" value="1313-2970" />
+   <property name="type" value="journal" />
+   <property name="title" value="ZooKeys Volume 2010" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zookeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2010" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zookeys" />
+   </property>
+   <property name="attributes.year" value="2010" />
+   <property name="attributes.volume" value="32-73" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZooKeys2011">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="ZooKeys" />
+   <property name="issn" value="1313-2989" />
+   <property name="eissn" value="1313-2970" />
+   <property name="issnl" value="1313-2970" />
+   <property name="type" value="journal" />
+   <property name="title" value="ZooKeys Volume 2011" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zookeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2011" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zookeys" />
+   </property>
+   <property name="attributes.year" value="2011" />
+   <property name="attributes.volume" value="74-160" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZooKeys2012">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="ZooKeys" />
+   <property name="issn" value="1313-2989" />
+   <property name="eissn" value="1313-2970" />
+   <property name="issnl" value="1313-2970" />
+   <property name="type" value="journal" />
+   <property name="title" value="ZooKeys Volume 2012" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zookeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2012" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zookeys" />
+   </property>
+   <property name="attributes.year" value="2012" />
+   <property name="attributes.volume" value="161-255" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZooKeys2013">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="ZooKeys" />
+   <property name="issn" value="1313-2989" />
+   <property name="eissn" value="1313-2970" />
+   <property name="issnl" value="1313-2970" />
+   <property name="type" value="journal" />
+   <property name="title" value="ZooKeys Volume 2013" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zookeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2013" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zookeys" />
+   </property>
+   <property name="attributes.year" value="2013" />
+   <property name="attributes.volume" value="256-366" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZooKeys2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="ZooKeys" />
+   <property name="issn" value="1313-2989" />
+   <property name="eissn" value="1313-2970" />
+   <property name="issnl" value="1313-2970" />
+   <property name="type" value="journal" />
+   <property name="title" value="ZooKeys Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zookeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zookeys" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="367-468" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZooKeys2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="ZooKeys" />
+   <property name="issn" value="1313-2989" />
+   <property name="eissn" value="1313-2970" />
+   <property name="issnl" value="1313-2970" />
+   <property name="type" value="journal" />
+   <property name="title" value="ZooKeys Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zookeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zookeys" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="469-548" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZooKeys2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="ZooKeys" />
+   <property name="issn" value="1313-2989" />
+   <property name="eissn" value="1313-2970" />
+   <property name="issnl" value="1313-2970" />
+   <property name="type" value="journal" />
+   <property name="title" value="ZooKeys Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zookeys.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zookeys" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="549-641" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZoosystematicsandEvolution2014">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Zoosystematics and Evolution" />
+   <property name="issn" value="1435-1935" />
+   <property name="eissn" value="1860-0743" />
+   <property name="issnl" value="1435-1935" />
+   <property name="type" value="journal" />
+   <property name="title" value="Zoosystematics and Evolution Volume 2014" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zse.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2014" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zse" />
+   </property>
+   <property name="attributes.year" value="2014" />
+   <property name="attributes.volume" value="90" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZoosystematicsandEvolution2015">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Zoosystematics and Evolution" />
+   <property name="issn" value="1435-1935" />
+   <property name="eissn" value="1860-0743" />
+   <property name="issnl" value="1435-1935" />
+   <property name="type" value="journal" />
+   <property name="title" value="Zoosystematics and Evolution Volume 2015" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zse.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2015" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zse" />
+   </property>
+   <property name="attributes.year" value="2015" />
+   <property name="attributes.volume" value="91" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+  <property name="PensoftOaiPluginZoosystematicsandEvolution2016">
+   <property name="attributes.publisher" value="Pensoft Publishers" />
+   <property name="journalTitle" value="Zoosystematics and Evolution" />
+   <property name="issn" value="1435-1935" />
+   <property name="eissn" value="1860-0743" />
+   <property name="issnl" value="1435-1935" />
+   <property name="type" value="journal" />
+   <property name="title" value="Zoosystematics and Evolution Volume 2016" />
+   <property name="plugin" value="org.lockss.plugin.pensoft.oai.PensoftOaiPlugin" />
+   <property name="param.1">
+    <property name="key" value="base_url" />
+    <property name="value" value="http://zse.pensoft.net/" />
+   </property>
+   <property name="param.2">
+    <property name="key" value="au_oai_date" />
+    <property name="value" value="2016" />
+   </property>
+   <property name="param.3">
+    <property name="key" value="au_oai_set" />
+    <property name="value" value="zse" />
+   </property>
+   <property name="attributes.year" value="2016" />
+   <property name="attributes.volume" value="92" />
+   <property name="attributes.rights" value="openaccess" />
+  </property>
+
+ </property>
+
+</lockss-config>

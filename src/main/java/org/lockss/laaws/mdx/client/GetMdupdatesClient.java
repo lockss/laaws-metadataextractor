@@ -27,6 +27,7 @@
  */
 package org.lockss.laaws.mdx.client;
 
+import java.net.URI;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -56,9 +57,12 @@ public class GetMdupdatesClient extends BaseClient {
       }
     }
 
-    ResponseEntity<JobPageInfo> response = getRestTemplate()
-	.exchange(builder.build().encode().toUri(), HttpMethod.GET,
-	    new HttpEntity<String>(null, getHttpHeaders()), JobPageInfo.class);
+    URI uri = builder.build().encode().toUri();
+    System.out.println("uri = " + uri);
+
+    ResponseEntity<JobPageInfo> response = getRestTemplate().exchange(uri,
+	HttpMethod.GET, new HttpEntity<String>(null, getHttpHeaders()),
+	JobPageInfo.class);
 
     int status = response.getStatusCodeValue();
     System.out.println("status = " + status);

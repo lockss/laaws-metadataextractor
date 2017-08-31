@@ -28,7 +28,6 @@ mkdir build
 cd build
 
 echo Copying source files...
-cp -r ../config .
 ####
 #### Begin local files configuration setup.
 ####

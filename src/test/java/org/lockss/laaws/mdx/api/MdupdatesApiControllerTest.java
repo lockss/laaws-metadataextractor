@@ -30,14 +30,21 @@ package org.lockss.laaws.mdx.api;
 import static org.junit.Assert.*;
 import static org.lockss.laaws.mdx.api.MdupdatesApi.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
+import org.lockss.laaws.rs.model.ArtifactPage;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +61,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.util.UriUtils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Test class for org.lockss.laaws.mdx.api.MdupdatesApiController.
@@ -74,11 +83,14 @@ public class MdupdatesApiControllerTest {
   @Autowired
   ApplicationContext appCtx;
 
-  String goodAuid = "org|lockss|plugin|taylorandfrancis|"
-      + "TaylorAndFrancisPlugin&base_url~http%3A%2F%2Fwww%2Etandfonline"
-      + "%2Ecom%2F&journal_id~rafr20&volume_name~8";
+  private boolean isRestRepositoryServiceAvailable = false;
 
-  String goodAuName = "Africa Review Volume 8";
+  String goodAuid = "org|lockss|plugin|pensoft|oai|PensoftOaiPlugin"
+      + "&au_oai_date~2014&au_oai_set~biorisk"
+      + "&base_url~http%3A%2F%2Fbiorisk%2Epensoft%2Enet%2F";
+
+  String goodAuName = "BioRisk Volume 2014";
+
   /**
    * Runs the tests with authentication turned off.
    * 
@@ -96,6 +108,8 @@ public class MdupdatesApiControllerTest {
 
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
+
+    checkRepositoryService("config/lockss.txt");
 
     getSwaggerDocsTest();
     postMdupdatesUnAuthenticatedTest();
@@ -122,6 +136,8 @@ public class MdupdatesApiControllerTest {
 
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
+
+    checkRepositoryService("config/lockss.txt");
 
     getSwaggerDocsTest();
     postMdupdatesAuthenticatedTest();
@@ -155,6 +171,8 @@ public class MdupdatesApiControllerTest {
 
     cmdLineArgs.add("-p");
     cmdLineArgs.add("config/lockss.txt");
+    cmdLineArgs.add("-p");
+    cmdLineArgs.add("config/lockss.opt");
 
     return cmdLineArgs;
   }
@@ -166,8 +184,10 @@ public class MdupdatesApiControllerTest {
    *           if there are problems.
    */
   private void getSwaggerDocsTest() throws Exception {
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
     ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
-	getTestUrl("/v2/api-docs"), HttpMethod.GET, null, String.class);
+	getTestUrlTemplate("/v2/api-docs"), HttpMethod.GET, null, String.class);
 
     HttpStatus statusCode = successResponse.getStatusCode();
     assertEquals(HttpStatus.OK, statusCode);
@@ -177,22 +197,25 @@ public class MdupdatesApiControllerTest {
         + "}}";
 
     JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
    * Runs the postMetadataAusItem()-related un-authenticated-specific tests.
    */
   private void postMdupdatesUnAuthenticatedTest() throws Exception {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
+    String url = getTestUrlTemplate("/mdupdates");
 
     ResponseEntity<String> errorResponse = new TestRestTemplate()
-	.exchange(getTestUrl(uri), HttpMethod.POST, null, String.class);
+	.exchange(url, HttpMethod.POST, null, String.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
 
     errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.POST, null, String.class);
+	.exchange(url, HttpMethod.POST, null, String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
@@ -200,8 +223,8 @@ public class MdupdatesApiControllerTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate().exchange(getTestUrl(uri),
-	HttpMethod.POST, new HttpEntity<String>(null, headers), String.class);
+    errorResponse = new TestRestTemplate().exchange(url, HttpMethod.POST,
+	new HttpEntity<String>(null, headers), String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, statusCode);
@@ -210,29 +233,33 @@ public class MdupdatesApiControllerTest {
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.POST,
-	    new HttpEntity<String>(null, headers), String.class);
+	.exchange(url, HttpMethod.POST, new HttpEntity<String>(null, headers),
+	    String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, statusCode);
 
     postMdupdatesCommonTest();
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
    * Runs the postMetadataAusItem()-related authenticated-specific tests.
    */
   private void postMdupdatesAuthenticatedTest() throws Exception {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
+    String url = getTestUrlTemplate("/mdupdates");
 
     ResponseEntity<String> errorResponse = new TestRestTemplate()
-	.exchange(getTestUrl(uri), HttpMethod.POST, null, String.class);
+	.exchange(url, HttpMethod.POST, null, String.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
 
     errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.POST, null, String.class);
+	.exchange(url, HttpMethod.POST, null, String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
@@ -240,8 +267,8 @@ public class MdupdatesApiControllerTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate().exchange(getTestUrl(uri),
-	HttpMethod.POST, new HttpEntity<String>(null, headers), String.class);
+    errorResponse = new TestRestTemplate().exchange(url, HttpMethod.POST,
+	new HttpEntity<String>(null, headers), String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
@@ -250,24 +277,27 @@ public class MdupdatesApiControllerTest {
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.POST,
-	    new HttpEntity<String>(null, headers), String.class);
+	.exchange(url, HttpMethod.POST, new HttpEntity<String>(null, headers),
+	    String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
 
     postMdupdatesCommonTest();
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
    * Runs the postMetadataAusItem()-related authentication-independent tests.
    */
   private void postMdupdatesCommonTest() throws Exception {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
 
-    ResponseEntity<String> errorResponse =
-	new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.POST, null, String.class);
+    String url = getTestUrlTemplate("/mdupdates");
+
+    ResponseEntity<String> errorResponse = new TestRestTemplate("lockss-u",
+	"lockss-p").exchange(url, HttpMethod.POST, null, String.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
@@ -275,9 +305,8 @@ public class MdupdatesApiControllerTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.POST,
-	    new HttpEntity<String>(null, headers), String.class);
+    errorResponse = new TestRestTemplate("lockss-u", "lockss-p").exchange(url,
+	HttpMethod.POST, new HttpEntity<String>(null, headers), String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, statusCode);
@@ -287,15 +316,20 @@ public class MdupdatesApiControllerTest {
 
     assertEquals(goodAuid, job.getAu().getId());
     assertEquals(goodAuName, job.getAu().getName());
-    assertEquals(1, job.getStatus().getCode().intValue());
     assertNotNull(job.getCreationDate());
-    assertNull(job.getStartDate());
     assertNull(job.getEndDate());
 
     String jobId = job.getId();
     assertNotNull(jobId);
 
-    waitForJobStatus(jobId, "Success");
+    if (isRestRepositoryServiceAvailable) {
+      waitForJobStatus(jobId, "Success");
+    } else {
+      waitForJobStatus(jobId,
+	  "Failure: java.net.ConnectException: Connection refused");
+    }
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
@@ -315,13 +349,13 @@ public class MdupdatesApiControllerTest {
     metadataUpdateSpec.setAuid(auId);
     metadataUpdateSpec.setUpdateType(updateType);
 
-    String uri = "/mdupdates";
+    String url = getTestUrlTemplate("/mdupdates");
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     ResponseEntity<Job> response = new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.POST,
+	.exchange(url, HttpMethod.POST,
 	    new HttpEntity<MetadataUpdateSpec>(metadataUpdateSpec, headers),
 	    Job.class);
 
@@ -346,6 +380,8 @@ public class MdupdatesApiControllerTest {
 
     while (tries < 10) {
       jobStatus =  getJobStatus(jobId);
+      if (logger.isDebugEnabled()) logger.debug("jobStatus = " + jobStatus);
+
       if (expectedJobStatus.equals(jobStatus.getMsg())) {
 	break;
       }
@@ -368,18 +404,29 @@ public class MdupdatesApiControllerTest {
    * @return a Status with the job status.
    */
   private Status getJobStatus(String jobId) throws Exception {
-    String uri = "/mdupdates/" + UriUtils.encodePathSegment(jobId, "UTF-8");
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
+    String template = getTestUrlTemplate("/mdupdates/{jobid}");
+
+    // Create the URI of the request to the REST service.
+    UriComponents uriComponents = UriComponentsBuilder.fromUriString(template)
+	.build().expand(Collections.singletonMap("jobid", jobId));
+
+    URI uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    if (logger.isDebugEnabled()) logger.debug("uri = " + uri);
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     ResponseEntity<Status> response = new TestRestTemplate("lockss-u",
-	"lockss-p").exchange(getTestUrl(uri), HttpMethod.GET,
+	"lockss-p").exchange(uri, HttpMethod.GET,
 	    new HttpEntity<String>(null, headers), Status.class);
 
     HttpStatus statusCode = response.getStatusCode();
     assertEquals(HttpStatus.OK, statusCode);
 
+    if (logger.isDebugEnabled()) logger.debug("Done.");
     return response.getBody();
   }
 
@@ -387,53 +434,62 @@ public class MdupdatesApiControllerTest {
    * Runs the getMdupdates()-related un-authenticated-specific tests.
    */
   private void getMdupdatesUnAuthenticatedTest() {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
+    String url = getTestUrlTemplate("/mdupdates");
 
     ResponseEntity<JobPageInfo> errorResponse = new TestRestTemplate()
-	.exchange(getTestUrl(uri), HttpMethod.GET, null, JobPageInfo.class);
+	.exchange(url, HttpMethod.GET, null, JobPageInfo.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
 
     errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.GET, null, JobPageInfo.class);
+	.exchange(url, HttpMethod.GET, null, JobPageInfo.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
 
     getMdupdatesCommonTest();
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
    * Runs the getMdupdates()-related authenticated-specific tests.
    */
   private void getMdupdatesAuthenticatedTest() {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
+    String url = getTestUrlTemplate("/mdupdates");
 
     ResponseEntity<JobPageInfo> errorResponse = new TestRestTemplate()
-	.exchange(getTestUrl(uri), HttpMethod.GET, null, JobPageInfo.class);
+	.exchange(url, HttpMethod.GET, null, JobPageInfo.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
 
     errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.GET, null, JobPageInfo.class);
+	.exchange(url, HttpMethod.GET, null, JobPageInfo.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
 
     getMdupdatesCommonTest();
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
    * Runs the getMdupdates()-related authentication-independent tests.
    */
   private void getMdupdatesCommonTest() {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
 
-    ResponseEntity<JobPageInfo> errorResponse =
-	new TestRestTemplate("lockss-u", "lockss-p").exchange(getTestUrl(uri),
-	    HttpMethod.GET, null, JobPageInfo.class);
+    String url = getTestUrlTemplate("/mdupdates");
+
+    ResponseEntity<JobPageInfo> errorResponse = new TestRestTemplate("lockss-u",
+	"lockss-p").exchange(url, HttpMethod.GET, null, JobPageInfo.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
@@ -454,29 +510,45 @@ public class MdupdatesApiControllerTest {
     assertEquals(goodAuName, firstJob.getAu().getName());
     assertEquals(5, firstJob.getStatus().getCode().intValue());
 
-    uri = "/mdupdates/1234567";
+    String template = getTestUrlTemplate("/mdupdates/{jobid}");
+
+    // Create the URI of the request to the REST service.
+    UriComponents uriComponents = UriComponentsBuilder.fromUriString(template)
+	.build().expand(Collections.singletonMap("jobid", "1234567"));
+
+    URI uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    if (logger.isDebugEnabled()) logger.debug("uri = " + uri);
 
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.GET,
-	    new HttpEntity<String>(null, headers), JobPageInfo.class);
+    errorResponse = new TestRestTemplate("lockss-u", "lockss-p").exchange(uri,
+	HttpMethod.GET, new HttpEntity<String>(null, headers),
+	JobPageInfo.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.NOT_FOUND, statusCode);
 
-    uri = "/mdupdates/non-numeric";
+    // Create the URI of the request to the REST service.
+    uriComponents = UriComponentsBuilder.fromUriString(template).build()
+	.expand(Collections.singletonMap("jobid", "non-numeric"));
+
+    uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    if (logger.isDebugEnabled()) logger.debug("uri = " + uri);
 
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.GET,
-	    new HttpEntity<String>(null, headers), JobPageInfo.class);
+    errorResponse = new TestRestTemplate("lockss-u", "lockss-p").exchange(uri,
+	HttpMethod.GET, new HttpEntity<String>(null, headers),
+	JobPageInfo.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.NOT_FOUND, statusCode);
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
@@ -485,13 +557,15 @@ public class MdupdatesApiControllerTest {
    * @return a JobPageInfo with the existing jobs.
    */
   private JobPageInfo getJobs() {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
+    String url = getTestUrlTemplate("/mdupdates");
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     ResponseEntity<JobPageInfo> response = new TestRestTemplate("lockss-u",
-	"lockss-p").exchange(getTestUrl(uri), HttpMethod.GET,
+	"lockss-p").exchange(url, HttpMethod.GET,
 	    new HttpEntity<String>(null, headers), JobPageInfo.class);
 
     HttpStatus statusCode = response.getStatusCode();
@@ -502,6 +576,7 @@ public class MdupdatesApiControllerTest {
     assertEquals(new Integer(1), result.getPageInfo().getCurrentPage());
     assertNull(result.getPageInfo().getTotalCount());
 
+    if (logger.isDebugEnabled()) logger.debug("Done.");
     return result;
   }
 
@@ -509,10 +584,12 @@ public class MdupdatesApiControllerTest {
    * Runs the deleteMdupdates()-related un-authenticated-specific tests.
    */
   private void deleteMdupdatesUnAuthenticatedTest() {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
 
-    ResponseEntity<String> errorResponse = new TestRestTemplate()
-	.exchange(getTestUrl(uri), HttpMethod.DELETE, null, String.class);
+    String url = getTestUrlTemplate("/mdupdates");
+
+    ResponseEntity<String> errorResponse = new TestRestTemplate().exchange(url,
+	HttpMethod.DELETE, null, String.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
@@ -520,9 +597,9 @@ public class MdupdatesApiControllerTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    ResponseEntity<Integer> successResponse =
-	new TestRestTemplate().exchange(getTestUrl(uri), HttpMethod.DELETE,
-	    new HttpEntity<String>(null, headers), Integer.class);
+    ResponseEntity<Integer> successResponse = new TestRestTemplate()
+	.exchange(url, HttpMethod.DELETE, new HttpEntity<String>(null, headers),
+	    Integer.class);
 
     statusCode = successResponse.getStatusCode();
     assertEquals(HttpStatus.OK, statusCode);
@@ -534,8 +611,8 @@ public class MdupdatesApiControllerTest {
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     successResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.DELETE,
-	    new HttpEntity<String>(null, headers), Integer.class);
+	.exchange(url, HttpMethod.DELETE, new HttpEntity<String>(null, headers),
+	    Integer.class);
 
     statusCode = successResponse.getStatusCode();
     assertEquals(HttpStatus.OK, statusCode);
@@ -544,16 +621,20 @@ public class MdupdatesApiControllerTest {
     assertEquals(0, result.intValue());
 
     deleteMdupdatesCommonTest();
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
    * Runs the deleteMdupdates()-related authenticated-specific tests.
    */
   private void deleteMdupdatesAuthenticatedTest() {
-    String uri = "/mdupdates";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
 
-    ResponseEntity<String> errorResponse = new TestRestTemplate()
-	.exchange(getTestUrl(uri), HttpMethod.DELETE, null, String.class);
+    String url = getTestUrlTemplate("/mdupdates");
+
+    ResponseEntity<String> errorResponse = new TestRestTemplate().exchange(url,
+	HttpMethod.DELETE, null, String.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
@@ -561,9 +642,8 @@ public class MdupdatesApiControllerTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse =
-	new TestRestTemplate().exchange(getTestUrl(uri), HttpMethod.DELETE,
-	    new HttpEntity<String>(null, headers), String.class);
+    errorResponse = new TestRestTemplate().exchange(url, HttpMethod.DELETE,
+	new HttpEntity<String>(null, headers), String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
@@ -572,14 +652,14 @@ public class MdupdatesApiControllerTest {
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
-	.exchange(getTestUrl(uri), HttpMethod.DELETE,
-	    new HttpEntity<String>(null, headers), String.class);
+	.exchange(url, HttpMethod.DELETE, new HttpEntity<String>(null, headers),
+	    String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNAUTHORIZED, statusCode);
 
     ResponseEntity<Integer> successResponse = new TestRestTemplate("lockss-u",
-	"lockss-p").exchange(getTestUrl(uri), HttpMethod.DELETE,
+	"lockss-p").exchange(url, HttpMethod.DELETE,
 	    new HttpEntity<String>(null, headers), Integer.class);
 
     statusCode = successResponse.getStatusCode();
@@ -591,9 +671,9 @@ public class MdupdatesApiControllerTest {
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    successResponse = new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.DELETE,
-	    new HttpEntity<String>(null, headers), Integer.class);
+    successResponse = new TestRestTemplate("lockss-u", "lockss-p").exchange(url,
+	HttpMethod.DELETE, new HttpEntity<String>(null, headers),
+	Integer.class);
 
     statusCode = successResponse.getStatusCode();
     assertEquals(HttpStatus.OK, statusCode);
@@ -602,17 +682,28 @@ public class MdupdatesApiControllerTest {
     assertEquals(0, result.intValue());
 
     deleteMdupdatesCommonTest();
+
+    if (logger.isDebugEnabled()) logger.debug("Done.");
   }
 
   /**
    * Runs the deleteMdupdates()-related authenticated-independent tests.
    */
   private void deleteMdupdatesCommonTest() {
-    String uri = "/mdupdates/1234567";
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
 
-    ResponseEntity<String> errorResponse =
-	new TestRestTemplate("lockss-u", "lockss-p").exchange(getTestUrl(uri),
-	    HttpMethod.DELETE, null, String.class);
+    String template = getTestUrlTemplate("/mdupdates/{jobid}");
+
+    // Create the URI of the request to the REST service.
+    UriComponents uriComponents = UriComponentsBuilder.fromUriString(template)
+	.build().expand(Collections.singletonMap("jobid", "1234567"));
+
+    URI uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    if (logger.isDebugEnabled()) logger.debug("uri = " + uri);
+
+    ResponseEntity<String> errorResponse = new TestRestTemplate("lockss-u",
+	"lockss-p").exchange(uri, HttpMethod.DELETE, null, String.class);
 
     HttpStatus statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
@@ -620,34 +711,95 @@ public class MdupdatesApiControllerTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.DELETE,
-	    new HttpEntity<String>(null, headers), String.class);
+    errorResponse = new TestRestTemplate("lockss-u", "lockss-p").exchange(uri,
+	HttpMethod.DELETE, new HttpEntity<String>(null, headers), String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.NOT_FOUND, statusCode);
 
-    uri = "/mdupdates/non-numeric";
+    // Create the URI of the request to the REST service.
+    uriComponents = UriComponentsBuilder.fromUriString(template).build()
+	.expand(Collections.singletonMap("jobid", "non-numeric"));
+
+    uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    if (logger.isDebugEnabled()) logger.debug("uri = " + uri);
 
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate("lockss-u", "lockss-p")
-	.exchange(getTestUrl(uri), HttpMethod.DELETE,
-	    new HttpEntity<String>(null, headers), String.class);
+    errorResponse = new TestRestTemplate("lockss-u", "lockss-p").exchange(uri,
+	HttpMethod.DELETE, new HttpEntity<String>(null, headers), String.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.NOT_FOUND, statusCode);
+    if (logger.isDebugEnabled()) logger.debug("Done.");
+  }
+
+  public void checkRepositoryService(String fileName) {
+    FileInputStream is = null;
+    String restServiceLocation = null;
+
+    try {
+      File file = new File(fileName);
+      is = new FileInputStream(file);
+      Properties properties = new Properties();
+      properties.load(is);
+
+      restServiceLocation = properties.getProperty("org.lockss.plugin"
+	  + ".auContentFromWs.urlListWs.restServiceLocation");
+      if (logger.isDebugEnabled())
+	logger.debug("restServiceLocation = " + restServiceLocation);
+    } catch (FileNotFoundException fnfe) {
+      fnfe.printStackTrace();
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    } finally {
+      try {
+	is.close();
+      } catch (IOException ioe) {
+      }
+    }
+
+    // Initialize the request to the REST service.
+    RestTemplate restTemplate = new RestTemplate();
+
+    // Initialize the request headers.
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    // Create the URI of the request to the REST service.
+    UriComponents uriComponents =
+	UriComponentsBuilder.fromUriString(restServiceLocation).build()
+	.expand(Collections.singletonMap("uri", ""));
+
+    URI uri = UriComponentsBuilder.newInstance()
+	.uriComponents(uriComponents).build().encode().toUri();
+    if (logger.isDebugEnabled())
+	logger.debug("Making request to '" + uri + "'...");
+
+    // Make the request to the REST service and get its response.
+    try {
+      restTemplate.exchange(uri, HttpMethod.GET,
+	  new HttpEntity<String>(null, headers), ArtifactPage.class);
+      isRestRepositoryServiceAvailable = true;
+    } catch (Exception e) {
+    }
+
+    if (logger.isDebugEnabled())
+      logger.debug("isRestRepositoryServiceAvailable = "
+	  + isRestRepositoryServiceAvailable);
   }
 
   /**
-   * Provides the URL to be tested.
+   * Provides the URL template to be tested.
    * 
-   * @param uri
-   *          A String with the URI of the URL to be tested.
-   * @return a String with the URL to be tested.
+   * @param pathAndQueryParams
+   *          A String with the path and query parameters of the URL template to
+   *          be tested.
+   * @return a String with the URL template to be tested.
    */
-  private String getTestUrl(String uri) {
-    return "http://localhost:" + port + uri;
+  private String getTestUrlTemplate(String pathAndQueryParams) {
+    return "http://localhost:" + port + pathAndQueryParams;
   }
 }

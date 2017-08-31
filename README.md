@@ -38,6 +38,37 @@ run `initBuild`
 ### Set up the TDB tree:
 Edit ./runLaawsMdx and set the TDB_DIR variable properly.
 
+### Specify the Repository REST web service
+This web service requires that an external Repository REST web service is
+running so as to provide the contents of Archival Units.
+
+To specify the properties of the external REST web service used to get the URLs
+of an Archival Unit, edit in config/lockss.txt the following options with the
+appropriate values:
+
+org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
+org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&auid={auid}
+org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
+
+To specify the properties of the external REST web service used to get the
+artifact properties of a URL, edit in config/lockss.txt the following options
+with the appropriate values:
+
+org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
+org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&uri={uri}
+org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
+
+To specify the properties of the external REST web service used to get the
+content linked to a URL of an Archival Unit, edit in config/lockss.txt the
+following options with the appropriate values:
+
+org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
+org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts/{artifactid}
+org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
+org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
+
 ### Build the web service:
 `./buildLaawsMdx`
 
@@ -69,68 +100,6 @@ This will use port 28120. To use another port, edit the value of the
 
 ### Stop the web service:
 `./stopLaawsMdx`
-
-### Getting Archival Unit contents from a SOAP web service
-To specify the properties of the SOAP web service (like the classic LOCKSS
-daemon) used to get the URLs of an Archival Unit, edit in config/lockss.txt the
-following options with the appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlListWs.addressLocation=http://localhost:8081/ws/DaemonStatusService?wsdl
-org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlListWs.serviceName=DaemonStatusServiceImplService
-org.lockss.plugin.auContentFromWs.urlListWs.targetNameSpace=http://status.ws.lockss.org/
-org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
-
-To specify the properties of the SOAP web service (like the classic LOCKSS
-daemon) used to get the artifact properties of a URL, edit in config/lockss.txt
-the following options with the appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlArtifactWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
-org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlArtifactWs.serviceName=ContentServiceImplService
-org.lockss.plugin.auContentFromWs.urlArtifactWs.targetNameSpace=http://content.ws.lockss.org/
-org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
-
-To specify the properties of the SOAP web service (like the classic LOCKSS
-daemon) used to get the content linked to a URL of an Archival Unit, edit in
-config/lockss.txt the following options with the appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlContentWs.addressLocation=http://localhost:8081/ws/ContentService?wsdl
-org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlContentWs.serviceName=ContentServiceImplService
-org.lockss.plugin.auContentFromWs.urlContentWs.targetNameSpace=http://content.ws.lockss.org/
-org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
-
-### Getting Archival Unit contents from a REST web service
-To specify the properties of the REST web service used to get the URLs of an
-Archival Unit, edit in config/lockss.txt the following options with the
-appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&auid={auid}
-org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
-
-To specify the properties of the REST web service used to get the artifact
-properties of a URL, edit in config/lockss.txt the following options with the
-appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&uri={uri}
-org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
-
-To specify the properties of the REST web service used to get the content linked
-to a URL of an Archival Unit, edit in config/lockss.txt the following options
-with the appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts/{artifactid}
-org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
 
 ### Using another REST web service for metadata storage
 To use another REST web service to store the extracted metadata, instead of

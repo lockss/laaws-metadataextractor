@@ -27,11 +27,14 @@
  */
 package org.lockss.laaws.mdx.client;
 
+import java.net.URI;
+import java.util.Collections;
 import org.lockss.laaws.mdx.model.Job;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Client for the deleteMdupdatesJobid() operation.
@@ -48,11 +51,17 @@ public class DeleteMdupdatesJobidClient extends BaseClient {
 	  + "identifier of the job to be deleted.");
     }
 
-    String url = baseUri + "/mdupdates/"
-	+ UriUtils.encodePathSegment(args[0], "UTF-8");
-    System.out.println("url = " + url);
+    String template = baseUri + "/mdupdates/{jobid}";
 
-    ResponseEntity<Job> response = getRestTemplate().exchange(url,
+    // Create the URI of the request to the REST service.
+    UriComponents uriComponents = UriComponentsBuilder.fromUriString(template)
+	.build().expand(Collections.singletonMap("jobid", args[0]));
+
+    URI uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    System.out.println("uri = " + uri);
+
+    ResponseEntity<Job> response = getRestTemplate().exchange(uri,
 	HttpMethod.DELETE, new HttpEntity<String>(null, getHttpHeaders()),
 	Job.class);
 

@@ -28,7 +28,6 @@
 package org.lockss.laaws.mdx.api;
 
 import io.swagger.annotations.ApiParam;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.MalformedParametersException;
 import java.security.AccessControlException;
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriUtils;
 
 /**
  * Controller for access to the AU metadata jobs.
@@ -113,30 +111,21 @@ public class MdupdatesApiController implements MdupdatesApi {
 
     SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
 
-    String decodedJobId = null;
-
     try {
-      decodedJobId = UriUtils.decode(jobid, "UTF-8");
-      if (log.isDebugEnabled()) log.debug("decodedJobId = " + decodedJobId);
-
-      JobAuStatus jobAuStatus = getJobManager().removeJob(decodedJobId);
+      JobAuStatus jobAuStatus = getJobManager().removeJob(jobid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Job result = new Job(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
       return new ResponseEntity<Job>(result, HttpStatus.OK);
-    } catch (UnsupportedEncodingException uee) {
-      String message = "Cannot decode jobid = '" + jobid + "'";
-      log.error(message, uee);
-      throw new MalformedParametersException(message);
     } catch (IllegalArgumentException iae) {
-      String message = "No job found for jobid = '" + decodedJobId + "'";
+      String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
       throw new IllegalArgumentException(message);
     } catch (Exception e) {
       String message =
-	  "Cannot deleteMdupdatesJobid() for jobid = '" + decodedJobId + "'";
+	  "Cannot deleteMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
       throw new RuntimeException(message);
     }
@@ -230,30 +219,20 @@ public class MdupdatesApiController implements MdupdatesApi {
       String jobid) {
     if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
 
-    String decodedJobId = null;
-
     try {
-      decodedJobId = UriUtils.decode(jobid, "UTF-8");
-      if (log.isDebugEnabled()) log.debug("decodedJobId = " + decodedJobId);
-
-      JobAuStatus jobAuStatus = getJobManager().getJobStatus(decodedJobId);
+      JobAuStatus jobAuStatus = getJobManager().getJobStatus(jobid);
       if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
 
       Status result = new Status(jobAuStatus);
       if (log.isDebugEnabled()) log.debug("result = " + result);
 
       return new ResponseEntity<Status>(result, HttpStatus.OK);
-    } catch (UnsupportedEncodingException uee) {
-      String message = "Cannot decode jobid = '" + jobid + "'";
-      log.error(message, uee);
-      throw new MalformedParametersException(message);
     } catch (IllegalArgumentException iae) {
-      String message = "No job found for jobid = '" + decodedJobId + "'";
+      String message = "No job found for jobid = '" + jobid + "'";
       log.error(message);
       throw new IllegalArgumentException(message);
     } catch (Exception e) {
-      String message =
-	  "Cannot getMdupdatesJobid() for jobid = '" + decodedJobId + "'";
+      String message = "Cannot getMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
       throw new RuntimeException(message);
     }
@@ -278,7 +257,6 @@ public class MdupdatesApiController implements MdupdatesApi {
       log.debug("metadataUpdateSpec = " + metadataUpdateSpec);
 
     SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
-
     String auid = null;
 
     try {

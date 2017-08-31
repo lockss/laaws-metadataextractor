@@ -27,11 +27,13 @@
  */
 package org.lockss.laaws.mdx.client;
 
+import java.net.URI;
 import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Client for the postMdupdates() operation.
@@ -57,9 +59,15 @@ public class PostMdupdatesClient extends BaseClient {
     params.setUpdateType(args[1]);
     System.out.println("params = '" + params + "'");
 
-    String url = baseUri + "/mdupdates";
+    String template = baseUri + "/mdupdates";
 
-    ResponseEntity<Job> response = getRestTemplate().exchange(url,
+    // Create the URI of the request to the REST service.
+    URI uri = UriComponentsBuilder.newInstance().uriComponents(
+	UriComponentsBuilder.fromUriString(template).build())
+	.build().encode().toUri();
+    System.out.println("uri = " + uri);
+
+    ResponseEntity<Job> response = getRestTemplate().exchange(uri,
 	HttpMethod.POST, new HttpEntity<MetadataUpdateSpec>(params,
 	    getHttpHeaders()), Job.class);
 
