@@ -771,7 +771,7 @@ public class MdupdatesApiControllerTest {
     // Create the URI of the request to the REST service.
     UriComponents uriComponents =
 	UriComponentsBuilder.fromUriString(restServiceLocation).build()
-	.expand(Collections.singletonMap("uri", ""));
+	.expand(Collections.singletonMap("auid", ""));
 
     URI uri = UriComponentsBuilder.newInstance()
 	.uriComponents(uriComponents).build().encode().toUri();
