@@ -325,8 +325,7 @@ public class MdupdatesApiControllerTest {
     if (isRestRepositoryServiceAvailable) {
       waitForJobStatus(jobId, "Success");
     } else {
-      waitForJobStatus(jobId,
-	  "Failure: java.net.ConnectException: Connection refused");
+      waitForJobStatus(jobId, "Failure");
     }
 
     if (logger.isDebugEnabled()) logger.debug("Done.");
@@ -370,19 +369,22 @@ public class MdupdatesApiControllerTest {
    * 
    * @param jobId
    *          A String with the identifier of the job.
-   * @param expectedJobStatus
-   *          A String with the expected job status.
+   * @param expectedJobStatusPrefix
+   *          A String with the expected job status first characters.
    */
-  private void waitForJobStatus(String jobId, String expectedJobStatus)
+  private void waitForJobStatus(String jobId, String expectedJobStatusPrefix)
       throws Exception {
-    Status jobStatus = null;
     int tries = 0;
+    String jobStatusMessage = "";
 
     while (tries < 10) {
-      jobStatus =  getJobStatus(jobId);
+      Status jobStatus =  getJobStatus(jobId);
       if (logger.isDebugEnabled()) logger.debug("jobStatus = " + jobStatus);
 
-      if (expectedJobStatus.equals(jobStatus.getMsg())) {
+      jobStatusMessage = jobStatus.getMsg();
+
+      if (jobStatusMessage != null
+	  && jobStatusMessage.startsWith(expectedJobStatusPrefix)) {
 	break;
       }
 
@@ -393,7 +395,8 @@ public class MdupdatesApiControllerTest {
       tries++;
     }
 
-    assertEquals(expectedJobStatus, jobStatus.getMsg());
+    assertTrue(jobStatusMessage != null
+	&& jobStatusMessage.startsWith(expectedJobStatusPrefix));
   }
 
   /**
@@ -771,7 +774,7 @@ public class MdupdatesApiControllerTest {
     // Create the URI of the request to the REST service.
     UriComponents uriComponents =
 	UriComponentsBuilder.fromUriString(restServiceLocation).build()
-	.expand(Collections.singletonMap("auid", ""));
+	.expand(Collections.singletonMap("auid", "someAuId"));
 
     URI uri = UriComponentsBuilder.newInstance()
 	.uriComponents(uriComponents).build().encode().toUri();
@@ -780,10 +783,16 @@ public class MdupdatesApiControllerTest {
 
     // Make the request to the REST service and get its response.
     try {
-      restTemplate.exchange(uri, HttpMethod.GET,
-	  new HttpEntity<String>(null, headers), ArtifactPage.class);
-      isRestRepositoryServiceAvailable = true;
+      ResponseEntity<ArtifactPage> result = restTemplate.exchange(uri,
+	  HttpMethod.GET, new HttpEntity<String>(null, headers),
+	  ArtifactPage.class);
+
+      int statusCode = result.getStatusCodeValue();
+      if (logger.isDebugEnabled()) logger.debug("statusCode = " + statusCode);
+
+      isRestRepositoryServiceAvailable = statusCode == 200;
     } catch (Exception e) {
+      if (logger.isDebugEnabled()) logger.debug("No repository service.");
     }
 
     if (logger.isDebugEnabled())
