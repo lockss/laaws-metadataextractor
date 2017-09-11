@@ -1,4 +1,0 @@
-[submodule "laaws-daemon"]
-	path = laaws-daemon
-	url = git@gitlab.lockss.org:laaws/laaws-daemon
-	branch = snafl-changes
