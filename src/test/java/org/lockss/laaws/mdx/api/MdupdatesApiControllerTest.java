@@ -27,7 +27,6 @@
  */
 package org.lockss.laaws.mdx.api;
 
-import static org.junit.Assert.*;
 import static org.lockss.laaws.mdx.api.MdupdatesApi.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lockss.laaws.mdx.model.Job;
@@ -45,6 +46,7 @@ import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
 import org.lockss.laaws.rs.model.ArtifactPage;
+import org.lockss.test.SpringLockssTestCase;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +72,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class MdupdatesApiControllerTest {
+public class MdupdatesApiControllerTest extends SpringLockssTestCase {
   private static final Logger logger =
       LoggerFactory.getLogger(MdupdatesApiControllerTest.class);
 
@@ -83,13 +85,75 @@ public class MdupdatesApiControllerTest {
   @Autowired
   ApplicationContext appCtx;
 
-  private boolean isRestRepositoryServiceAvailable = false;
+  // The indication of whether the external REST Repository service is
+  // available.
+  private static boolean isRestRepositoryServiceAvailable = false;
 
+  // The identifier of an AU that exists in the test system.
   String goodAuid = "org|lockss|plugin|pensoft|oai|PensoftOaiPlugin"
       + "&au_oai_date~2014&au_oai_set~biorisk"
       + "&base_url~http%3A%2F%2Fbiorisk%2Epensoft%2Enet%2F";
 
+  // The name of an AU that exists in the test system.
   String goodAuName = "BioRisk Volume 2014";
+
+  /**
+   * Set up code to be run before all tests.
+   */
+  @BeforeClass
+  public static void setUpBeforeAllTests() throws IOException {
+    // Get the external REST Repository service location. 
+    String restServiceLocation = getPropertyValueFromFile(
+	"org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation",
+	new File("config/lockss.txt"));
+    if (logger.isDebugEnabled())
+      logger.debug("restServiceLocation = " + restServiceLocation);
+
+    assertNotNull("REST Repository service location not found",
+	restServiceLocation);
+
+    // Populate the indication of whether the external REST Repository service
+    // is available.
+    isRestRepositoryServiceAvailable =
+	checkExternalRestService(restServiceLocation,
+	    Collections.singletonMap("auid", "someAuId"),
+	    HttpStatus.OK.value());
+    if (logger.isDebugEnabled())
+      logger.debug("isRestRepositoryServiceAvailable = "
+	  + isRestRepositoryServiceAvailable);
+  }
+
+  /**
+   * Set up code to be run before each test.
+   * 
+   * @throws IOException if there are problems.
+   */
+  @Before
+  public void setUpBeforeEachTest() throws IOException {
+    if (logger.isDebugEnabled()) logger.debug("port = " + port);
+
+    // Set up the temporary directory where the test data will reside.
+    setUpTempDirectory(MdupdatesApiControllerTest.class.getCanonicalName());
+
+    // Copy the necessary files to the test temporary directory.
+    File srcTree = new File(new File("test"), "cache");
+    if (logger.isDebugEnabled())
+      logger.debug("srcTree = " + srcTree.getAbsolutePath());
+
+    copyToTempDir(srcTree);
+
+    srcTree = new File(new File("test"), "tdbxml");
+    if (logger.isDebugEnabled())
+      logger.debug("srcTree = " + srcTree.getAbsolutePath());
+
+    copyToTempDir(srcTree);
+
+    File srcFile = new File("lockss-plugins.jar");
+    if (logger.isDebugEnabled())
+      logger.debug("srcFile = " + srcFile.getAbsolutePath());
+
+    copyToTempDir(srcFile);
+  }
 
   /**
    * Runs the tests with authentication turned off.
@@ -99,17 +163,13 @@ public class MdupdatesApiControllerTest {
    */
   @Test
   public void runUnAuthenticatedTests() throws Exception {
-    if (logger.isDebugEnabled()) logger.debug("port = " + port);
-
     // Specify the command line parameters to be used for the tests.
     List<String> cmdLineArgs = getCommandLineArguments();
     cmdLineArgs.add("-p");
-    cmdLineArgs.add("config/mdupdatesApiControllerTestAuthOff.opt");
+    cmdLineArgs.add("test/config/mdupdatesApiControllerTestAuthOff.opt");
 
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
-
-    checkRepositoryService("config/lockss.txt");
 
     getSwaggerDocsTest();
     postMdupdatesUnAuthenticatedTest();
@@ -127,17 +187,13 @@ public class MdupdatesApiControllerTest {
    */
   @Test
   public void runAuthenticatedTests() throws Exception {
-    if (logger.isDebugEnabled()) logger.debug("port = " + port);
-
     // Specify the command line parameters to be used for the tests.
     List<String> cmdLineArgs = getCommandLineArguments();
     cmdLineArgs.add("-p");
-    cmdLineArgs.add("config/mdupdatesApiControllerTestAuthOn.opt");
+    cmdLineArgs.add("test/config/mdupdatesApiControllerTestAuthOn.opt");
 
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
-
-    checkRepositoryService("config/lockss.txt");
 
     getSwaggerDocsTest();
     postMdupdatesAuthenticatedTest();
@@ -157,11 +213,17 @@ public class MdupdatesApiControllerTest {
     cmdLineArgs.add("-p");
     cmdLineArgs.add("config/common.xml");
 
-    File folder = new File("tdbxml/prod");
+    File folder =
+	new File(new File(new File(getTempDirPath()), "tdbxml"), "prod");
+    if (logger.isDebugEnabled()) logger.debug("folder = " + folder);
+
     File[] listOfFiles = folder.listFiles();
+    if (logger.isDebugEnabled())
+      logger.debug("listOfFiles.length = " + listOfFiles.length);
 
     for (File file : listOfFiles) {
       String fileName = file.toString();
+      if (logger.isDebugEnabled()) logger.debug("fileName = " + fileName);
 
       if (fileName.endsWith(".xml")) {
 	cmdLineArgs.add("-p");
@@ -172,7 +234,9 @@ public class MdupdatesApiControllerTest {
     cmdLineArgs.add("-p");
     cmdLineArgs.add("config/lockss.txt");
     cmdLineArgs.add("-p");
-    cmdLineArgs.add("config/lockss.opt");
+    cmdLineArgs.add("test/config/lockss.opt");
+    cmdLineArgs.add("-p");
+    cmdLineArgs.add(getPlatformDiskSpaceConfigPath());
 
     return cmdLineArgs;
   }

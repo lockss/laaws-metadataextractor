@@ -22,46 +22,12 @@
 # be used in advertising or otherwise to promote the sale, use or other dealings
 # in this Software without prior written authorization from Stanford University.
 #
-####
-#### Begin local files configuration setup.
-####
-#### Comment out this block to get the configuration from a Configuration REST
-#### web service instead of local files.
-####
-cp laaws-daemon/lib/lockss-plugins.jar .
 TDB_DIR=tdbxml/prod
 TITLE_DBS="`find ${TDB_DIR} -maxdepth 1 -name \*.xml | sort`"
 PROP_URL_LIST="config/common.xml ${TITLE_DBS} config/lockss.txt config/lockss.opt"
 #
 # NB leading space meaningful here
-PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/ -p /g'`
-####
-#### End local files configuration setup.
-####
+PROP_ARGS=`echo " " $PROP_URL_LIST | sed 's/ [ ]*/,-p,/g'`
+echo $PROP_ARGS
 
-####
-#### Begin REST web service configuration setup.
-####
-#### Comment out this block to get the configuration from local files instead of
-#### a Configuration REST web service.
-####
-#rm -f lockss-plugins.jar
-#PROP_ARGS=""
-####
-#### End REST web service configuration setup.
-####
-
-log_dir=logs
-
-if [ ! -d "$log_dir" ]; then
-	mkdir $log_dir
-fi
-
-log_file=$log_dir/laawsmdx.log
-touch $log_file
-
-uber_jar=target/laaws-metadata-extraction-service-0.0.1-SNAPSHOT.jar
-
-java -jar $uber_jar ${PROP_ARGS} > $log_file 2>&1 &
-echo $! > dpid
-tail -f $log_file
+mvn spring-boot:run -Drun.arguments=" $PROP_ARGS"
