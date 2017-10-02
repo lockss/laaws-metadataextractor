@@ -217,20 +217,8 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
 	new File(new File(new File(getTempDirPath()), "tdbxml"), "prod");
     if (logger.isDebugEnabled()) logger.debug("folder = " + folder);
 
-    File[] listOfFiles = folder.listFiles();
-    if (logger.isDebugEnabled())
-      logger.debug("listOfFiles.length = " + listOfFiles.length);
-
-    for (File file : listOfFiles) {
-      String fileName = file.toString();
-      if (logger.isDebugEnabled()) logger.debug("fileName = " + fileName);
-
-      if (fileName.endsWith(".xml")) {
-	cmdLineArgs.add("-p");
-	cmdLineArgs.add(fileName);
-      }
-    }
-
+    cmdLineArgs.add("-x");
+    cmdLineArgs.add(folder.getAbsolutePath());
     cmdLineArgs.add("-p");
     cmdLineArgs.add("config/lockss.txt");
     cmdLineArgs.add("-p");
