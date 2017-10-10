@@ -193,8 +193,8 @@ local.properties
 # Project specific
 /logs
 /cache/
-/cache
 /tdbxml/
 /tdbxml
 /derby.log
 /cronstate.xml
+!/src/main/resources/lockss-plugins.jar
