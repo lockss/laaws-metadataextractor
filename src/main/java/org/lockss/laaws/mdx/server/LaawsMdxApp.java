@@ -90,46 +90,19 @@ public class LaawsMdxApp extends LockssDaemon {
     setSystemProperties();
 
     try {
-      if (!USE_REST_WEB_SERVICE.equals(args[0])) {
-	StartupOptions opts = getStartupOptions(args);
-	if (log.isDebugEnabled()) {
-	  log.debug("opts.getPropUrls() = " + opts.getPropUrls());
-	  log.debug("opts.getGroupNames() = " + opts.getGroupNames());
-	}
-
-	laawsMdxApp = new LaawsMdxApp(opts.getPropUrls(), opts.getGroupNames());
-      } else {
-	String serviceLocation = args[1];
-	if (log.isDebugEnabled())
-	  log.debug("serviceLocation = " + serviceLocation);
-
-	String serviceUser = args[2];
-	if (log.isDebugEnabled()) log.debug("serviceUser = " + serviceUser);
-
-	String servicePassword = args[3];
-	if (log.isDebugEnabled())
-	  log.debug("servicePassword = " + servicePassword);
-
-	String serviceTimeout = args[4];
-	if (log.isDebugEnabled())
-	  log.debug("serviceTimeout = " + serviceTimeout);
-
-	Integer timeoutInSeconds = null;
-
-	if (serviceTimeout != null) {
-	  try {
-	    // Convert the passed timeout text value to its numeric value.
-	    timeoutInSeconds = Integer.valueOf(serviceTimeout);
-	    if (log.isDebugEnabled())
-	      log.debug("timeoutInSeconds = " + timeoutInSeconds);
-	  } catch (NumberFormatException nfe) {
-	    log.warn("Invalid service timeout" + serviceTimeout + " ignored.");
-	  }
-	}
-
-	laawsMdxApp = new LaawsMdxApp(serviceLocation, serviceUser,
-	    servicePassword, timeoutInSeconds);
+      StartupOptions opts = getStartupOptions(args);
+      if (log.isDebugEnabled()) {
+	log.debug("opts.getBootstrapPropsUrl() = "
+	    + opts.getBootstrapPropsUrl());
+	log.debug("opts.getRestConfigServiceUrl() = "
+	    + opts.getRestConfigServiceUrl());
+	log.debug("opts.getPropUrls() = " + opts.getPropUrls());
+	log.debug("opts.getGroupNames() = " + opts.getGroupNames());
       }
+
+      laawsMdxApp = new LaawsMdxApp(opts.getBootstrapPropsUrl(),
+	  opts.getRestConfigServiceUrl(), opts.getPropUrls(),
+	  opts.getGroupNames());
 
       laawsMdxApp.startDaemon();
 
@@ -166,31 +139,18 @@ public class LaawsMdxApp extends LockssDaemon {
   /**
    * Constructor used to access configuration files.
    * 
+   * @param bootstrapPropsUrl
+   *          A String with the bootstrap configuration properties URL.
+   * @param restConfigServiceUrl
+   *          A String with the REST configuration service URL.
    * @param propUrls
    *          A List<String> with the configuration properties URLs.
    * @param groupNames
    *          A String with the group names.
    */
-  public LaawsMdxApp(List<String> propUrls, String groupNames) {
-    super(propUrls, groupNames);
-  }
-
-  /**
-   * Constructor used to access the Configuration REST web service.
-   *
-   * @param serviceLocation
-   *          A String with the configuration REST service location.
-   * @param serviceUser
-   *          A String with the configuration REST service user name.
-   * @param servicePassword
-   *          A String with the configuration REST service user password.
-   * @param serviceTimeout
-   *          An Integer with the configuration REST service connection timeout
-   *          value.
-   */
-  public LaawsMdxApp(String serviceLocation, String serviceUser,
-      String servicePassword, Integer serviceTimeout) {
-    super(serviceLocation, serviceUser, servicePassword, serviceTimeout);
+  public LaawsMdxApp(String bootstrapPropsUrl, String restConfigServiceUrl,
+      List<String> propUrls, String groupNames) {
+    super(bootstrapPropsUrl, restConfigServiceUrl, propUrls, groupNames);
   }
 
   /**
