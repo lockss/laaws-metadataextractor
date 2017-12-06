@@ -30,21 +30,22 @@ The LAAWS Metadata Extraction REST Web Service.
 `git clone --recursive ssh://git@gitlab.lockss.org/laaws/laaws-metadataextractor.git`
 
 ### Create the Eclipse project (if so desired)
-File -> Import... -> Maven -> Existing Maven Projects
+`File` -> `Import...` -> `Maven` -> `Existing Maven Projects`
 
-### Build and install the required LOCKSS daemon jar files:
-run `initBuild`
+### Set up the LOCKSS plugins JAR file:
+The LOCKSS plugins JAR file needs to be located at `./lockss-plugins.jar`.
 
 ### Set up the TDB tree:
-Edit ./runLaawsMdx and set the TDB_DIR variable properly.
+The TDB tree needs to be located at `./tdbxml/prod`, matching the definition
+in `./runLaawsMdx`.
 
 ### Specify the Repository REST web service
 This web service requires that an external Repository REST web service is
 running so as to provide the contents of Archival Units.
 
 To specify the properties of the external REST web service used to get the URLs
-of an Archival Unit, edit in config/lockss.txt the following options with the
-appropriate values:
+of an Archival Unit, edit in `config/lockss.txt` the following options with
+the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
 org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&auid={auid}
@@ -52,8 +53,8 @@ org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
 
 To specify the properties of the external REST web service used to get the
-artifact properties of a URL, edit in config/lockss.txt the following options
-with the appropriate values:
+artifact properties of a URL, edit in `config/lockss.txt` the following
+options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
 org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&uri={uri}
@@ -61,7 +62,7 @@ org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
 
 To specify the properties of the external REST web service used to get the
-content linked to a URL of an Archival Unit, edit in config/lockss.txt the
+content linked to a URL of an Archival Unit, edit in `config/lockss.txt` the
 following options with the appropriate values:
 
 org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
@@ -86,7 +87,7 @@ This will use port 28120. To use another port, edit the value of the
 `server.port` property in file
 `src/main/resources/application.properties`.
 
-The log is at ./logs/laawsmdx.log
+The log is at `./logs/laawsmdx.log`
 
 ### Build and run the web service:
 `./buildAndRunLaawsMdx`
@@ -103,8 +104,8 @@ This will use port 28120. To use another port, edit the value of the
 
 ### Using another REST web service for metadata storage
 To use another REST web service to store the extracted metadata, instead of
-storing it in the configured database, edit in config/lockss.txt the following
-options with the appropriate values:
+storing it in the configured database, edit in `config/lockss.txt` the
+following options with the appropriate values:
 
 org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:the-correct-port
 org.lockss.metadataManager.mdRest.timeoutValue=600
