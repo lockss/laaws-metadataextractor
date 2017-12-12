@@ -172,6 +172,7 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
     getSwaggerDocsTest();
+    getStatusTest();
     postMdupdatesUnAuthenticatedTest();
     getMdupdatesUnAuthenticatedTest();
     deleteMdupdatesUnAuthenticatedTest();
@@ -196,6 +197,7 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
     getSwaggerDocsTest();
+    getStatusTest();
     postMdupdatesAuthenticatedTest();
     getMdupdatesAuthenticatedTest();
     deleteMdupdatesAuthenticatedTest();
@@ -249,6 +251,27 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
     String expectedBody = "{'swagger':'2.0',"
 	+ "'info':{'description':'API of Metadata Extraction Service for LAAWS'"
         + "}}";
+
+    JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);
+    if (logger.isDebugEnabled()) logger.debug("Done.");
+  }
+
+  /**
+   * Runs the status-related tests.
+   * 
+   * @throws Exception
+   *           if there are problems.
+   */
+  private void getStatusTest() throws Exception {
+    if (logger.isDebugEnabled()) logger.debug("Invoked.");
+
+    ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
+	getTestUrlTemplate("/status"), HttpMethod.GET, null, String.class);
+
+    HttpStatus statusCode = successResponse.getStatusCode();
+    assertEquals(HttpStatus.OK, statusCode);
+
+    String expectedBody = "{\"version\":\"1.0.0\",\"ready\":true}}";
 
     JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);
     if (logger.isDebugEnabled()) logger.debug("Done.");

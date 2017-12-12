@@ -42,8 +42,11 @@ import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
-import org.lockss.laaws.mdx.security.SpringAuthenticationFilter;
+import org.lockss.laaws.mdx.server.LaawsMdxApp;
 import org.lockss.rs.auth.Roles;
+import org.lockss.rs.auth.SpringAuthenticationFilter;
+import org.lockss.rs.status.ApiStatus;
+import org.lockss.rs.status.SpringLockssBaseApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +63,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for access to the AU metadata jobs.
  */
 @RestController
-public class MdupdatesApiController implements MdupdatesApi {
+public class MdupdatesApiController extends SpringLockssBaseApiController
+    implements MdupdatesApi {
   private static Logger log = Logger.getLogger(MdupdatesApiController.class);
 
   @Autowired
@@ -343,6 +347,16 @@ public class MdupdatesApiController implements MdupdatesApi {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ErrorResponse internalExceptionHandler(RuntimeException e) {
     return new ErrorResponse(e.getMessage()); 	
+  }
+
+  /**
+   * Provides the status object.
+   * 
+   * @return an ApiStatus with the status.
+   */
+  @Override
+  public ApiStatus getApiStatus() {
+    return LaawsMdxApp.getApiStatus();
   }
 
   /**
