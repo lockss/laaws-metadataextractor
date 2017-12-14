@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
+import org.lockss.app.LockssApp;
 import org.lockss.app.LockssDaemon;
 import org.lockss.job.JobAuStatus;
 import org.lockss.job.JobManager;
@@ -349,6 +350,8 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
     return new ErrorResponse(e.getMessage()); 	
   }
 
+  private static final String API_VERSION = "1.0.0";
+
   /**
    * Provides the status object.
    * 
@@ -356,7 +359,9 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    */
   @Override
   public ApiStatus getApiStatus() {
-    return LaawsMdxApp.getApiStatus();
+    return new ApiStatus()
+      .setVersion(API_VERSION)
+      .setReady(LockssApp.getLockssApp().isAppRunning());
   }
 
   /**
