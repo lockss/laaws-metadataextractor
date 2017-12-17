@@ -43,7 +43,6 @@ import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
-import org.lockss.laaws.mdx.server.LaawsMdxApp;
 import org.lockss.rs.auth.Roles;
 import org.lockss.rs.auth.SpringAuthenticationFilter;
 import org.lockss.rs.status.ApiStatus;

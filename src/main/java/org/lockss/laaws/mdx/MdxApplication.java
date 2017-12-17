@@ -27,7 +27,11 @@
  */
 package org.lockss.laaws.mdx;
 
-import org.lockss.laaws.mdx.server.LaawsMdxApp;
+import org.lockss.app.LockssApp;
+import org.lockss.app.LockssApp.AppSpec;
+import org.lockss.app.LockssApp.ManagerDesc;
+import org.lockss.app.LockssDaemon;
+import static org.lockss.app.ManagerDescs.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -44,6 +48,28 @@ import org.springframework.web.util.UrlPathHelper;
 public class MdxApplication extends WebMvcConfigurerAdapter implements CommandLineRunner {
   private static final Logger logger =
       LoggerFactory.getLogger(MdxApplication.class);
+
+  // Manager descriptors.  The order of this table determines the order in
+  // which managers are initialized and started.
+  protected final static ManagerDesc[] myManagerDescs = {
+    ACCOUNT_MANAGER_DESC,
+    // start plugin manager after generic services
+    PLUGIN_MANAGER_DESC,
+    CRAWL_MANAGER_DESC,
+    // start database manager before any manager that uses it.
+    METADATA_DB_MANAGER_DESC,
+    // start metadata manager after pluggin manager and database manager.
+    METADATA_MANAGER_DESC,
+    // Start the job manager.
+    JOB_DB_MANAGER_DESC,
+    JOB_MANAGER_DESC,
+    // Start the COUNTER reports manager.
+    COUNTER_REPORTS_MANAGER_DESC,
+    // NOTE: Any managers that are needed to decide whether a servlet is to be
+    // enabled or not (through ServletDescr.isEnabled()) need to appear before
+    // the AdminServletManager on the next line.
+    SERVLET_MANAGER_DESC,
+  };
 
   /**
    * The entry point of the application.
@@ -65,7 +91,12 @@ public class MdxApplication extends WebMvcConfigurerAdapter implements CommandLi
     if (args != null && args.length > 0) {
       // Yes: Start the LOCKSS daemon.
       logger.info("Starting the LOCKSS daemon");
-      LaawsMdxApp.main(args);
+      AppSpec spec = new AppSpec()
+	.setName("Metadate Extractor Service")
+	.setArgs(args)
+	.addAppConfig(LockssDaemon.PARAM_START_PLUGINS, "true")
+	.setAppManagers(myManagerDescs);
+      LockssApp.startStatic(LockssDaemon.class, spec);
     } else {
       // No: Do nothing. This happens when a test is started and before the
       // test setup has got a chance to inject the appropriate command line
