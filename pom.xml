@@ -117,7 +117,7 @@ in this Software without prior written authorization from Stanford University.
     <dependency>
       <groupId>org.lockss.laaws</groupId>
       <artifactId>lockss-core</artifactId>
-      <version>1.0.0-TAL</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.lockss.laaws</groupId>
@@ -418,7 +418,7 @@ in this Software without prior written authorization from Stanford University.
     <dependency>
       <groupId>org.lockss.laaws</groupId>
       <artifactId>lockss-core</artifactId>
-      <version>1.0.0-TAL</version>
+      <version>1.0.0-SNAPSHOT</version>
       <classifier>tests</classifier>
     </dependency>
   </dependencies>
