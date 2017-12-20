@@ -37,6 +37,7 @@ import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
+import org.lockss.rs.status.SpringLockssBaseApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +50,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Provider of access to the AU metadata jobs.
  */
 @Api(value = "mdupdates")
-public interface MdupdatesApi  {
+public interface MdupdatesApi extends SpringLockssBaseApi {
 
   public static final String MD_UPDATE_DELETE = "delete";
   public static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
