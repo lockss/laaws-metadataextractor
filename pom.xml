@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,25 +31,25 @@ in this Software without prior written authorization from Stanford University.
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.lockss.laaws</groupId>
   <artifactId>laaws-metadata-extraction-service</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>LAAWS Metadata Extraction Service</name>
   <description>LAAWS Metadata Extraction Service</description>
 
   <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.4.RELEASE</version>
+    <groupId>org.lockss</groupId>
+    <artifactId>lockss-spring-parent-pom</artifactId>
+    <version>1.0.1</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
+  <scm>
+    <connection>${scmConnection}</connection>
+    <developerConnection>${scmDeveloperConnection}</developerConnection>
+    <url>${scmUrl}</url>
+  </scm>
+
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.8</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-    <springfox-version>2.6.1</springfox-version>
     <!-- The main class to start by executing java -jar -->
     <start-class>org.lockss.laaws.mdx.MdxApplication</start-class>
 

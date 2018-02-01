@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2000-2017 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2000-2018 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -38,7 +38,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 /**
  * Custom Spring security configurator.
- * <br />
+ * <br>
  * This class is needed because the Spring discovery process is not able to
  * find the parent class (because it is in a jar?).
  */

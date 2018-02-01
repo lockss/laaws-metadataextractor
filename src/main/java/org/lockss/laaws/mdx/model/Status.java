@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -61,7 +61,9 @@ public class Status {
 
   /**
    * The numeric value for the current state.
-   **/
+   * 
+   * @return an Integer with the current state numeric value.
+   */
   @ApiModelProperty(required = true,
       value = "The numeric value for the current state")
   public Integer getCode() {
@@ -73,7 +75,9 @@ public class Status {
 
   /**
    * A text message defining the current state.
-   **/
+   * 
+   * @return a String with the text message defining the current state.
+   */
   @ApiModelProperty(required = true,
       value = "A text message defining the current state")
   public String getMsg() {
