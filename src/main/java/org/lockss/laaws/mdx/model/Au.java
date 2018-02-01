@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -60,10 +60,12 @@ public class Au   {
     job = jobAuStatus.getId();
     name = jobAuStatus.getAuName();
   }
-  
+
   /**
    * The identifier of this AU.
-   **/
+   * 
+   * @return a String with the AU identifier.
+   */
   @ApiModelProperty(required = true, value = "The identifier of this AU")
   public String getId() {
     return id;
@@ -71,10 +73,12 @@ public class Au   {
   public void setId(String id) {
     this.id = id;
   }
-  
+
   /**
    * The identifier of the job associated with this AU.
-   **/
+   *
+   * @return a String with the job identifier.
+   */
   @ApiModelProperty(value =
       "The identifier of the job associated with this AU")
   public String getJob() {
@@ -86,7 +90,9 @@ public class Au   {
 
   /**
    * The name of the AU, for display purposes.
-   **/
+   *
+   * @return a String with the AU name.
+   */
   @ApiModelProperty(value = "The name of the AU, for display purposes")
   public String getName() {
     return name;

@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,11 +41,12 @@ public class AuPageInfo   {
   
   private List<Au> aus = new ArrayList<Au>();
   private PageInfo pageInfo = null;
-  
+
   /**
    * The AUs displayed in the page.
-   **/
-  
+   *
+   * @return a {@code List<Au>} with the AUs displayed in the page.
+   */
   @ApiModelProperty(required = true, value = "The AUs displayed in the page")
   public List<Au> getAus() {
     return aus;

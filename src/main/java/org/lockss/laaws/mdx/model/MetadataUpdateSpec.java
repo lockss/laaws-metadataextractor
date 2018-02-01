@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -43,7 +43,9 @@ public class MetadataUpdateSpec {
 
   /**
    * The identifier of the AU for which the metadata is to be reindexed.
-   **/
+   * 
+   * @return a String with the AU identifier.
+   */
   @ApiModelProperty(required = true, value =
       "The identifier of the AU for which the metadata update is to be performed")
   public String getAuid() {
@@ -55,7 +57,9 @@ public class MetadataUpdateSpec {
 
   /**
    * The type of metadata update to be performed.
-   **/
+   * 
+   * @return a String with the metadata update type.
+   */
   @ApiModelProperty(required = true,
       value = "The type of metadata update to be performed")
   public String getUpdateType() {
