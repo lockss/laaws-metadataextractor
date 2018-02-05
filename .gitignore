@@ -197,4 +197,4 @@ local.properties
 /tdbxml
 /derby.log
 /cronstate.xml
-!/src/main/resources/lockss-plugins.jar
+!/test/lockss-plugins.jar
