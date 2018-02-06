@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -78,10 +78,12 @@ public class Job   {
   public void setAu(Au au) {
     this.au = au;
   }
-  
+
   /**
    * The identifier of this job.
-   **/
+   *
+   * @return a String with the job identifier.
+   */
   @ApiModelProperty(required = true, value = "The identifier of this job")
   public String getId() {
     return id;
@@ -92,7 +94,9 @@ public class Job   {
 
   /**
    * A description of the task being performed by this job.
-   **/
+   *
+   * @return a String with the job description.
+   */
   @ApiModelProperty(value =
       "A description of the task being performed by this job")
   public String getDescription() {
@@ -104,7 +108,9 @@ public class Job   {
 
   /**
    * The timestamp when this job was created.
-   **/
+   *
+   * @return a Date with the job creation timestamp.
+   */
   @ApiModelProperty(required = true,
       value = "The timestamp when this job was created")
   public Date getCreationDate() {
@@ -116,7 +122,9 @@ public class Job   {
 
   /**
    * The timestamp when this job processing started.
-   **/
+   *
+   * @return a Date with the job start timestamp.
+   */
   @ApiModelProperty(value = "The timestamp when this job processing started")
   public Date getStartDate() {
     return startDate;
@@ -127,7 +135,9 @@ public class Job   {
 
   /**
    * The timestamp when this job processing ended.
-   **/
+   *
+   * @return a Date with the job end timestamp.
+   */
   @ApiModelProperty(value = "The timestamp when this job processing ended")
   public Date getEndDate() {
     return endDate;

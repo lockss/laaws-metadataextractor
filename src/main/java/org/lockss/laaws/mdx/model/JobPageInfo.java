@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -44,7 +44,9 @@ public class JobPageInfo   {
   
   /**
    * The jobs displayed in the page.
-   **/
+   *
+   * @return a {@code List<Job>} with the jobs displayed in the page.
+   */
   @ApiModelProperty(required = true, value = "The jobs displayed in the page")
   public List<Job> getJobs() {
     return jobs;

@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -74,7 +74,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    * Deletes all of the queued jobs and stops any processing and deletes any
    * active jobs.
    * 
-   * @return a ResponseEntity<Integer> with the count of jobs deleted.
+   * @return a {@code ResponseEntity<Integer>} with the count of jobs deleted.
    */
   @Override
   @RequestMapping(value = "/mdupdates",
@@ -103,7 +103,8 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @return a ResponseEntity<Job> with information about the deleted job.
+   * @return a {@code ResponseEntity<Job>} with information about the deleted
+   *         job.
    */
   @Override
   @RequestMapping(value = "/mdupdates/{jobid}",
@@ -142,7 +143,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
-   * @return a ResponseEntity<JobPageInfo> with the list of jobs.
+   * @return a {@code ResponseEntity<JobPageInfo>} with the list of jobs.
    */
   @Override
   public ResponseEntity<JobPageInfo> getMdupdates(@RequestParam(value = "page",
@@ -213,7 +214,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @return a ResponseEntity<Status> with the job information.
+   * @return a {@code ResponseEntity<Status>} with the job information.
    */
   @Override
   @RequestMapping(value = "/mdupdates/{jobid}",
@@ -249,7 +250,8 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    * @param metadataUpdateSpec
    *          A MetadataUpdateSpec with the specification of the metadata update
    *          operation.
-   * @return a ResponseEntity<Job> with the information of the job created.
+   * @return a {@code ResponseEntity<Job>} with the information of the job
+   *         created.
    */
   @Override
   @RequestMapping(value = "/mdupdates",

@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -61,7 +61,7 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
    * Deletes all of the queued jobs and stops any processing and deletes any
    * active jobs.
    * 
-   * @return a ResponseEntity<Integer> with the count of jobs deleted.
+   * @return a {@code ResponseEntity<Integer>} with the count of jobs deleted.
    */
   @ApiOperation(value = "Delete all of the currently queued and active jobs",
   notes = "Delete all of the currently queued and active jobs",
@@ -92,7 +92,8 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @return a ResponseEntity<Job> with information about the deleted job.
+   * @return a {@code ResponseEntity<Job>} with information about the deleted
+   *         job.
    */
   @ApiOperation(value = "Delete a job",
   notes = "Delete a job given the job identifier, stopping any current processing, if necessary",
@@ -128,7 +129,7 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
    *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
-   * @return a ResponseEntity<JobPageInfo> with the list of jobs.
+   * @return a {@code ResponseEntity<JobPageInfo>} with the list of jobs.
    */
   @ApiOperation(value = "Get a list of currently active jobs",
   notes = "Get a list of all currently active jobs (no parameters) or a list of the currently active jobs in a page defined by the page index and size",
@@ -162,7 +163,7 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
    * 
    * @param jobid
    *          A String with the job identifier.
-   * @return a ResponseEntity<Status> with the job information.
+   * @return a {@code ResponseEntity<Status>} with the job information.
    */
   @ApiOperation(value = "Get a job",
   notes = "Get a job given the job identifier", response = Status.class,
@@ -195,7 +196,8 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
    * @param metadataUpdateSpec
    *          A MetadataUpdateSpec with the specification of the metadata update
    *          operation.
-   * @return a ResponseEntity<Job> with the information of the job created.
+   * @return a {@code ResponseEntity<Job>} with the information of the job
+   *         created.
    */
   @ApiOperation(value = "Perform an AU metadata update operation",
   notes =

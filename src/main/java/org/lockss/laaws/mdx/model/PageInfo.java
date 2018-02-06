@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,10 +42,12 @@ public class PageInfo   {
   private Integer currentPage = null;
   private String curLink = null;
   private String nextLink = null;
-  
+
   /**
    * The total number of elements to be paginated.
-   **/
+   * 
+   * @return an Integer with the total number of elements to be paginated.
+   */
   @ApiModelProperty(required = true,
       value = "The total number of elements to be paginated")
   public Integer getTotalCount() {
@@ -54,10 +56,12 @@ public class PageInfo   {
   public void setTotalCount(Integer totalCount) {
     this.totalCount = totalCount;
   }
-  
+
   /**
    * The number of results per page.
-   **/
+   * 
+   * @return an Integer with the number of results per page.
+   */
   @ApiModelProperty(required = true, value = "The number of results per page")
   public Integer getResultsPerPage() {
     return resultsPerPage;
@@ -68,7 +72,9 @@ public class PageInfo   {
   
   /**
    * The current page number.
-   **/
+   * 
+   * @return an Integer with the current page number.
+   */
   @ApiModelProperty(required = true, value = "The current page number")
   public Integer getCurrentPage() {
     return currentPage;
@@ -76,10 +82,12 @@ public class PageInfo   {
   public void setCurrentPage(Integer currentPage) {
     this.currentPage = currentPage;
   }
-  
+
   /**
    * The link to the current page.
-   **/
+   * 
+   * @return a String with the link to the current page.
+   */
   @ApiModelProperty(required = true, value = "The link to the current page")
   public String getCurLink() {
     return curLink;
@@ -90,7 +98,9 @@ public class PageInfo   {
   
   /**
    * The link to the next page.
-   **/
+   * 
+   * @return a String with the link to the next page.
+   */
   @ApiModelProperty(required = true, value = "The link to the next page")
   public String getNextLink() {
     return nextLink;

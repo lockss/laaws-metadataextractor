@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017-2018 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -148,7 +148,7 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
 
     copyToTempDir(srcTree);
 
-    File srcFile = new File("lockss-plugins.jar");
+    File srcFile = new File(new File("test"), "lockss-plugins.jar");
     if (logger.isDebugEnabled())
       logger.debug("srcFile = " + srcFile.getAbsolutePath());
 
@@ -227,7 +227,7 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
     cmdLineArgs.add("test/config/lockss.txt");
     cmdLineArgs.add("-p");
     cmdLineArgs.add("test/config/lockss.opt");
-    cmdLineArgs.add("-p");
+    cmdLineArgs.add("-b");
     cmdLineArgs.add(getPlatformDiskSpaceConfigPath());
 
     return cmdLineArgs;
