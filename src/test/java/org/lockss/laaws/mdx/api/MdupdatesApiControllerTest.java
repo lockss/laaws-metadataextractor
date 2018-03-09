@@ -518,17 +518,53 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
 
     String url = getTestUrlTemplate("/mdupdates");
 
-    ResponseEntity<JobPageInfo> errorResponse = new TestRestTemplate()
+    ResponseEntity<JobPageInfo> successResponse = new TestRestTemplate()
 	.exchange(url, HttpMethod.GET, null, JobPageInfo.class);
 
-    HttpStatus statusCode = errorResponse.getStatusCode();
-    assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
+    HttpStatus statusCode = successResponse.getStatusCode();
+    assertEquals(HttpStatus.OK, statusCode);
 
-    errorResponse = new TestRestTemplate("fakeUser", "fakePassword")
+    JobPageInfo result = successResponse.getBody();
+    assertEquals(new Integer(50), result.getPageInfo().getResultsPerPage());
+    assertEquals(new Integer(1), result.getPageInfo().getCurrentPage());
+    assertNull(result.getPageInfo().getTotalCount());
+
+    List<Job> jobs = result.getJobs();
+    assertEquals(1, jobs.size());
+
+    Job firstJob = jobs.get(0);
+    assertNotNull(firstJob.getId());
+    assertNotNull(firstJob.getDescription());
+    assertNotNull(firstJob.getCreationDate());
+    assertNotNull(firstJob.getStartDate());
+    assertNotNull(firstJob.getEndDate());
+    assertEquals(goodAuid, firstJob.getAu().getId());
+    assertEquals(goodAuName, firstJob.getAu().getName());
+    assertEquals(5, firstJob.getStatus().getCode().intValue());
+
+    successResponse = new TestRestTemplate("fakeUser", "fakePassword")
 	.exchange(url, HttpMethod.GET, null, JobPageInfo.class);
 
-    statusCode = errorResponse.getStatusCode();
-    assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
+    statusCode = successResponse.getStatusCode();
+    assertEquals(HttpStatus.OK, statusCode);
+
+    result = successResponse.getBody();
+    assertEquals(new Integer(50), result.getPageInfo().getResultsPerPage());
+    assertEquals(new Integer(1), result.getPageInfo().getCurrentPage());
+    assertNull(result.getPageInfo().getTotalCount());
+
+    jobs = result.getJobs();
+    assertEquals(1, jobs.size());
+
+    firstJob = jobs.get(0);
+    assertNotNull(firstJob.getId());
+    assertNotNull(firstJob.getDescription());
+    assertNotNull(firstJob.getCreationDate());
+    assertNotNull(firstJob.getStartDate());
+    assertNotNull(firstJob.getEndDate());
+    assertEquals(goodAuid, firstJob.getAu().getId());
+    assertEquals(goodAuName, firstJob.getAu().getName());
+    assertEquals(5, firstJob.getStatus().getCode().intValue());
 
     getMdupdatesCommonTest();
 
@@ -568,19 +604,50 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
 
     String url = getTestUrlTemplate("/mdupdates");
 
-    ResponseEntity<JobPageInfo> errorResponse = new TestRestTemplate("lockss-u",
-	"lockss-p").exchange(url, HttpMethod.GET, null, JobPageInfo.class);
+    ResponseEntity<JobPageInfo> successResponse =
+	new TestRestTemplate("lockss-u", "lockss-p").exchange(url,
+	    HttpMethod.GET, null, JobPageInfo.class);
 
-    HttpStatus statusCode = errorResponse.getStatusCode();
-    assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, statusCode);
+    HttpStatus statusCode = successResponse.getStatusCode();
+    assertEquals(HttpStatus.OK, statusCode);
+
+    JobPageInfo result = successResponse.getBody();
+    assertEquals(new Integer(50), result.getPageInfo().getResultsPerPage());
+    assertEquals(new Integer(1), result.getPageInfo().getCurrentPage());
+    assertNull(result.getPageInfo().getTotalCount());
+
+    List<Job> jobs = result.getJobs();
+    assertEquals(1, jobs.size());
+
+    Job firstJob = jobs.get(0);
+    assertNotNull(firstJob.getId());
+    assertNotNull(firstJob.getDescription());
+    assertNotNull(firstJob.getCreationDate());
+    assertNotNull(firstJob.getStartDate());
+    assertNotNull(firstJob.getEndDate());
+    assertEquals(goodAuid, firstJob.getAu().getId());
+    assertEquals(goodAuName, firstJob.getAu().getName());
+    assertEquals(5, firstJob.getStatus().getCode().intValue());
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    List<Job> jobs = getJobs().getJobs();
+    successResponse = new TestRestTemplate("lockss-u", "lockss-p")
+	.exchange(url, HttpMethod.GET,new HttpEntity<String>(null, headers),
+	    JobPageInfo.class);
+
+    statusCode = successResponse.getStatusCode();
+    assertEquals(HttpStatus.OK, statusCode);
+
+    result = successResponse.getBody();
+    assertEquals(new Integer(50), result.getPageInfo().getResultsPerPage());
+    assertEquals(new Integer(1), result.getPageInfo().getCurrentPage());
+    assertNull(result.getPageInfo().getTotalCount());
+
+    jobs = result.getJobs();
     assertEquals(1, jobs.size());
 
-    Job firstJob = jobs.get(0);
+    firstJob = jobs.get(0);
     assertNotNull(firstJob.getId());
     assertNotNull(firstJob.getDescription());
     assertNotNull(firstJob.getCreationDate());
@@ -603,9 +670,9 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
     headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    errorResponse = new TestRestTemplate("lockss-u", "lockss-p").exchange(uri,
-	HttpMethod.GET, new HttpEntity<String>(null, headers),
-	JobPageInfo.class);
+    ResponseEntity<JobPageInfo> errorResponse = new TestRestTemplate("lockss-u",
+	"lockss-p").exchange(uri, HttpMethod.GET, new HttpEntity<String>(null,
+	    headers), JobPageInfo.class);
 
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.NOT_FOUND, statusCode);
@@ -629,35 +696,6 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
     assertEquals(HttpStatus.NOT_FOUND, statusCode);
 
     if (logger.isDebugEnabled()) logger.debug("Done.");
-  }
-
-  /**
-   * Provides the list of existing jobs.
-   * 
-   * @return a JobPageInfo with the existing jobs.
-   */
-  private JobPageInfo getJobs() {
-    if (logger.isDebugEnabled()) logger.debug("Invoked.");
-
-    String url = getTestUrlTemplate("/mdupdates");
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-
-    ResponseEntity<JobPageInfo> response = new TestRestTemplate("lockss-u",
-	"lockss-p").exchange(url, HttpMethod.GET,
-	    new HttpEntity<String>(null, headers), JobPageInfo.class);
-
-    HttpStatus statusCode = response.getStatusCode();
-    assertEquals(HttpStatus.OK, statusCode);
-
-    JobPageInfo result = response.getBody();
-    assertEquals(new Integer(50), result.getPageInfo().getResultsPerPage());
-    assertEquals(new Integer(1), result.getPageInfo().getCurrentPage());
-    assertNull(result.getPageInfo().getTotalCount());
-
-    if (logger.isDebugEnabled()) logger.debug("Done.");
-    return result;
   }
 
   /**

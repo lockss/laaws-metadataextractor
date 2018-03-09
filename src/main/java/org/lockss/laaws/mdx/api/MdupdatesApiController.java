@@ -221,7 +221,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    */
   @Override
   @RequestMapping(value = "/mdupdates/{jobid}",
-  produces = { "application/json" }, consumes = { "application/json" },
+  produces = { "application/json" },
   method = RequestMethod.GET)
   public ResponseEntity<Status> getMdupdatesJobid(@PathVariable("jobid")
       String jobid) {
