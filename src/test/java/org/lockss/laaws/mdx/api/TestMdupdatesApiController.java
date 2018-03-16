@@ -72,9 +72,9 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class MdupdatesApiControllerTest extends SpringLockssTestCase {
+public class TestMdupdatesApiController extends SpringLockssTestCase {
   private static final Logger logger =
-      LoggerFactory.getLogger(MdupdatesApiControllerTest.class);
+      LoggerFactory.getLogger(TestMdupdatesApiController.class);
 
   // The port that Tomcat is using during this test.
   @LocalServerPort
@@ -133,7 +133,7 @@ public class MdupdatesApiControllerTest extends SpringLockssTestCase {
     if (logger.isDebugEnabled()) logger.debug("port = " + port);
 
     // Set up the temporary directory where the test data will reside.
-    setUpTempDirectory(MdupdatesApiControllerTest.class.getCanonicalName());
+    setUpTempDirectory(TestMdupdatesApiController.class.getCanonicalName());
 
     // Copy the necessary files to the test temporary directory.
     File srcTree = new File(new File("test"), "cache");
