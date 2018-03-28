@@ -45,7 +45,7 @@ import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
-import org.lockss.laaws.rs.model.ArtifactPage;
+import org.lockss.laaws.rs.model.Artifact;
 import org.lockss.test.SpringLockssTestCase;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -56,6 +56,7 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -898,9 +899,9 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
 
     // Make the request to the REST service and get its response.
     try {
-      ResponseEntity<ArtifactPage> result = restTemplate.exchange(uri,
+      ResponseEntity<List<Artifact>> result = restTemplate.exchange(uri,
 	  HttpMethod.GET, new HttpEntity<String>(null, headers),
-	  ArtifactPage.class);
+	  new ParameterizedTypeReference<List<Artifact>>() {});
 
       int statusCode = result.getStatusCodeValue();
       if (logger.isDebugEnabled()) logger.debug("statusCode = " + statusCode);

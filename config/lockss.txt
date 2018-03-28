@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -148,7 +148,7 @@ org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
 # The web service used to get the URLs for an Archival Unit.
 #
 org.lockss.plugin.auContentFromWs.urlListWs.password=lockss-p
-org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8700/repos/demorepo/artifacts?committed=false&auid={auid}
+org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8700/collections/demorepo/aus/{auid}
 org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
 
@@ -156,7 +156,7 @@ org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
 # The web service used to get artifact properties of a URL.
 #
 org.lockss.plugin.auContentFromWs.urlArtifactWs.password=lockss-p
-org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:8700/repos/demorepo/artifacts?committed=false&uri={uri}
+org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:8700/collections/demorepo/artifacts?committed=false&uri={uri}
 org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=lockss-u
 
@@ -164,7 +164,7 @@ org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=lockss-u
 # The web service used to get the contents linked to a URL.
 #
 org.lockss.plugin.auContentFromWs.urlContentWs.password=lockss-p
-org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:8700/repos/demorepo/artifacts/{artifactid}
+org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:8700/collections/demorepo/artifacts/{artifactid}
 org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
 org.lockss.plugin.auContentFromWs.urlContentWs.userName=lockss-u
 
