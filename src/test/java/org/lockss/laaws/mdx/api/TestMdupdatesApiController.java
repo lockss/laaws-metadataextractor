@@ -29,14 +29,11 @@ package org.lockss.laaws.mdx.api;
 
 import static org.lockss.laaws.mdx.api.MdupdatesApi.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,7 +42,6 @@ import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
-import org.lockss.laaws.rs.model.Artifact;
 import org.lockss.test.SpringLockssTestCase;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -56,7 +52,6 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -64,7 +59,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -853,67 +847,6 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.NOT_FOUND, statusCode);
     if (logger.isDebugEnabled()) logger.debug("Done.");
-  }
-
-  public void checkRepositoryService(String fileName) {
-    FileInputStream is = null;
-    String restServiceLocation = null;
-
-    try {
-      File file = new File(fileName);
-      is = new FileInputStream(file);
-      Properties properties = new Properties();
-      properties.load(is);
-
-      restServiceLocation = properties.getProperty("org.lockss.plugin"
-	  + ".auContentFromWs.urlListWs.restServiceLocation");
-      if (logger.isDebugEnabled())
-	logger.debug("restServiceLocation = " + restServiceLocation);
-    } catch (FileNotFoundException fnfe) {
-      fnfe.printStackTrace();
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    } finally {
-      try {
-	is.close();
-      } catch (IOException ioe) {
-      }
-    }
-
-    // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
-
-    // Initialize the request headers.
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-
-    // Create the URI of the request to the REST service.
-    UriComponents uriComponents =
-	UriComponentsBuilder.fromUriString(restServiceLocation).build()
-	.expand(Collections.singletonMap("auid", "someAuId"));
-
-    URI uri = UriComponentsBuilder.newInstance()
-	.uriComponents(uriComponents).build().encode().toUri();
-    if (logger.isDebugEnabled())
-	logger.debug("Making request to '" + uri + "'...");
-
-    // Make the request to the REST service and get its response.
-    try {
-      ResponseEntity<List<Artifact>> result = restTemplate.exchange(uri,
-	  HttpMethod.GET, new HttpEntity<String>(null, headers),
-	  new ParameterizedTypeReference<List<Artifact>>() {});
-
-      int statusCode = result.getStatusCodeValue();
-      if (logger.isDebugEnabled()) logger.debug("statusCode = " + statusCode);
-
-      isRestRepositoryServiceAvailable = statusCode == 200;
-    } catch (Exception e) {
-      if (logger.isDebugEnabled()) logger.debug("No repository service.");
-    }
-
-    if (logger.isDebugEnabled())
-      logger.debug("isRestRepositoryServiceAvailable = "
-	  + isRestRepositoryServiceAvailable);
   }
 
   /**
