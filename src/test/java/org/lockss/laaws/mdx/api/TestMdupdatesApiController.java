@@ -80,9 +80,9 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
   @Autowired
   ApplicationContext appCtx;
 
-  // The indication of whether the external REST Repository service is
-  // available.
-  private static boolean isRestRepositoryServiceAvailable = false;
+//  // The indication of whether the external REST Repository service is
+//  // available.
+//  private static boolean isRestRepositoryServiceAvailable = false;
 
   // The identifier of an AU that exists in the test system.
   String goodAuid = "org|lockss|plugin|pensoft|oai|PensoftOaiPlugin"
@@ -92,31 +92,31 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
   // The name of an AU that exists in the test system.
   String goodAuName = "BioRisk Volume 2014";
 
-  /**
-   * Set up code to be run before all tests.
-   */
-  @BeforeClass
-  public static void setUpBeforeAllTests() throws IOException {
-    // Get the external REST Repository service location. 
-    String restServiceLocation = getPropertyValueFromFile(
-	"org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation",
-	new File("config/lockss.txt"));
-    if (logger.isDebugEnabled())
-      logger.debug("restServiceLocation = " + restServiceLocation);
-
-    assertNotNull("REST Repository service location not found",
-	restServiceLocation);
-
-    // Populate the indication of whether the external REST Repository service
-    // is available.
-    isRestRepositoryServiceAvailable =
-	checkExternalRestService(restServiceLocation,
-	    Collections.singletonMap("auid", "someAuId"),
-	    HttpStatus.OK.value());
-    if (logger.isDebugEnabled())
-      logger.debug("isRestRepositoryServiceAvailable = "
-	  + isRestRepositoryServiceAvailable);
-  }
+//  /**
+//   * Set up code to be run before all tests.
+//   */
+//  @BeforeClass
+//  public static void setUpBeforeAllTests() throws IOException {
+//    // Get the external REST Repository service location. 
+//    String restServiceLocation = getPropertyValueFromFile(
+//	"org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation",
+//	new File("config/lockss.txt"));
+//    if (logger.isDebugEnabled())
+//      logger.debug("restServiceLocation = " + restServiceLocation);
+//
+//    assertNotNull("REST Repository service location not found",
+//	restServiceLocation);
+//
+//    // Populate the indication of whether the external REST Repository service
+//    // is available.
+//    isRestRepositoryServiceAvailable =
+//	checkExternalRestService(restServiceLocation,
+//	    Collections.singletonMap("auid", "someAuId"),
+//	    HttpStatus.OK.value());
+//    if (logger.isDebugEnabled())
+//      logger.debug("isRestRepositoryServiceAvailable = "
+//	  + isRestRepositoryServiceAvailable);
+//  }
 
   /**
    * Set up code to be run before each test.
@@ -394,11 +394,11 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
     String jobId = job.getId();
     assertNotNull(jobId);
 
-    if (isRestRepositoryServiceAvailable) {
+//    if (isRestRepositoryServiceAvailable) {
       waitForJobStatus(jobId, "Success");
-    } else {
-      waitForJobStatus(jobId, "Failure");
-    }
+//    } else {
+//      waitForJobStatus(jobId, "Failure");
+//    }
 
     if (logger.isDebugEnabled()) logger.debug("Done.");
   }
