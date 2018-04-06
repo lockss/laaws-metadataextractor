@@ -15,7 +15,7 @@ other materials provided with the distribution.
 
 3. Neither the name of the copyright holder nor the names of its contributors
 may be used to endorse or promote products derived from this software without
-specific prior written permission.
+specific prior written permission.`
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -36,8 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   <parent>
     <groupId>org.lockss</groupId>
-    <artifactId>lockss-core-spring-parent-pom</artifactId>
-    <version>1.3.1</version>
+    <artifactId>lockss-parent-pom</artifactId>
+    <version>1.7.0</version>
   </parent>
 
   <groupId>org.lockss.laaws</groupId>
@@ -56,21 +56,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   </scm>
 
   <properties>
+    <!-- GitHub project does not match artifactId -->
+    <gitProjectId>laaws-metadataextractor</gitProjectId>
+    <skipSpringBootRepackage>false</skipSpringBootRepackage>
     <!-- The main class to start by executing java -jar -->
     <start-class>org.lockss.laaws.mdx.MdxApplication</start-class>
   </properties>
 
   <dependencies>
-    <!--SpringFox dependencies -->
+
     <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <version>${springfox-version}</version>
+      <groupId>org.lockss</groupId>
+      <artifactId>lockss-junit4-bundle</artifactId>
+      <version>${lockss.junit4.bundleVersion}</version>
+      <type>pom</type>
+      <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger-ui</artifactId>
-      <version>${springfox-version}</version>
+      <groupId>org.lockss</groupId>
+      <artifactId>lockss-spring-bundle</artifactId>
+      <version>${lockss.spring.bundleVersion}</version>
+      <type>pom</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lockss</groupId>
+      <artifactId>lockss-core-bundle</artifactId>
+      <version>${lockss.core.bundleVersion}</version>
+      <type>pom</type>
     </dependency>
 
     <!-- LOCKSS daemon -->
