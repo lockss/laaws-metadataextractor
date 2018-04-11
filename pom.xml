@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <parent>
     <groupId>org.lockss</groupId>
     <artifactId>lockss-parent-pom</artifactId>
-    <version>1.7.0</version>
+    <version>1.8.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.lockss.laaws</groupId>
@@ -61,6 +61,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <skipSpringBootRepackage>false</skipSpringBootRepackage>
     <!-- The main class to start by executing java -jar -->
     <start-class>org.lockss.laaws.mdx.MdxApplication</start-class>
+    <skipDocker>false</skipDocker>
   </properties>
 
   <dependencies>
