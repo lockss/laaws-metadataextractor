@@ -81,6 +81,11 @@ public class MdxApplication extends BaseSpringBootApplication
     // enabled or not (through ServletDescr.isEnabled()) need to appear before
     // the AdminServletManager on the next line.
     SERVLET_MANAGER_DESC,
+    PLATFORM_CONFIG_STATUS_DESC,
+    CONFIG_STATUS_DESC,
+    ARCHIVAL_UNIT_STATUS_DESC,
+//     REPOSITORY_STATUS_DESC,
+    OVERVIEW_STATUS_DESC,
   };
 
   /**
