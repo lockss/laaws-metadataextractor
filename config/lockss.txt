@@ -144,12 +144,16 @@ org.lockss.jobManager.enabled=true
 org.lockss.metadataManager.mandatoryFields=publisher;provider
 org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
 
+#
+# Repository
+#
+# default to local repo.
+org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
+# Put this in lockss.opt to use a REST repositoy service
+# org.lockss.repository.v2Repository=rest:demorepo:http://localhost:32640
+
 # The REST web service used to store and retrieve the metadata of an Archival Unit.
 #org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:49520
 #org.lockss.metadataManager.mdRest.timeoutValue=600
 #org.lockss.metadataManager.mdRest.userName=lockss-u
 #org.lockss.metadataManager.mdRest.password=lockss-p
-
-# The web service used to get Archival Unit content.
-org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
-#org.lockss.repository.v2Repository=rest:demorepo:http://localhost:32640
