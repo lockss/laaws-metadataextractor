@@ -31,8 +31,12 @@ import static org.lockss.laaws.mdx.api.MdupdatesApi.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,6 +46,7 @@ import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.Status;
+import org.lockss.repository.RepositoryManager;
 import org.lockss.test.SpringLockssTestCase;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -80,9 +85,8 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
   @Autowired
   ApplicationContext appCtx;
 
-  // The indication of whether the external REST Repository service is
-  // available.
-  private static boolean isRestRepositoryServiceAvailable = false;
+  // The name of the root directory of the local repository.
+  private String repositoryRootDirName = "testRepo";
 
   // The identifier of an AU that exists in the test system.
   String goodAuid = "org|lockss|plugin|pensoft|oai|PensoftOaiPlugin"
@@ -97,9 +101,6 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
    */
   @BeforeClass
   public static void setUpBeforeAllTests() throws IOException {
-    if (logger.isDebugEnabled())
-      logger.debug("isRestRepositoryServiceAvailable = "
-	  + isRestRepositoryServiceAvailable);
   }
 
   /**
@@ -122,6 +123,13 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
     copyToTempDir(srcTree);
 
     srcTree = new File(new File("test"), "tdbxml");
+    if (logger.isDebugEnabled())
+      logger.debug("srcTree = " + srcTree.getAbsolutePath());
+
+    copyToTempDir(srcTree);
+
+    // Copy the necessary files to the test temporary directory.
+    srcTree = new File(new File("test"), repositoryRootDirName);
     if (logger.isDebugEnabled())
       logger.debug("srcTree = " + srcTree.getAbsolutePath());
 
@@ -182,8 +190,10 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
    * Provides the standard command line arguments to start the server.
    * 
    * @return a List<String> with the command line arguments.
+   * @throws IOException
+   *           if there are problems.
    */
-  private List<String> getCommandLineArguments() {
+  private List<String> getCommandLineArguments() throws IOException {
     List<String> cmdLineArgs = new ArrayList<String>();
     cmdLineArgs.add("-p");
     cmdLineArgs.add("config/common.xml");
@@ -202,8 +212,45 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
     cmdLineArgs.add("test/config/lockss.opt");
     cmdLineArgs.add("-b");
     cmdLineArgs.add(getPlatformDiskSpaceConfigPath());
+    cmdLineArgs.add("-p");
+    cmdLineArgs.add(getRepositorySpecificationConfigPath("local:demorepo:"
+	+ getTempDirPath() + File.separator + repositoryRootDirName));
 
     return cmdLineArgs;
+  }
+
+  /**
+   * Creates a file that will communicate to the test REST service the
+   * repository specification.
+   *
+   * @param repositorySpec
+   *          A String with repository specification.
+   * @return a String with the path to the created file.
+   * @throws IOException
+   *           if there are problems.
+   */
+  private String getRepositorySpecificationConfigPath(String repositorySpec)
+      throws IOException {
+    if (logger.isDebugEnabled())
+      logger.debug("repositorySpec = " + repositorySpec);
+
+    // The configuration option with the location of the repository.
+    String repositoryConfigParam =
+	RepositoryManager.PARAM_V2_REPOSITORY + "=" + repositorySpec;
+    if (logger.isDebugEnabled()) logger.debug("repositoryConfigParam = '"
+	+ repositoryConfigParam +"'.");
+
+    // The path to the file.
+    String repositoryConfigPath =
+	getTempDirPath() + File.separator + "repository.txt";
+
+    // Create the file.
+    Files.write(Paths.get(repositoryConfigPath),
+	repositoryConfigParam.getBytes(), StandardOpenOption.CREATE);
+
+    if (logger.isDebugEnabled())
+      logger.debug("repositoryConfigPath = " + repositoryConfigPath);
+    return repositoryConfigPath;
   }
 
   /**
@@ -361,22 +408,54 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
     statusCode = errorResponse.getStatusCode();
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, statusCode);
 
+    Date beforeTestDate = new Date();
+
     Job job = postMdupdates(goodAuid, MD_UPDATE_FULL_EXTRACTION,
 	HttpStatus.ACCEPTED);
 
     assertEquals(goodAuid, job.getAu().getId());
     assertEquals(goodAuName, job.getAu().getName());
-    assertNotNull(job.getCreationDate());
+
+    Date jobCreationDate = job.getCreationDate();
+    assertNotNull(jobCreationDate);
+    assertFalse(jobCreationDate.before(beforeTestDate));
+
     assertNull(job.getEndDate());
 
     String jobId = job.getId();
     assertNotNull(jobId);
+    Long jobSeq = Long.parseLong(jobId);
+    assertNotNull(jobSeq);
 
-//    if (isRestRepositoryServiceAvailable) {
-      waitForJobStatus(jobId, "Success");
-//    } else {
-//      waitForJobStatus(jobId, "Failure");
-//    }
+    waitForJobStatus(jobId, "Success");
+
+    beforeTestDate = new Date();
+
+    job = postMdupdates(goodAuid, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	HttpStatus.ACCEPTED);
+
+    assertEquals(goodAuid, job.getAu().getId());
+    assertEquals(goodAuName, job.getAu().getName());
+
+    jobCreationDate = job.getCreationDate();
+    assertNotNull(jobCreationDate);
+    assertFalse(jobCreationDate.before(beforeTestDate));
+
+    assertNull(job.getEndDate());
+
+    String jobId2 = job.getId();
+    assertNotNull(jobId2);
+    Long jobSeq2 = Long.parseLong(jobId2);
+    assertNotNull(jobSeq2);
+    assertEquals((Long)(jobSeq + 1L), jobSeq2);
+
+    waitForJobStatus(jobId2, "Success");
+
+    job = postMdupdates("non-existent-au", MD_UPDATE_FULL_EXTRACTION,
+	HttpStatus.NOT_FOUND);
+
+    job = postMdupdates("non-existent-au", MD_UPDATE_INCREMENTAL_EXTRACTION,
+	HttpStatus.NOT_FOUND);
 
     if (logger.isDebugEnabled()) logger.debug("Done.");
   }
