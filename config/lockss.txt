@@ -41,19 +41,8 @@ org.lockss.proxy.start=no
 org.lockss.platform.ui.username=lockss-u
 org.lockss.platform.ui.password=SHA1:ac4fc8fa9930a24c8d002d541c37ca993e1bc40f
 
-## So that we don't hash on no-longer-relevant URLs
-#org.lockss.blockHasher.ignoreFilesOutsideCrawlSpec=true
-
-#org.lockss.baseau.minFetchDelay=3000
-#org.lockss.plugin.restartAusWithNewPlugin=true
-
-## Disable crawler, poller and voter
-#org.lockss.crawler.enabled=false
-#org.lockss.poll.v3.enableV3Poller=false
-#org.lockss.poll.v3.enableV3Voter=false
-
-## Disable the SOAP web services.
-#org.lockss.ws.enabled=false
+# Disable crawler
+org.lockss.crawler.enabled=false
 
 org.lockss.ui.port=28121
 
