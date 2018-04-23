@@ -78,7 +78,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <groupId>org.lockss</groupId>
       <artifactId>lockss-spring-bundle</artifactId>
       <version>${lockss.spring.bundleVersion}</version>
-      <type>pom</type>
     </dependency>
 
     <dependency>

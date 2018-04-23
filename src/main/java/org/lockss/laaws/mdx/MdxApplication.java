@@ -39,7 +39,7 @@ import org.lockss.app.LockssDaemon;
 import org.lockss.metadata.extractor.MetadataExtractorManager;
 import org.lockss.metadata.extractor.job.JobDbManager;
 import org.lockss.metadata.extractor.job.JobManager;
-import org.lockss.rs.base.BaseSpringBootApplication;
+import org.lockss.spring.base.BaseSpringBootApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
