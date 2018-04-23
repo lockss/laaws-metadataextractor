@@ -48,7 +48,7 @@ import org.lockss.metadata.extractor.job.JobAuStatus;
 import org.lockss.metadata.extractor.job.JobManager;
 import org.lockss.spring.auth.Roles;
 import org.lockss.spring.auth.SpringAuthenticationFilter;
-import org.lockss.spring.status.ApiStatus;
+import org.lockss.laaws.status.model.ApiStatus;
 import org.lockss.spring.status.SpringLockssBaseApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
