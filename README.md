@@ -40,7 +40,7 @@ The LAAWS Metadata Extraction REST Web Service.
 
 ### Set up the TDB tree:
 The TDB tree needs to be located at `./tdbxml/prod`, matching the definition
-in `./runLaawsMdx`.
+in `./scripts/runService`.
 
 ### Specify the Repository
 This web service requires an external Repository to provide an indication of
@@ -62,7 +62,7 @@ The default configuration of this web service does not require that a
 Configuration REST web service is running.
 
 To run this web service with a Configuration REST web service, edit the file
-`./runLaawsMdx` to comment out the line
+`./scripts/runService` to comment out the line
 
 `mvn spring-boot:run -Drun.arguments="-p,config/common.xml,-x,tdbxml/prod,-p,config/lockss.txt,-p,config/lockss.opt"`
 
@@ -74,17 +74,18 @@ To run this web service with a Configuration REST web service at a different
 location than the default, change `localhost` and/or `54420` accordingly.
 
 ### Build the web service:
-`./buildLaawsMdx`
+`./scripts/buildService`
 
 This will run the tests as a pre-requisite for the build.
 
 The result of the build is a so-called "uber JAR" file which includes the
-project code plus all its dependencies and which is located at
+project code plus all its dependencies and which can be located via the symbolic
+link at
 
-`./target/laaws-metadata-extraction-service-*.jar`
+`./target/current.jar`
 
 ### Run the web service:
-`./runLaawsMdx`
+`./scripts/runService`
 
 This will use port 28120. To use another port, edit the value of the
 `server.port` property in file
@@ -93,7 +94,7 @@ This will use port 28120. To use another port, edit the value of the
 The log is at `./logs/mdx.log`
 
 ### Build and run the web service:
-`./buildAndRunLaawsMdx`
+`./scripts/buildAndRunService`
 
 This will use port 28120. To use another port, edit the value of the
 `server.port` property in file
@@ -104,9 +105,6 @@ This will use port 28120. To use another port, edit the value of the
 
 ### The status of the web service may be obtained at:
 #### http://localhost:28120/status
-
-### Stop the web service:
-`./stopLaawsMdx`
 
 ### Using another REST web service for metadata storage
 To use another REST web service to store the extracted metadata, instead of
