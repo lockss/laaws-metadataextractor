@@ -65,7 +65,7 @@ public class MdxApplication extends BaseSpringBootApplication
     REPOSITORY_MANAGER_DESC,
     // start database manager before any manager that uses it.
     METADATA_DB_MANAGER_DESC,
-    // start metadata manager after pluggin manager and database manager.
+    // start metadata manager after plugin manager and database manager.
     METADATA_MANAGER_DESC,
     new ManagerDesc(LockssDaemon.managerKey(MetadataExtractorManager.class),
 	"org.lockss.metadata.extractor.MetadataExtractorManager"),
@@ -75,8 +75,6 @@ public class MdxApplication extends BaseSpringBootApplication
     // Start the job manager.
     new ManagerDesc(LockssDaemon.managerKey(JobManager.class),
 	"org.lockss.metadata.extractor.job.JobManager"),
-    // Start the COUNTER reports manager.
-    COUNTER_REPORTS_MANAGER_DESC,
     // NOTE: Any managers that are needed to decide whether a servlet is to be
     // enabled or not (through ServletDescr.isEnabled()) need to appear before
     // the AdminServletManager on the next line.
@@ -84,8 +82,7 @@ public class MdxApplication extends BaseSpringBootApplication
     PLATFORM_CONFIG_STATUS_DESC,
     CONFIG_STATUS_DESC,
     ARCHIVAL_UNIT_STATUS_DESC,
-//     REPOSITORY_STATUS_DESC,
-    OVERVIEW_STATUS_DESC,
+    OVERVIEW_STATUS_DESC
   };
 
   /**
