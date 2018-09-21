@@ -99,6 +99,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <artifactId>lockss-plugins</artifactId>
       <version>${lockss.plugins.version}</version>
     </dependency>
+
+    <!-- WARCImporter -->
+    <dependency>
+      <groupId>org.lockss.laaws</groupId>
+      <artifactId>laaws-repository-client</artifactId>
+      <version>${lockss.repository-client.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   
   <repositories>

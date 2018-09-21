@@ -46,8 +46,6 @@ tags:
   description: "Metadata updates"
 schemes:
 - "https"
-consumes:
-- "application/json"
 produces:
 - "application/json"
 security:
@@ -58,30 +56,33 @@ paths:
       tags:
       - "mdupdates"
       summary: "Get a list of currently active jobs"
-      description: "Get a list of all currently active jobs (no parameters) or\
-        \ a list of the currently active jobs in a page defined by the page\
-        \ index and size"
+      description: "Get a list of all currently active jobs or a pageful of the\
+        \ list defined by the continuation token and size"
       operationId: "getMdupdates"
       produces:
       - "application/json"
       parameters:
-      - name: "page"
-        in: "query"
-        description: "The identifier of the page of jobs to be returned"
-        required: false
-        type: "integer"
-        default: 1
       - name: "limit"
         in: "query"
         description: "The number of jobs per page"
         required: false
         type: "integer"
         default: 50
+      - name: "continuationToken"
+        in: "query"
+        required: false
+        type: "string"
+        description: "The continuation token of the next page of jobs to be\
+          \ returned"
       responses:
         200:
           description: "The requested jobs"
           schema:
             $ref: '#/definitions/jobPageInfo'
+        400:
+          description: "Bad request"
+        401:
+          description: "Unauthorized request"
         500:
           description: "Internal server error"
         503:
@@ -128,8 +129,6 @@ paths:
       summary: "Delete all of the currently queued and active jobs"
       description: "Delete all of the currently queued and active jobs"
       operationId: "deleteMdupdates"
-      consumes:
-      - "application/json"
       produces:
       - "application/json"
       parameters: []
@@ -167,6 +166,8 @@ paths:
           description: "The status of the requested job"
           schema:
             $ref: "#/definitions/status"
+        401:
+          description: "Unauthorized request"
         404:
           description: "Job not found"
         500:
@@ -180,8 +181,6 @@ paths:
       description: "Delete a job given the job identifier, stopping any current\
         \ processing, if necessary"
       operationId: deleteMdupdatesJobid
-      consumes:
-      - "application/json"
       produces:
       - "application/json"
       parameters:

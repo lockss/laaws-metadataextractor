@@ -27,19 +27,18 @@
  */
 package org.lockss.laaws.mdx.model;
 
-import java.util.Objects;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Objects;
 
 /**
  * The information related to pagination of content.
  **/
 @ApiModel(description = "The information related to pagination of content")
 public class PageInfo   {
-  
   private Integer totalCount = null;
   private Integer resultsPerPage = null;
-  private Integer currentPage = null;
+  private String continuationToken = null;
   private String curLink = null;
   private String nextLink = null;
 
@@ -53,6 +52,7 @@ public class PageInfo   {
   public Integer getTotalCount() {
     return totalCount;
   }
+
   public void setTotalCount(Integer totalCount) {
     this.totalCount = totalCount;
   }
@@ -66,21 +66,23 @@ public class PageInfo   {
   public Integer getResultsPerPage() {
     return resultsPerPage;
   }
+
   public void setResultsPerPage(Integer resultsPerPage) {
     this.resultsPerPage = resultsPerPage;
   }
-  
+
   /**
-   * The current page number.
+   * The continuation token.
    * 
-   * @return an Integer with the current page number.
-   */
-  @ApiModelProperty(required = true, value = "The current page number")
-  public Integer getCurrentPage() {
-    return currentPage;
+   * @return A String with the continuation token.
+   **/
+  @ApiModelProperty(required = true, value = "The continuation token")
+  public String getContinuationToken() {
+    return continuationToken;
   }
-  public void setCurrentPage(Integer currentPage) {
-    this.currentPage = currentPage;
+
+  public void setContinuationToken(String continuationToken) {
+    this.continuationToken = continuationToken;
   }
 
   /**
@@ -92,6 +94,7 @@ public class PageInfo   {
   public String getCurLink() {
     return curLink;
   }
+
   public void setCurLink(String curLink) {
     this.curLink = curLink;
   }
@@ -105,6 +108,7 @@ public class PageInfo   {
   public String getNextLink() {
     return nextLink;
   }
+
   public void setNextLink(String nextLink) {
     this.nextLink = nextLink;
   }
@@ -120,14 +124,14 @@ public class PageInfo   {
     PageInfo pageInfo = (PageInfo) o;
     return Objects.equals(totalCount, pageInfo.totalCount) &&
         Objects.equals(resultsPerPage, pageInfo.resultsPerPage) &&
-        Objects.equals(currentPage, pageInfo.currentPage) &&
+        Objects.equals(continuationToken, pageInfo.continuationToken) &&
         Objects.equals(curLink, pageInfo.curLink) &&
         Objects.equals(nextLink, pageInfo.nextLink);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(totalCount, resultsPerPage, currentPage, curLink,
+    return Objects.hash(totalCount, resultsPerPage, continuationToken, curLink,
 	nextLink);
   }
 
@@ -135,13 +139,12 @@ public class PageInfo   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PageInfo {\n");
-    
     sb.append("    totalCount: ").append(toIndentedString(totalCount))
     .append("\n");
     sb.append("    resultsPerPage: ").append(toIndentedString(resultsPerPage))
     .append("\n");
-    sb.append("    currentPage: ").append(toIndentedString(currentPage))
-    .append("\n");
+    sb.append("    continuationToken: ")
+    .append(toIndentedString(continuationToken)).append("\n");
     sb.append("    curLink: ").append(toIndentedString(curLink)).append("\n");
     sb.append("    nextLink: ").append(toIndentedString(nextLink)).append("\n");
     sb.append("}");

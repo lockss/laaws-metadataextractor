@@ -37,10 +37,10 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
-import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
-import org.lockss.laaws.mdx.model.Status;
+import org.lockss.metadata.extractor.job.Job;
+import org.lockss.metadata.extractor.job.Status;
 import org.lockss.spring.status.SpringLockssBaseApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,9 +84,9 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
       message = "Some or all of the system is not available",
       response = Integer.class) })
   @RequestMapping(value = "/mdupdates",
-  produces = { "application/json" }, consumes = { "application/json" },
+  produces = { "application/json" },
   method = RequestMethod.DELETE)
-  default ResponseEntity<Integer> deleteMdupdates() {
+  default ResponseEntity<?> deleteMdupdates() {
     return new ResponseEntity<Integer>(HttpStatus.NOT_IMPLEMENTED);
   }
 
@@ -118,30 +118,34 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
       message = "Some or all of the system is not available",
       response = Job.class) })
   @RequestMapping(value = "/mdupdates/{jobid}",
-  produces = { "application/json" }, consumes = { "application/json" },
+  produces = { "application/json" },
   method = RequestMethod.DELETE)
-  default ResponseEntity<Job> deleteMdupdatesJobid(
+  default ResponseEntity<?> deleteMdupdatesJobid(
       @ApiParam(value = "The identifier of the job to be deleted",
       required=true) @PathVariable("jobid") String jobid) {
     return new ResponseEntity<Job>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
-   * Provides a list of existing jobs.
+   * Provides a list of all currently active jobs or a pageful of the list
+   * defined by the continuation token and size.
    * 
-   * @param page
-   *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
+   * @param continuationToken
+   *          A String with the continuation token of the next page of jobs to
+   *          be returned.
    * @return a {@code ResponseEntity<JobPageInfo>} with the list of jobs.
    */
   @ApiOperation(value = "Get a list of currently active jobs",
-  notes = "Get a list of all currently active jobs (no parameters) or a list of the currently active jobs in a page defined by the page index and size",
+  notes = "Get a list of all currently active jobs (no parameters) or a pageful of the list defined by the continuation token and size",
   response = JobPageInfo.class,
   authorizations = {@Authorization(value = "basicAuth")}, tags={ "mdupdates", })
   @ApiResponses(value = { 
       @ApiResponse(code = 200, message = "The requested jobs",
 	  response = JobPageInfo.class),
+      @ApiResponse(code = 400, message = "Bad request",
+      response = JobPageInfo.class),
       @ApiResponse(code = 401, message = "Unauthorized request",
       response = JobPageInfo.class),
       @ApiResponse(code = 500, message = "Internal server error",
@@ -152,13 +156,13 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
   @RequestMapping(value = "/mdupdates",
   produces = { "application/json" },
   method = RequestMethod.GET)
-  default public ResponseEntity<JobPageInfo> getMdupdates(
-      @ApiParam(value = "The identifier of the page of jobs to be returned",
-      defaultValue="1") @RequestParam(value = "page", required = false,
-      defaultValue="1") Integer page,
+  default public ResponseEntity<?> getMdupdates(
       @ApiParam(value = "The number of jobs per page", defaultValue="50")
       @RequestParam(value = "limit", required = false, defaultValue="50")
-      Integer limit) {
+      Integer limit,
+      @ApiParam(value = "The continuation token of the next page of jobs to be returned")
+      @RequestParam(value = "continuationToken", required = false)
+      String continuationToken) {
     return new ResponseEntity<JobPageInfo>(HttpStatus.NOT_IMPLEMENTED);
   }
 
@@ -187,7 +191,7 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
   @RequestMapping(value = "/mdupdates/{jobid}",
   produces = { "application/json" },
   method = RequestMethod.GET)
-  default ResponseEntity<Status> getMdupdatesJobid(
+  default ResponseEntity<?> getMdupdatesJobid(
       @ApiParam(value = "The identifier of the requested job", required=true)
       @PathVariable("jobid") String jobid) {
     return new ResponseEntity<Status>(HttpStatus.NOT_IMPLEMENTED);
@@ -228,7 +232,7 @@ public interface MdupdatesApi extends SpringLockssBaseApi {
   @RequestMapping(value = "/mdupdates",
   produces = { "application/json" }, consumes = { "application/json" },
   method = RequestMethod.POST)
-  default ResponseEntity<Job> postMdupdates(@ApiParam(
+  default ResponseEntity<?> postMdupdates(@ApiParam(
       value = "The information defining the AU metadata update operation",
       required=true) @RequestBody MetadataUpdateSpec metadataUpdateSpec) {
     return new ResponseEntity<Job>(HttpStatus.NOT_IMPLEMENTED);

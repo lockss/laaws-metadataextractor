@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.lockss.metadata.extractor.job.Job;
 
 /**
  * A display page of jobs.

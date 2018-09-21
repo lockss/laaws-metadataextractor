@@ -32,34 +32,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.lockss.laaws.mdx.api;
 
 import io.swagger.annotations.ApiParam;
-import java.lang.reflect.MalformedParametersException;
 import java.security.AccessControlException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ConcurrentModificationException;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.log4j.Logger;
 import org.lockss.app.LockssApp;
-import org.lockss.laaws.mdx.model.Job;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
-import org.lockss.laaws.mdx.model.Status;
+import org.lockss.metadata.extractor.job.Job;
 import org.lockss.metadata.extractor.job.JobAuStatus;
+import org.lockss.metadata.extractor.job.JobContinuationToken;
 import org.lockss.metadata.extractor.job.JobManager;
+import org.lockss.metadata.extractor.job.JobPage;
+import org.lockss.metadata.extractor.job.Status;
 import org.lockss.spring.auth.Roles;
 import org.lockss.spring.auth.SpringAuthenticationFilter;
 import org.lockss.laaws.status.model.ApiStatus;
+import org.lockss.log.L4JLogger;
 import org.lockss.spring.status.SpringLockssBaseApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -68,7 +66,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MdupdatesApiController extends SpringLockssBaseApiController
     implements MdupdatesApi {
-  private static Logger log = Logger.getLogger(MdupdatesApiController.class);
+  private static final L4JLogger log = L4JLogger.getLogger();
 
   @Autowired
   private HttpServletRequest request;
@@ -81,22 +79,29 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    */
   @Override
   @RequestMapping(value = "/mdupdates",
-  produces = { "application/json" }, consumes = { "application/json" },
+  produces = { "application/json" },
   method = RequestMethod.DELETE)
-  public ResponseEntity<Integer> deleteMdupdates() {
-    if (log.isDebugEnabled()) log.debug("Invoked");
+  public ResponseEntity<?> deleteMdupdates() {
+    log.debug2("Invoked");
 
-    SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+    // Check authorization.
+    try {
+      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+    } catch (AccessControlException ace) {
+      log.warn(ace.getMessage());
+      return new ResponseEntity<String>(ace.getMessage(), HttpStatus.FORBIDDEN);
+    }
 
     try {
       int removedCount = getJobManager().removeAllJobs();
-      if (log.isDebugEnabled()) log.debug("removedCount = " + removedCount);
+      log.trace("removedCount = {}", removedCount);
 
       return new ResponseEntity<Integer>(removedCount, HttpStatus.OK);
     } catch (Exception e) {
       String message = "Cannot deleteMdupdates()";
       log.error(message, e);
-      throw new RuntimeException(message);
+      return new ResponseEntity<String>(message,
+	  HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -111,104 +116,129 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    */
   @Override
   @RequestMapping(value = "/mdupdates/{jobid}",
-  produces = { "application/json" }, consumes = { "application/json" },
+  produces = { "application/json" },
   method = RequestMethod.DELETE)
-  public ResponseEntity<Job> deleteMdupdatesJobid(@PathVariable("jobid")
+  public ResponseEntity<?> deleteMdupdatesJobid(@PathVariable("jobid")
   String jobid) {
-    if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
+    log.debug2("jobid = {}", jobid);
 
-    SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+    // Check authorization.
+    try {
+      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+    } catch (AccessControlException ace) {
+      log.warn(ace.getMessage());
+      return new ResponseEntity<String>(ace.getMessage(), HttpStatus.FORBIDDEN);
+    }
 
     try {
       JobAuStatus jobAuStatus = getJobManager().removeJob(jobid);
-      if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
+      log.trace("jobAuStatus = {}", () -> jobAuStatus);
 
       Job result = new Job(jobAuStatus);
-      if (log.isDebugEnabled()) log.debug("result = " + result);
+      log.trace("result = {}", () -> result);
 
       return new ResponseEntity<Job>(result, HttpStatus.OK);
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
-      log.error(message);
-      throw new IllegalArgumentException(message);
+      log.warn(message, iae);
+      return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       String message =
 	  "Cannot deleteMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      throw new RuntimeException(message);
+      return new ResponseEntity<String>(message,
+	  HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   /**
-   * Provides a list of existing jobs.
+   * Provides a list of all currently active jobs or a pageful of the list
+   * defined by the continuation token and size.
    * 
-   * @param page
-   *          An Integer with the index of the page to be returned.
    * @param limit
    *          An Integer with the maximum number of jobs to be returned.
+   * @param continuationToken
+   *          A String with the continuation token of the next page of jobs to
+   *          be returned.
    * @return a {@code ResponseEntity<JobPageInfo>} with the list of jobs.
    */
   @Override
-  public ResponseEntity<JobPageInfo> getMdupdates(@RequestParam(value = "page",
-	 required = false, defaultValue="1") Integer page,
-	 @RequestParam(value = "limit", required = false, defaultValue="50")
-	 Integer limit) {
-    if (log.isDebugEnabled()) {
-      log.debug("page = " + page);
-      log.debug("limit = " + limit);
+  public ResponseEntity<?> getMdupdates(
+      @RequestParam(value = "limit", required = false, defaultValue="50")
+      Integer limit,
+      @RequestParam(value = "continuationToken", required = false)
+      String continuationToken) {
+    log.debug2("limit = {}", limit);
+    log.debug2("continuationToken = {}", continuationToken);
+
+    if (limit == null || limit.intValue() < 0) {
+      String message =
+	  "Limit of requested items must be a non-negative integer; it was '"
+	      + limit + "'";
+	log.warn(message);
+	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    // Parse the request continuation token.
+    JobContinuationToken jct = null;
+
+    try {
+      jct = new JobContinuationToken(continuationToken);
+    } catch (IllegalArgumentException iae) {
+      String message = "Invalid continuation token '" + continuationToken + "'";
+      log.warn(message, iae);
+      return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
     }
 
     try {
-      PageInfo pi = new PageInfo();
-
-      String curLink = request.getRequestURL().toString();
-      String nextLink = curLink;
-
-      if (page != null) {
-	curLink = curLink + "?page=" + page;
-	nextLink = nextLink + "?page=" + (page + 1);
-
-	if (limit != null) {
-	  curLink = curLink + "&limit=" + limit;
-	  nextLink = nextLink + "&limit=" + limit;
-	}
-      } else if (limit != null) {
-	curLink = curLink + "?limit=" + limit;
-	nextLink = nextLink + "?limit=" + limit;
-      }
-
-      if (log.isDebugEnabled()) {
-	log.debug("curLink = " + curLink);
-	log.debug("nextLink = " + nextLink);
-      }
-
-      pi.setCurLink(curLink);
-      pi.setNextLink(nextLink);
-      pi.setCurrentPage(page);
-      pi.setResultsPerPage(limit);
+      // Get the pageful of results.
+      JobPage jobPage = getJobManager().getJobs(limit, jct);
+      log.trace("jobPage = {}", () -> jobPage);
 
       JobPageInfo result = new JobPageInfo();
+      PageInfo pi = new PageInfo();
       result.setPageInfo(pi);
 
-      List<JobAuStatus> jobAuStatuses = getJobManager().getJobs(page, limit);
-      if (log.isDebugEnabled()) log.debug("jobAuStatuses = " + jobAuStatuses);
+      StringBuffer curLinkBuffer = new StringBuffer(
+	  request.getRequestURL().toString()).append("?limit=").append(limit);
 
-      List<Job> jobs = new ArrayList<Job>();
-
-      for (JobAuStatus jobAuStatus : jobAuStatuses) {
-	jobs.add(new Job(jobAuStatus));
+      if (continuationToken != null) {
+	curLinkBuffer.append("&continuationToken=").append(continuationToken);
       }
 
-      if (log.isDebugEnabled()) log.debug("jobs = " + jobs);
-      result.setJobs(jobs);
-      if (log.isDebugEnabled()) log.debug("result = " + result);
+      if (log.isTraceEnabled())
+	log.trace("curLink = {}", curLinkBuffer.toString());
 
+      pi.setCurLink(curLinkBuffer.toString());
+      pi.setResultsPerPage(jobPage.getJobs().size());
+
+      // Check whether there is a response continuation token.
+      if (jobPage.getContinuationToken() != null) {
+	// Yes.
+	pi.setContinuationToken(jobPage.getContinuationToken()
+	    .toWebResponseContinuationToken());
+
+	String nextLink = request.getRequestURL().toString() + "?limit=" + limit
+	    + "&continuationToken=" + pi.getContinuationToken();
+	log.trace("nextLink = {}", nextLink);
+
+	pi.setNextLink(nextLink);
+      }
+
+      result.setJobs(jobPage.getJobs());
+
+      log.debug2("result = {}", () -> result);
       return new ResponseEntity<JobPageInfo>(result, HttpStatus.OK);
+    } catch (ConcurrentModificationException cme) {
+      String message = "Pagination conflict for jobs: " + cme.getMessage();
+      log.warn(message, cme);
+      return new ResponseEntity<String>(message, HttpStatus.CONFLICT);
     } catch (Exception e) {
-      String message =
-	  "Cannot getMdupdates() for page = " + page + ", limit = " + limit;
+      String message = "Cannot getMdupdates() for limit = " + limit
+	  + ", continuationToken = " + continuationToken;
       log.error(message, e);
-      throw new RuntimeException(message);
+      return new ResponseEntity<String>(message,
+	  HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -223,26 +253,27 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
   @RequestMapping(value = "/mdupdates/{jobid}",
   produces = { "application/json" },
   method = RequestMethod.GET)
-  public ResponseEntity<Status> getMdupdatesJobid(@PathVariable("jobid")
+  public ResponseEntity<?> getMdupdatesJobid(@PathVariable("jobid")
       String jobid) {
-    if (log.isDebugEnabled()) log.debug("jobid = " + jobid);
+    log.debug2("jobid = {}", jobid);
 
     try {
       JobAuStatus jobAuStatus = getJobManager().getJobStatus(jobid);
-      if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
+      log.trace("jobAuStatus = {}", () -> jobAuStatus);
 
       Status result = new Status(jobAuStatus);
-      if (log.isDebugEnabled()) log.debug("result = " + result);
+      log.trace("result = {}", () -> result);
 
       return new ResponseEntity<Status>(result, HttpStatus.OK);
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
-      log.error(message);
-      throw new IllegalArgumentException(message);
+      log.warn(message, iae);
+      return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       String message = "Cannot getMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      throw new RuntimeException(message);
+      return new ResponseEntity<String>(message,
+	  HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -260,42 +291,47 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
   @RequestMapping(value = "/mdupdates",
   produces = { "application/json" }, consumes = { "application/json" },
   method = RequestMethod.POST)
-  public ResponseEntity<Job> postMdupdates(@ApiParam(required=true) @RequestBody
+  public ResponseEntity<?> postMdupdates(@ApiParam(required=true) @RequestBody
       MetadataUpdateSpec metadataUpdateSpec) {
-    if (log.isDebugEnabled())
-      log.debug("metadataUpdateSpec = " + metadataUpdateSpec);
+    log.debug2("metadataUpdateSpec = {}", () -> metadataUpdateSpec);
 
-    SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+    // Check authorization.
+    try {
+      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+    } catch (AccessControlException ace) {
+      log.warn(ace.getMessage());
+      return new ResponseEntity<String>(ace.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
     String auid = null;
 
     try {
       if (metadataUpdateSpec == null) {
 	String message = "Invalid metadata update specification: null";
-	log.error(message);
-	throw new MalformedParametersException(message);
+	log.warn(message);
+	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
       }
 
       auid = metadataUpdateSpec.getAuid();
-      if (log.isDebugEnabled()) log.debug("auid = " + auid);
+      log.trace("auid = {}", auid);
 
       if (auid == null || auid.isEmpty()) {
 	String message = "Invalid auid = '" + auid + "'";
-	log.error(message);
-	throw new MalformedParametersException(message);
+	log.warn(message);
+	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
       }
 
       String updateType = metadataUpdateSpec.getUpdateType();
-      if (log.isDebugEnabled()) log.debug("updateType = " + updateType);
+      log.trace("updateType = {}", updateType);
 
       if (updateType == null || updateType.isEmpty()) {
 	String message = "Invalid updateType = '" + updateType + "'";
-	log.error(message);
-	throw new MalformedParametersException(message);
+	log.warn(message);
+	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
       }
 
       String canonicalUpdateType = updateType.toLowerCase();
-      if (log.isDebugEnabled())
-	log.debug("canonicalUpdateType = " + canonicalUpdateType);
+      log.trace("canonicalUpdateType = {}", canonicalUpdateType);
 
       JobAuStatus jobAuStatus = null;
 
@@ -307,51 +343,27 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
 	jobAuStatus = getJobManager().scheduleMetadataRemoval(auid);
       } else {
 	String message = "Invalid updateType = '" + updateType + "'";
-	log.error(message);
-	throw new MalformedParametersException(message);
+	log.warn(message);
+	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
       }
 
-      if (log.isDebugEnabled()) log.debug("jobAuStatus = " + jobAuStatus);
+      if (log.isTraceEnabled()) log.trace("jobAuStatus = {}", jobAuStatus);
 
       Job result = new Job(jobAuStatus);
-      if (log.isDebugEnabled()) log.debug("result = " + result);
+      log.trace("result = {}", () -> result);
 
       return new ResponseEntity<Job>(result, HttpStatus.ACCEPTED);
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
-      log.error(message);
-      throw new IllegalArgumentException(message);
+      log.warn(message, iae);
+      return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       String message = "Cannot postMdupdates() for metadataUpdateSpec = '"
 	  + metadataUpdateSpec + "'";
       log.error(message, e);
-      throw new RuntimeException(message);
+      return new ResponseEntity<String>(message,
+	  HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  @ExceptionHandler(AccessControlException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  public ErrorResponse authorizationExceptionHandler(AccessControlException e) {
-    return new ErrorResponse(e.getMessage()); 	
-  }
-
-  @ExceptionHandler(MalformedParametersException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ErrorResponse authorizationExceptionHandler(
-      MalformedParametersException e) {
-    return new ErrorResponse(e.getMessage()); 	
-  }
-
-  @ExceptionHandler(IllegalArgumentException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ErrorResponse notFoundExceptionHandler(IllegalArgumentException e) {
-    return new ErrorResponse(e.getMessage()); 	
-  }
-
-  @ExceptionHandler(RuntimeException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ErrorResponse internalExceptionHandler(RuntimeException e) {
-    return new ErrorResponse(e.getMessage()); 	
   }
 
   private static final String API_VERSION = "1.0.0";

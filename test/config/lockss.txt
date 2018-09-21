@@ -1,4 +1,4 @@
-# Copyright (c) 2017 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,5 +24,37 @@
 #
 # Don't make local changes in this file; put local settings in lockss.opt
 
-org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
-org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
+#org.lockss.log.default.level=debug
+
+org.lockss.ui.access.ip.logForbidden=true
+org.lockss.proxy.access.ip.logForbidden=true
+
+org.lockss.platform.diskSpacePaths=./cache
+
+org.lockss.config.reloadInterval = 5m
+org.lockss.ui.allowPluginConfig=true
+
+org.lockss.ui.start=yes
+org.lockss.proxy.start=no
+
+# UI username-passwd = lockss-u/lockss-p
+org.lockss.platform.ui.username=lockss-u
+org.lockss.platform.ui.password=SHA1:ac4fc8fa9930a24c8d002d541c37ca993e1bc40f
+
+# UI username-passwd = content-admin/I'mContentAdmin
+org.lockss.ui.users.1.user=content-admin
+org.lockss.ui.users.1.password=SHA1:3edf8dd2b96a6a344bf70a2cc7794a3baffbbc7c
+org.lockss.ui.users.1.roles=contentAdminRole
+
+# UI username-passwd = access-content/I'mAccessContent
+org.lockss.ui.users.2.user=access-content
+org.lockss.ui.users.2.password=SHA1:3509beee5279f479d257178e8a0eddab4301d75a
+org.lockss.ui.users.2.roles=accessContentRole
+
+# Disable crawler
+org.lockss.crawler.enabled=false
+
+org.lockss.jobManager.enabled=true
+org.lockss.jobManager.sleepDelaySeconds=1
+org.lockss.metadataManager.mandatoryFields=publisher;provider
+org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
