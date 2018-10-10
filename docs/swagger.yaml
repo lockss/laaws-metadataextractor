@@ -42,69 +42,72 @@ info:
 host: "laaws.lockss.org:443"
 basePath: "/"
 tags:
-- name: "mdupdates"
-  description: "Metadata updates"
+  - name: Default
+    description: Default section
+  - name: "mdupdates"
+    description: "Metadata updates"
 schemes:
-- "https"
+  - "https"
 produces:
-- "application/json"
+  - "application/json"
 security:
-- basicAuth: []
+  - basicAuth: []
 paths:
   /mdupdates:
     get:
       tags:
-      - "mdupdates"
+        - "mdupdates"
       summary: "Get a list of currently active jobs"
       description: "Get a list of all currently active jobs or a pageful of the\
         \ list defined by the continuation token and size"
       operationId: "getMdupdates"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "limit"
-        in: "query"
-        description: "The number of jobs per page"
-        required: false
-        type: "integer"
-        default: 50
-      - name: "continuationToken"
-        in: "query"
-        required: false
-        type: "string"
-        description: "The continuation token of the next page of jobs to be\
-          \ returned"
+        - name: "limit"
+          in: "query"
+          description: "The number of jobs per page"
+          required: false
+          type: "integer"
+          default: 50
+        - name: "continuationToken"
+          in: "query"
+          required: false
+          type: "string"
+          description: "The continuation token of the next page of jobs to be\
+            \ returned"
       responses:
         200:
           description: "The requested jobs"
           schema:
             $ref: '#/definitions/jobPageInfo'
         400:
-          description: "Bad request"
+          description: "Bad Request"
         401:
-          description: "Unauthorized request"
+          description: "Unauthorized"
+        409:
+          description: "Conflict"
         500:
-          description: "Internal server error"
-        503:
-          description: "Some or all of the system is not available"
+          description: "Internal Server Error"
     post:
       tags:
-      - "mdupdates"
+        - "mdupdates"
       summary: "Perform an AU metadata update operation"
       description: "Perform an AU metadata update operation given the update\
         \ specification"
       operationId: "postMdupdates"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "metadataUpdateSpec"
-        in: "body"
-        description: "The information defining the AU metadata update operation"
-        required: true
-        schema:
-          $ref: "#/definitions/metadataUpdateSpec"
+        - name: "metadataUpdateSpec"
+          in: "body"
+          description: "The information defining the AU metadata update\
+            \ operation"
+          required: true
+          schema:
+            $ref: "#/definitions/metadataUpdateSpec"
       responses:
         202:
           description: "The job created to perform the AU metadata update\
@@ -112,98 +115,91 @@ paths:
           schema:
             $ref: "#/definitions/job"
         400:
-          description: "Bad request"
+          description: "Bad Request"
         401:
-          description: "Unauthorized request"
+          description: "Unauthorized"
         403:
-          description: "Forbidden request"
+          description: "Forbidden"
         404:
-          description: "AU not found"
+          description: "Not Found"
+        415:
+          description: Unsupported Media Type
         500:
-          description: "Internal server error"
-        503:
-          description: "Some or all of the system is not available"
+          description: "Internal Server Error"
     delete:
       tags:
-      - "mdupdates"
+        - "mdupdates"
       summary: "Delete all of the currently queued and active jobs"
       description: "Delete all of the currently queued and active jobs"
       operationId: "deleteMdupdates"
       produces:
-      - "application/json"
-      parameters: []
+        - "application/json"
       responses:
         200:
-          description: "Jobs were successfully deleted"
+          description: "Count of jobs successfully deleted"
           schema:
             type: "integer"
             format: "int32"
         401:
-          description: "Unauthorized request"
+          description: "Unauthorized"
         403:
-          description: "Forbidden request"
+          description: "Forbidden"
         500:
-          description: "Internal server error"
-        503:
-          description: "Some or all of the system is not available"
+          description: "Internal Server Error"
   /mdupdates/{jobid}:
     get:
       tags:
-      - "mdupdates"
+        - "mdupdates"
       summary: "Get a job"
       description: "Get a job given the job identifier"
       operationId: "getMdupdatesJobid"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "jobid"
-        in: "path"
-        description: "The identifier of the requested job"
-        required: true
-        type: "string"
+        - name: "jobid"
+          in: "path"
+          description: "The identifier of the requested job"
+          required: true
+          type: "string"
       responses:
         200:
           description: "The status of the requested job"
           schema:
             $ref: "#/definitions/status"
         401:
-          description: "Unauthorized request"
+          description: "Unauthorized"
         404:
-          description: "Job not found"
+          description: "Not Found"
         500:
-          description: "Internal server error"
-        503:
-          description: "Some or all of the system is not available"
+          description: "Internal Server Error"
     delete:
       tags:
-      - "mdupdates"
+        - "mdupdates"
       summary: "Delete a job"
       description: "Delete a job given the job identifier, stopping any current\
         \ processing, if necessary"
       operationId: deleteMdupdatesJobid
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "jobid"
-        in: "path"
-        description: "The identifier of the job to be deleted"
-        required: true
-        type: "string"
+        - name: "jobid"
+          in: "path"
+          description: "The identifier of the job to be deleted"
+          required: true
+          type: "string"
       responses:
         200:
           description: "The deleted job"
           schema:
             $ref: "#/definitions/job"
         401:
-          description: "Unauthorized request"
+          description: "Unauthorized"
         403:
-          description: "Forbidden request"
+          description: "Forbidden"
         404:
-          description: "Job not found"
+          description: "Not Found"
         500:
-          description: "Internal server error"
-        503:
-          description: "Some or all of the system is not available"
+          description: "Internal Server Error"
   /status:
     get:
       tags:
@@ -219,11 +215,9 @@ paths:
           schema:
             $ref: "#/definitions/apiStatus"
         401:
-          description: "Unauthorized request"
+          description: "Unauthorized"
         500:
-          description: "Internal server error"
-        503:
-          description: "Some or all of the system is not available"
+          description: "Internal Server Error"
 securityDefinitions:
   basicAuth:
     description: "HTTP Basic Authentication. Works over `HTTP` and `HTTPS`"
@@ -232,8 +226,8 @@ definitions:
   status:
     type: "object"
     required:
-    - "code"
-    - "msg"
+      - "code"
+      - "msg"
     properties:
       code:
         type: "integer"
@@ -246,10 +240,10 @@ definitions:
   job:
     type: "object"
     required:
-    - "au"
-    - "creationDate"
-    - "id"
-    - "status"
+      - "au"
+      - "creationDate"
+      - "id"
+      - "status"
     properties:
       au:
         $ref: "#/definitions/au"
@@ -277,7 +271,7 @@ definitions:
   au:
     type: "object"
     required:
-    - "id"
+      - "id"
     properties:
       id:
         type: "string"
@@ -292,8 +286,8 @@ definitions:
   jobPageInfo:
     type: "object"
     required:
-    - "jobs"
-    - "pageInfo"
+      - "jobs"
+      - "pageInfo"
     properties:
       jobs:
         type: "array"
@@ -306,10 +300,10 @@ definitions:
   pageInfo:
     type: "object"
     required:
-    - "curLink"
-    - "currentPage"
-    - "resultsPerPage"
-    - "totalCount"
+      - "curLink"
+      - "continuationToken"
+      - "resultsPerPage"
+      - "totalCount"
     properties:
       totalCount:
         type: "integer"
@@ -319,10 +313,9 @@ definitions:
         type: "integer"
         format: "int32"
         description: "The number of results per page"
-      currentPage:
-        type: "integer"
-        format: "int32"
-        description: "The current page number"
+      continuationToken:
+        type: "string"
+        description: "The continuation token"
       curLink:
         type: "string"
         description: "The link to the current page"
@@ -333,8 +326,8 @@ definitions:
   metadataUpdateSpec:
     type: "object"
     required:
-    - "auid"
-    - "updateType"
+      - "auid"
+      - "updateType"
     properties:
       auid:
         type: "string"
@@ -347,8 +340,8 @@ definitions:
   apiStatus:
     type: "object"
     required:
-    - "version"
-    - "ready"
+      - "version"
+      - "ready"
     properties:
       version:
         type: "string"

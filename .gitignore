@@ -198,3 +198,4 @@ local.properties
 /derby.log
 /cronstate.xml
 !/test/lockss-plugins.jar
+/src/generated/

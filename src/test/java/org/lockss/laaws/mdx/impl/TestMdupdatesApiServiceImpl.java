@@ -25,9 +25,9 @@
  in this Software without prior written authorization from Stanford University.
 
  */
-package org.lockss.laaws.mdx.api;
+package org.lockss.laaws.mdx.impl;
 
-import static org.lockss.laaws.mdx.api.MdupdatesApi.*;
+import static org.lockss.laaws.mdx.impl.MdupdatesApiServiceImpl.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -75,11 +75,11 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Test class for org.lockss.laaws.mdx.api.MdupdatesApiController.
+ * Test class for org.lockss.laaws.mdx.api.MdupdatesApiServiceImpl.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TestMdupdatesApiController extends SpringLockssTestCase {
+public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
   private static final L4JLogger log = L4JLogger.getLogger();
 
   private static final String UI_PORT_CONFIGURATION_TEMPLATE =
@@ -213,7 +213,7 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
     log.debug2("port = {}", port);
 
     // Set up the temporary directory where the test data will reside.
-    setUpTempDirectory(TestMdupdatesApiController.class.getCanonicalName());
+    setUpTempDirectory(TestMdupdatesApiServiceImpl.class.getCanonicalName());
 
     // Copy the necessary files to the test temporary directory.
     File srcTree1 = new File(new File("test"), "tdbxml");
@@ -395,8 +395,8 @@ public class TestMdupdatesApiController extends SpringLockssTestCase {
     HttpStatus statusCode = successResponse.getStatusCode();
     assertEquals(HttpStatus.OK, statusCode);
 
-    String expectedBody = "{'swagger':'2.0',"
-	+ "'info':{'description':'API of Metadata Extraction Service for LAAWS'"
+    String expectedBody = "{'swagger':'2.0','info':{'description':"
+	+ "'API of the LOCKSS Metadata Extraction REST Service'"
         + "}}";
 
     JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);

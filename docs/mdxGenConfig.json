@@ -1,6 +1,6 @@
 {
   "CopyrightNotice":[
-  "Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,",
+  "Copyright (c) 2016-2018 Board of Trustees of Leland Stanford Jr. University,",
   "all rights reserved.",
   "",
   "Permission is hereby granted, free of charge, to any person obtaining a copy",
@@ -27,6 +27,8 @@
   "groupId":"org.lockss.laaws",
   "artifactId":"mdx",
   "artifactVersion":"1.0.0",
+  "basePackage":"org.lockss.laaws.mdx",
+  "configPackage":"org.lockss.laaws.mdx.config",
   "modelPackage":"org.lockss.laaws.mdx.model",
   "apiPackage":"org.lockss.laaws.mdx.api",
   "invokerPackage":"org.lockss.laaws.mdx",
@@ -34,5 +36,7 @@
   "dateLibrary":"java8",
   "title": "LAAWS Metadata Extraction Service",
   "java8": true,
-  "library":"spring-boot"
+  "delegatePattern": true,
+  "sourceFolder": "src/generated/java",
+  "swaggerDocketConfig": true
 }

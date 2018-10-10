@@ -29,13 +29,14 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  */
-package org.lockss.laaws.mdx.api;
+package org.lockss.laaws.mdx.impl;
 
-import io.swagger.annotations.ApiParam;
 import java.security.AccessControlException;
 import java.util.ConcurrentModificationException;
 import javax.servlet.http.HttpServletRequest;
 import org.lockss.app.LockssApp;
+import org.lockss.laaws.mdx.api.MdupdatesApi;
+import org.lockss.laaws.mdx.api.MdupdatesApiDelegate;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
@@ -53,6 +54,7 @@ import org.lockss.spring.status.SpringLockssBaseApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,9 +65,14 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controller for access to the AU metadata jobs.
  */
-@RestController
-public class MdupdatesApiController extends SpringLockssBaseApiController
-    implements MdupdatesApi {
+@Service
+public class MdupdatesApiServiceImpl extends SpringLockssBaseApiController
+    implements MdupdatesApiDelegate {
+  public static final String MD_UPDATE_DELETE = "delete";
+  public static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
+  public static final String MD_UPDATE_INCREMENTAL_EXTRACTION =
+      "incremental_extraction";
+
   private static final L4JLogger log = L4JLogger.getLogger();
 
   @Autowired
@@ -78,10 +85,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    * @return a {@code ResponseEntity<Integer>} with the count of jobs deleted.
    */
   @Override
-  @RequestMapping(value = "/mdupdates",
-  produces = { "application/json" },
-  method = RequestMethod.DELETE)
-  public ResponseEntity<?> deleteMdupdates() {
+  public ResponseEntity<Integer> deleteMdupdates() {
     log.debug2("Invoked");
 
     // Check authorization.
@@ -89,7 +93,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
       SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
-      return new ResponseEntity<String>(ace.getMessage(), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     try {
@@ -100,8 +104,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
     } catch (Exception e) {
       String message = "Cannot deleteMdupdates()";
       log.error(message, e);
-      return new ResponseEntity<String>(message,
-	  HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -115,11 +118,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    *         job.
    */
   @Override
-  @RequestMapping(value = "/mdupdates/{jobid}",
-  produces = { "application/json" },
-  method = RequestMethod.DELETE)
-  public ResponseEntity<?> deleteMdupdatesJobid(@PathVariable("jobid")
-  String jobid) {
+  public ResponseEntity<Job> deleteMdupdatesJobid(String jobid) {
     log.debug2("jobid = {}", jobid);
 
     // Check authorization.
@@ -127,7 +126,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
       SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
-      return new ResponseEntity<String>(ace.getMessage(), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     try {
@@ -141,13 +140,12 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.warn(message, iae);
-      return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       String message =
 	  "Cannot deleteMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      return new ResponseEntity<String>(message,
-	  HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -163,10 +161,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    * @return a {@code ResponseEntity<JobPageInfo>} with the list of jobs.
    */
   @Override
-  public ResponseEntity<?> getMdupdates(
-      @RequestParam(value = "limit", required = false, defaultValue="50")
-      Integer limit,
-      @RequestParam(value = "continuationToken", required = false)
+  public ResponseEntity<JobPageInfo> getMdupdates(Integer limit,
       String continuationToken) {
     log.debug2("limit = {}", limit);
     log.debug2("continuationToken = {}", continuationToken);
@@ -176,7 +171,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
 	  "Limit of requested items must be a non-negative integer; it was '"
 	      + limit + "'";
 	log.warn(message);
-	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+	return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     // Parse the request continuation token.
@@ -187,7 +182,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
     } catch (IllegalArgumentException iae) {
       String message = "Invalid continuation token '" + continuationToken + "'";
       log.warn(message, iae);
-      return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -232,13 +227,12 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
     } catch (ConcurrentModificationException cme) {
       String message = "Pagination conflict for jobs: " + cme.getMessage();
       log.warn(message, cme);
-      return new ResponseEntity<String>(message, HttpStatus.CONFLICT);
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
     } catch (Exception e) {
       String message = "Cannot getMdupdates() for limit = " + limit
 	  + ", continuationToken = " + continuationToken;
       log.error(message, e);
-      return new ResponseEntity<String>(message,
-	  HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -250,11 +244,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    * @return a {@code ResponseEntity<Status>} with the job information.
    */
   @Override
-  @RequestMapping(value = "/mdupdates/{jobid}",
-  produces = { "application/json" },
-  method = RequestMethod.GET)
-  public ResponseEntity<?> getMdupdatesJobid(@PathVariable("jobid")
-      String jobid) {
+  public ResponseEntity<Status> getMdupdatesJobid(String jobid) {
     log.debug2("jobid = {}", jobid);
 
     try {
@@ -268,12 +258,11 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
     } catch (IllegalArgumentException iae) {
       String message = "No job found for jobid = '" + jobid + "'";
       log.warn(message, iae);
-      return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       String message = "Cannot getMdupdatesJobid() for jobid = '" + jobid + "'";
       log.error(message, e);
-      return new ResponseEntity<String>(message,
-	  HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -288,10 +277,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
    *         created.
    */
   @Override
-  @RequestMapping(value = "/mdupdates",
-  produces = { "application/json" }, consumes = { "application/json" },
-  method = RequestMethod.POST)
-  public ResponseEntity<?> postMdupdates(@ApiParam(required=true) @RequestBody
+  public ResponseEntity<Job> postMdupdates(
       MetadataUpdateSpec metadataUpdateSpec) {
     log.debug2("metadataUpdateSpec = {}", () -> metadataUpdateSpec);
 
@@ -300,7 +286,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
       SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
-      return new ResponseEntity<String>(ace.getMessage(), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     String auid = null;
@@ -309,7 +295,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
       if (metadataUpdateSpec == null) {
 	String message = "Invalid metadata update specification: null";
 	log.warn(message);
-	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+	return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
 
       auid = metadataUpdateSpec.getAuid();
@@ -318,7 +304,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
       if (auid == null || auid.isEmpty()) {
 	String message = "Invalid auid = '" + auid + "'";
 	log.warn(message);
-	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+	return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
 
       String updateType = metadataUpdateSpec.getUpdateType();
@@ -327,7 +313,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
       if (updateType == null || updateType.isEmpty()) {
 	String message = "Invalid updateType = '" + updateType + "'";
 	log.warn(message);
-	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+	return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
 
       String canonicalUpdateType = updateType.toLowerCase();
@@ -344,7 +330,7 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
       } else {
 	String message = "Invalid updateType = '" + updateType + "'";
 	log.warn(message);
-	return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+	return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
 
       if (log.isTraceEnabled()) log.trace("jobAuStatus = {}", jobAuStatus);
@@ -356,13 +342,12 @@ public class MdupdatesApiController extends SpringLockssBaseApiController
     } catch (IllegalArgumentException iae) {
       String message = "No Archival Unit found for auid = '" + auid + "'";
       log.warn(message, iae);
-      return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       String message = "Cannot postMdupdates() for metadataUpdateSpec = '"
 	  + metadataUpdateSpec + "'";
       log.error(message, e);
-      return new ResponseEntity<String>(message,
-	  HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
