@@ -112,17 +112,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <artifactId>laaws-repository-client</artifactId>
       <version>${lockss.repository-client.version}</version>
       <scope>test</scope>
-      <exclusions>
-        <!-- brings sealed Jetty 6 but we have Jetty 5 -->
-        <exclusion>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty</artifactId>  
-        </exclusion>
-        <exclusion>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-util</artifactId>  
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 
