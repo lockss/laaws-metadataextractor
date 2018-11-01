@@ -88,6 +88,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <type>pom</type>
     </dependency>
 
+    <dependency>
+      <groupId>org.lockss</groupId>
+      <artifactId>lockss-core-tests-bundle</artifactId>
+      <version>${lockss.core.bundleVersion}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+
     <!-- LOCKSS daemon -->
     <dependency>
       <groupId>org.lockss.laaws</groupId>
