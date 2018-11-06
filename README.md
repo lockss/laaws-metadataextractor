@@ -87,7 +87,7 @@ link at
 ### Run the web service:
 `./scripts/runService`
 
-This will use port 28120. To use another port, edit the value of the
+This will use port 24640. To use another port, edit the value of the
 `server.port` property in file
 `src/main/resources/application.properties`.
 
@@ -96,15 +96,15 @@ The log is at `./logs/mdx.log`
 ### Build and run the web service:
 `./scripts/buildAndRunService`
 
-This will use port 28120. To use another port, edit the value of the
+This will use port 24640. To use another port, edit the value of the
 `server.port` property in file
 `src/main/resources/application.properties`.
 
 ### API is documented at:
-#### http://localhost:28120/swagger-ui.html
+#### http://localhost:24640/swagger-ui.html
 
 ### The status of the web service may be obtained at:
-#### http://localhost:28120/status
+#### http://localhost:24640/status
 
 ### Using another REST web service for metadata storage
 To use another REST web service to store the extracted metadata, instead of

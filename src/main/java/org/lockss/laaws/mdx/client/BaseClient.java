@@ -41,8 +41,8 @@ import org.springframework.http.HttpStatus;
 public class BaseClient {
   private static final String userName = "lockss-u";
   private static final String password = "lockss-p";
-
-  protected static final String baseUri = "http://localhost:28120";
+  private static final String REST_PORT = "24640";
+  protected static final String baseUri = "http://localhost:" + REST_PORT;
 
   /**
    * Provides a RestTemplate that does not throw exceptions when the received
