@@ -61,6 +61,7 @@ public class MdxApplication extends BaseSpringBootApplication
   // which managers are initialized and started.
   protected final static ManagerDesc[] myManagerDescs = {
     ACCOUNT_MANAGER_DESC,
+    CONFIG_DB_MANAGER_DESC,
     // start plugin manager after generic services
     PLUGIN_MANAGER_DESC,
     CRAWL_MANAGER_DESC,
