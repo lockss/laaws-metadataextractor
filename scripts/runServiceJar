@@ -47,12 +47,12 @@ DIR=`get_script_dir "${BASH_SOURCE[0]}"`
 cd $DIR/..
 
 # Check whether the service JAR exists.
-if [ -f target/current.jar ]
+if [ -f target/current-with-deps.jar ]
 then
   # Default to local configuration files.
-  java -jar target/current.jar -p config/common.xml -x tdbxml/prod -p config/lockss.txt -p config/lockss.opt
+  java -jar target/current-with-deps.jar -p config/common.xml -x tdbxml/prod -p config/lockss.txt -p config/lockss.opt
   # Adding a REST configuration service.
-  # java -jar target/current.jar -c http://lockss-u:lockss-p@localhost:54420 -p http://localhost:54420/config/file/cluster -p config/common.xml -x tdbxml/prod -p config/lockss.txt -p config/lockss.opt
+  # java -jar target/current-with-deps.jar -c http://lockss-u:lockss-p@localhost:54420 -p http://localhost:54420/config/file/cluster -p config/common.xml -x tdbxml/prod -p config/lockss.txt -p config/lockss.opt
 else
   echo Not running service: JAR file does not exist.
 fi

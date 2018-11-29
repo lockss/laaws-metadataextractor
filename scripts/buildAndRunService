@@ -50,7 +50,7 @@ cd $DIR/..
 $DIR/buildService
 
 # Check whether the service JAR has been successfully built.
-if [ -f target/current.jar ]
+if [ -f target/current-with-deps.jar ]
 then
   # Yes: Start the service.
   $DIR/runService
