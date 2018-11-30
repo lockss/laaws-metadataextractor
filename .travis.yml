@@ -27,7 +27,7 @@ notifications:
   email: dev-notify@lockss.org
 before_install:
 - openssl aes-256-cbc -K $encrypted_58abfe8ac3f8_key -iv $encrypted_58abfe8ac3f8_iv
-  -in codesigning.asc.enc -out codesigning.asc -d
+  -in ci/codesigning.asc.enc -out ci/codesigning.asc -d
 env:
   global:
   - secure: BkEXGvCG51FylG4lsbJVeNhaVaQw7r/tOg3lLkg0w9s8706Pmeu0yZMCFlFYUFBhOGiXjQ2AboTPkwMYkjHAc7XdTdO3OfSc5jrIKZ0O57rjxhylBjTO9gXrM18cHFAx1CD1wbT3qYZoQEXumy8vBMPrxaTS+6SNLjVQSFo25J+Nz8CTjZgl/QlSOEIi7k1tl3hUYcfyqUyoD2fvcDFRsL49PotCW6WtBFmxy1Liy6q1AtKIZu4RcFK01mQNbPZBE2jrxU7uFGDD1H+/4NNBOh3MI86rJZbWyiRzI5EkJRedcv+8ESQiEK7xtikResxckBlmyxa+W9gOqUeONw4aWi0pYy/ulDP5yZtv8IH/ljY68UBytzcULH6ithgbzFftZQbIL3AAfzZwFd9Odigs2KEgAORfFsQTGrTDhE2djHDfqaYBD/Syp3912Y9yCt+LFN4K4fnjEeD5dVUr6ODnwyxUAY/z5xziQhsz0Drp7UxvlN26LEI7OZul67pNChj7G3/bjUFbDwrxMbfIBRG/A3ys2OfdQHmy8NscbjVDx6erFy3qtZXfQWFrJhz3JEGZxijOHD56s+ANafDkESkuUBVpdQJZp4YtQAxJy6vSNckOmBa254HSMiiot0ozcgmRZOxJ4kVr6TckHrAAy5IFWCNMjMaR2nhXEH+bPuUfBSM=
