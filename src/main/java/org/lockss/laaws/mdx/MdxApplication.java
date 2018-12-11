@@ -64,6 +64,7 @@ public class MdxApplication extends BaseSpringBootApplication
     CONFIG_DB_MANAGER_DESC,
     // start plugin manager after generic services
     PLUGIN_MANAGER_DESC,
+    STATE_MANAGER_DESC,
     CRAWL_MANAGER_DESC,
     REPOSITORY_MANAGER_DESC,
     // start database manager before any manager that uses it.
