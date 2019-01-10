@@ -199,3 +199,5 @@ local.properties
 /cronstate.xml
 !/test/lockss-plugins.jar
 /src/generated/
+
+.swagger-codegen/

@@ -1,43 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright (c) 2000-2018 Board of Trustees of Leland Stanford Jr. University,
-all rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
+Copyright (c) 2000-2019, Board of Trustees of Leland Stanford Jr. University
+All rights reserved.
 
-1. Redistributions of source code must retain the above copyright notice, this
-list of conditions and the following disclaimer.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
 
 2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation and/or
-other materials provided with the distribution.
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
 
 3. Neither the name of the copyright holder nor the names of its contributors
 may be used to endorse or promote products derived from this software without
-specific prior written permission.`
+specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---> 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-    http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.lockss</groupId>
     <artifactId>lockss-parent-pom</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
+    <relativePath />
   </parent>
 
   <groupId>org.lockss.laaws</groupId>
@@ -58,11 +61,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <properties>
     <!-- GitHub project does not match artifactId -->
     <gitProjectId>laaws-metadataextractor</gitProjectId>
-    <skipSpringBootRepackage>false</skipSpringBootRepackage>
-    <springServicePort>24640</springServicePort>
-    <!-- The main class to start by executing java -jar -->
-    <start-class>org.lockss.laaws.mdx.MdxApplication</start-class>
-    <skipDocker>false</skipDocker>
+
+    <!-- Is a Spring project -->
+    <build.java.spring.skip>false</build.java.spring.skip>
+    <build.java.package>org.lockss.laaws.mdx</build.java.package>
+    <build.java.mainClass>${build.java.package}.MdxApplication</build.java.mainClass>
+
+    <!-- Is a Docker project -->
+    <build.docker.skip>false</build.docker.skip>
+    <build.docker.dockerBuild.servicePort>24640</build.docker.dockerBuild.servicePort>
+    
+    <!-- Needs lockss-legacy repository for lockss-plugins -->
+    <repository.enabled.lockss-legacy>true</repository.enabled.lockss-legacy>
   </properties>
 
   <dependencies>
@@ -70,7 +80,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss-junit4-bundle</artifactId>
-      <version>${lockss.junit4.bundleVersion}</version>
+      <version>${version.lockss.lockss-junit4-bundle}</version>
       <type>pom</type>
       <scope>test</scope>
     </dependency>
@@ -78,20 +88,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss-spring-bundle</artifactId>
-      <version>${lockss.spring.bundleVersion}</version>
+      <version>${version.lockss.lockss-spring-bundle}</version>
     </dependency>
 
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss-core-bundle</artifactId>
-      <version>${lockss.core.bundleVersion}</version>
+      <version>${version.lockss.lockss-core-bundle}</version>
       <type>pom</type>
     </dependency>
 
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss-core-tests-bundle</artifactId>
-      <version>${lockss.core.bundleVersion}</version>
+      <version>${version.lockss.lockss-core-bundle}</version>
       <type>pom</type>
       <scope>test</scope>
     </dependency>
@@ -100,121 +110,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>org.lockss.laaws</groupId>
       <artifactId>laaws-metadataextractor-common</artifactId>
-      <version>${lockss.metadataextractor-common.version}</version>
+      <version>${version.lockss.lockss-metadataextractor-common}</version>
     </dependency>
+
     <dependency>
       <groupId>org.lockss</groupId>
       <artifactId>lockss-plugins</artifactId>
-      <version>${lockss.plugins.version}</version>
+      <version>${version.lockss.lockss-plugins}</version>
     </dependency>
 
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.9.0</version>
+      <version>${version.group.jackson}</version>
     </dependency>
 
     <!-- WARCImporter -->
     <dependency>
       <groupId>org.lockss.laaws</groupId>
       <artifactId>laaws-repository-client</artifactId>
-      <version>${lockss.repository-client.version}</version>
+      <version>${version.lockss.lockss-repository-client}</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
-
-  <build>
-
-    <plugins>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src/generated</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-codegen-maven-plugin</artifactId>
-        <version>2.3.1</version>
-        <executions>
-          <execution>
-            <id>generate-swagger-sources</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <inputSpec>${project.basedir}/docs/swagger.yaml</inputSpec>
-              <language>spring</language>
-              <output>${project.basedir}</output>
-              <configOptions>
-                <basePackage>org.lockss.laaws.mdx</basePackage>
-                <apiPackage>org.lockss.laaws.mdx.api</apiPackage>
-                <configPackage>org.lockss.laaws.mdx.config</configPackage>
-                <invokerPackage>org.lockss.laaws.mdx</invokerPackage>
-                <modelPackage>org.lockss.laaws.mdx.model</modelPackage>
-                <hideGenerationTimestamp>true</hideGenerationTimestamp>
-                <java8>true</java8>
-                <delegatePattern>true</delegatePattern>
-                <sourceFolder>src/generated/java</sourceFolder>
-                <swaggerDocketConfig>true</swaggerDocketConfig>
-              </configOptions>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <id>fix-generated-swagger-sources</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <skip>${skipCodegenFix}</skip>
-              <workingDirectory>${project.basedir}</workingDirectory>
-              <executable>${project.basedir}/scripts/swaggerProcessing.sh</executable>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-
-  </build>
-
-  <repositories>
-    <repository>
-      <id>lockss-legacy</id>
-      <name>LOCKSS Legacy JARs</name>
-      <url>https://github.com/lockss/lockss-legacy-jars/raw/master/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-  </repositories>
 
 </project>
