@@ -36,6 +36,7 @@ import org.lockss.app.LockssApp;
 import org.lockss.app.LockssApp.AppSpec;
 import org.lockss.app.LockssApp.ManagerDesc;
 import org.lockss.app.LockssDaemon;
+import org.lockss.plugin.*;
 import org.lockss.metadata.extractor.MetadataExtractorManager;
 import org.lockss.metadata.extractor.job.JobDbManager;
 import org.lockss.metadata.extractor.job.JobManager;
@@ -119,6 +120,7 @@ public class MdxApplication extends BaseSpringBootApplication
 	.setName("Metadata Extractor Service")
 	.setArgs(args)
 	.addAppConfig(LockssDaemon.PARAM_START_PLUGINS, "true")
+	.addAppConfig(PluginManager.PARAM_START_ALL_AUS, "false")
 	.setAppManagers(myManagerDescs);
       LockssApp.startStatic(LockssDaemon.class, spec);
     } else {
