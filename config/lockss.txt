@@ -46,9 +46,6 @@ org.lockss.crawler.enabled=false
 
 org.lockss.ui.port=24641
 
-# Allow loading of Archival Units on demand.
-org.lockss.plugin.startAllAus=false
-
 #
 # The database manager used to store the Archival Unit metadata.
 #
