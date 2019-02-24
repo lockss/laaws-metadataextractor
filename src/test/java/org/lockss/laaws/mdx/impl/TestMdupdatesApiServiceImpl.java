@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017-2018 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017-2019 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -55,6 +55,7 @@ import org.lockss.metadata.extractor.job.JobContinuationToken;
 import org.lockss.metadata.extractor.job.JobDbManager;
 import org.lockss.metadata.extractor.job.JobManager;
 import org.lockss.metadata.extractor.job.Status;
+import org.lockss.rs.RestUtil;
 import org.lockss.test.SpringLockssTestCase;
 import org.lockss.util.ListUtil;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -305,6 +306,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     getSwaggerDocsTest();
     getStatusTest();
+    runMethodsNotAllowedUnAuthenticatedTest();
     getMdupdatesJobidUnAuthenticatedTest();
     getMdupdatesUnAuthenticatedTest();
     postMdupdatesUnAuthenticatedTest();
@@ -334,6 +336,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     getSwaggerDocsTest();
     getStatusTest();
+    runMethodsNotAllowedAuthenticatedTest();
     getMdupdatesJobidAuthenticatedTest();
     getMdupdatesAuthenticatedTest();
     postMdupdatesAuthenticatedTest();
@@ -424,6 +427,168 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);
 
     log.debug2("Done");
+  }
+
+  /**
+   * Runs the invalid method-related un-authenticated-specific tests.
+   */
+  private void runMethodsNotAllowedUnAuthenticatedTest() {
+    log.debug2("Invoked");
+
+    // Missing job ID.
+    runTestMethodNotAllowed(null, null, HttpMethod.PUT, HttpStatus.NOT_FOUND);
+
+    // Empty job ID.
+    runTestMethodNotAllowed(EMPTY_STRING, ANYBODY, HttpMethod.PATCH,
+	HttpStatus.NOT_FOUND);
+
+    // Unknown job ID.
+    runTestMethodNotAllowed(UNKNOWN_JOBID, ANYBODY, HttpMethod.PUT,
+	HttpStatus.METHOD_NOT_ALLOWED);
+
+    runTestMethodNotAllowed(UNKNOWN_JOBID, null, HttpMethod.PATCH,
+	HttpStatus.METHOD_NOT_ALLOWED);
+
+    // Good AUId.
+    runTestMethodNotAllowed("1", null, HttpMethod.PATCH,
+	HttpStatus.METHOD_NOT_ALLOWED);
+
+    runTestMethodNotAllowed("2", ANYBODY, HttpMethod.PUT,
+	HttpStatus.METHOD_NOT_ALLOWED);
+
+    runMethodsNotAllowedCommonTest();
+
+    log.debug2("Done");
+  }
+
+  /**
+   * Runs the invalid method-related authenticated-specific tests.
+   */
+  private void runMethodsNotAllowedAuthenticatedTest() {
+    log.debug2("Invoked");
+
+    // Missing job ID.
+    runTestMethodNotAllowed(null, ANYBODY, HttpMethod.PUT,
+	HttpStatus.UNAUTHORIZED);
+
+    // Empty job ID.
+    runTestMethodNotAllowed(EMPTY_STRING, null, HttpMethod.PATCH,
+	HttpStatus.UNAUTHORIZED);
+
+    // Unknown job ID.
+    runTestMethodNotAllowed(UNKNOWN_JOBID, ANYBODY, HttpMethod.PUT,
+	HttpStatus.UNAUTHORIZED);
+
+    // No credentials.
+    runTestMethodNotAllowed("1", null, HttpMethod.PATCH,
+	HttpStatus.UNAUTHORIZED);
+
+    // Bad credentials.
+    runTestMethodNotAllowed("2", ANYBODY, HttpMethod.PUT,
+	HttpStatus.UNAUTHORIZED);
+
+    runMethodsNotAllowedCommonTest();
+
+    log.debug2("Done");
+  }
+
+  /**
+   * Runs the invalid method-related authentication-independent tests.
+   */
+  private void runMethodsNotAllowedCommonTest() {
+    log.debug2("Invoked");
+
+    // Missing job ID.
+    runTestMethodNotAllowed(null, USER_ADMIN, HttpMethod.PUT,
+	HttpStatus.NOT_FOUND);
+
+    // Empty job ID.
+    runTestMethodNotAllowed(EMPTY_STRING, CONTENT_ADMIN, HttpMethod.PATCH,
+	HttpStatus.NOT_FOUND);
+
+    // Unknown job ID.
+    runTestMethodNotAllowed(UNKNOWN_JOBID, ACCESS_CONTENT, HttpMethod.PUT,
+	HttpStatus.METHOD_NOT_ALLOWED);
+
+    runTestMethodNotAllowed("1", USER_ADMIN, HttpMethod.PUT,
+	HttpStatus.METHOD_NOT_ALLOWED);
+
+    runTestMethodNotAllowed("2", CONTENT_ADMIN, HttpMethod.PATCH,
+	HttpStatus.METHOD_NOT_ALLOWED);
+
+    log.debug2("Done");
+  }
+
+  /**
+   * Performs an operation using a method that is not allowed.
+   * 
+   * @param jobId
+   *          A String with the identifier of the job.
+   * @param credentials
+   *          A Credentials with the request credentials.
+   * @param method
+   *          An HttpMethod with the request method.
+   * @param expectedStatus
+   *          An HttpStatus with the HTTP status of the result.
+   */
+  private void runTestMethodNotAllowed(String jobId, Credentials credentials,
+      HttpMethod method, HttpStatus expectedStatus) {
+    log.debug2("jobId = {}", jobId);
+    log.debug2("credentials = {}", credentials);
+    log.debug2("method = {}", method);
+    log.debug2("expectedStatus = {}", expectedStatus);
+
+    // Get the test URL template.
+    String template = getTestUrlTemplate("/mdupdates/{jobid}");
+
+    // Create the URI of the request to the REST service.
+    UriComponents uriComponents = UriComponentsBuilder.fromUriString(template)
+	.build().expand(Collections.singletonMap("jobid", jobId));
+
+    URI uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    log.trace("uri = {}", uri);
+
+    // Initialize the request to the REST service.
+    RestTemplate restTemplate = new RestTemplate();
+
+    HttpEntity<String> requestEntity = null;
+
+    // Get the individual credentials elements.
+    String user = null;
+    String password = null;
+
+    if (credentials != null) {
+      user = credentials.getUser();
+      password = credentials.getPassword();
+    }
+
+    // Check whether there are any custom headers to be specified in the
+    // request.
+    if (user != null || password != null) {
+
+      // Initialize the request headers.
+      HttpHeaders headers = new HttpHeaders();
+
+      // Set up the authentication credentials, if necessary.
+      if (credentials != null) {
+	credentials.setUpBasicAuthentication(headers);
+      }
+
+      log.trace("requestHeaders = {}", () -> headers.toSingleValueMap());
+
+      // Create the request entity.
+      requestEntity = new HttpEntity<String>(null, headers);
+    }
+
+    // Make the request and get the response. 
+    ResponseEntity<String> response = new TestRestTemplate(restTemplate)
+	.exchange(uri, method, requestEntity, String.class);
+
+    // Get the response status.
+    HttpStatus statusCode = response.getStatusCode();
+    assertFalse(RestUtil.isSuccess(statusCode));
+    assertEquals(expectedStatus, statusCode);
   }
 
   /**
@@ -978,7 +1143,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     JobPageInfo result = null;
 
-    if (isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(statusCode)) {
       result = new ObjectMapper().readValue(response.getBody(),
 	  JobPageInfo.class);
     }
@@ -1035,7 +1200,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
   private void getMdupdatesJobidUnAuthenticatedTest() throws Exception {
     log.debug2("Invoked");
 
-    // Missing job ID. Deletes everything?
+    // Missing job ID.
     runTestGetMdupdatesJobid(null, null, HttpStatus.NOT_FOUND);
     runTestGetMdupdatesJobid(null, ANYBODY, HttpStatus.NOT_FOUND);
 
@@ -1217,7 +1382,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     Status result = null;
 
-    if (isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(statusCode)) {
       result = new ObjectMapper().readValue(response.getBody(), Status.class);
     }
 
@@ -1673,7 +1838,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     Job result = null;
 
-    if (isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(statusCode)) {
       result = new ObjectMapper().readValue(response.getBody(), Job.class);
     }
 
@@ -1839,7 +2004,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     HttpStatus statusCode = response.getStatusCode();
     assertEquals(expectedStatus, statusCode);
 
-    if (isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(statusCode)) {
       // Verify the identity of the deleted job.
       Job job = new ObjectMapper().readValue(response.getBody(), Job.class);
       assertEquals(jobId, job.getId());
@@ -1987,7 +2152,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     HttpStatus statusCode = response.getStatusCode();
     assertEquals(expectedStatus, statusCode);
 
-    if (isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(statusCode)) {
       // Verify the count of deleted items.
       assertEquals(expectedDeletedCount, Integer.parseInt(response.getBody()));
 
@@ -1997,18 +2162,6 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     }
 
     log.debug2("Done");
-  }
-
-  /**
-   * Provides an indication of whether a successful response has been obtained.
-   * 
-   * @param statusCode
-   *          An HttpStatus with the response status code.
-   * @return a boolean with <code>true</code> if a successful response has been
-   *         obtained, <code>false</code> otherwise.
-   */
-  private boolean isSuccess(HttpStatus statusCode) {
-    return statusCode.is2xxSuccessful();
   }
 
   /**
