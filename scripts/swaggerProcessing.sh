@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2018 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2018-2019 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,8 +29,8 @@
 
 # Edit the ApiDelegate.
 API_DELEGATE=src/generated/java/org/lockss/laaws/mdx/api/MdupdatesApiDelegate.java
-sed -i "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $API_DELEGATE
-sed -i "s/import org.lockss.laaws.mdx.model.Status;/import org.lockss.metadata.extractor.job.Status;/" $API_DELEGATE
+sed -i.backup "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $API_DELEGATE && rm $API_DELEGATE.backup
+sed -i.backup "s/import org.lockss.laaws.mdx.model.Status;/import org.lockss.metadata.extractor.job.Status;/" $API_DELEGATE && rm $API_DELEGATE.backup
 
 TEMPFILE="$(mktemp)"
 sed -e "s/^}$//" $API_DELEGATE > "$TEMPFILE" && cat <<EOF_API_DELEGATE_EDIT >> "$TEMPFILE" && mv "$TEMPFILE" $API_DELEGATE
@@ -60,9 +60,9 @@ EOF_API_DELEGATE_EDIT
 
 # Edit the Api.
 API=src/generated/java/org/lockss/laaws/mdx/api/MdupdatesApi.java
-sed -i "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $API
-sed -i "s/import org.lockss.laaws.mdx.model.Status;/import org.lockss.metadata.extractor.job.Status;/" $API
-sed -i "s/public interface MdupdatesApi/public interface MdupdatesApi extends org.lockss.spring.status.SpringLockssBaseApi/" $API
+sed -i.backup "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $API && rm $API.backup
+sed -i.backup "s/import org.lockss.laaws.mdx.model.Status;/import org.lockss.metadata.extractor.job.Status;/" $API && rm $API.backup
+sed -i.backup "s/public interface MdupdatesApi/public interface MdupdatesApi extends org.lockss.spring.status.SpringLockssBaseApi/" $API && rm $API.backup
 
 TEMPFILE="$(mktemp)"
 sed -e "s/^}$//" $API > "$TEMPFILE" && cat <<EOF_API_EDIT >> "$TEMPFILE" && mv "$TEMPFILE" $API
@@ -75,4 +75,4 @@ EOF_API_EDIT
 
 # Edit JobPageInfo.java.
 CLASS=src/generated/java/org/lockss/laaws/mdx/model/JobPageInfo.java
-sed -i "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $CLASS
+sed -i.backup "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $CLASS && rm $CLASS.backup
