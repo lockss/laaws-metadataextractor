@@ -240,7 +240,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("repositoryDir = {}", () -> repositoryDir.getAbsolutePath());
 
     LockssRepository repository =
-	LocalLockssRepository.getInstance(repositoryDir, "artifact-index.ser");
+	new LocalLockssRepository(repositoryDir, "artifact-index.ser");
 
     // Import the content of the first Archival Unit.
     File warc1 = new File(new File(getTempDirPath(), "content"), WARC_1);
