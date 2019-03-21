@@ -27,8 +27,16 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+#
+# SERVICE-LEVEL
+#
+
 # Set the UI port
 org.lockss.ui.port=${LOCKSS_UI_PORT}
+
+#
+# SYSTEM-LEVEL
+#
 
 # Enable the job manager
 org.lockss.jobManager.enabled=true
