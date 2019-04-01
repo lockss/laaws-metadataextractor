@@ -1,4 +1,4 @@
-# Copyright (c) 2000-2018, Board of Trustees of Leland Stanford Jr. University
+# Copyright (c) 2000-2019, Board of Trustees of Leland Stanford Jr. University
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -336,6 +336,7 @@ definitions:
       updateType:
         type: "string"
         description: "The type of metadata update to be performed"
+        example: full_extraction | incremental_extraction | delete
     description: "The information defining an AU metadata update operation"
   apiStatus:
     type: "object"
