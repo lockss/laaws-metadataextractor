@@ -399,7 +399,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     assertEquals(HttpStatus.OK, statusCode);
 
     String expectedBody = "{'swagger':'2.0','info':{'description':"
-	+ "'API of the LOCKSS Metadata Extraction REST Service'"
+	+ "'REST API of the LOCKSS Metadata Extraction Service'"
         + "}}";
 
     JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);
