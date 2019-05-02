@@ -31,8 +31,7 @@
 # SERVICE-LEVEL
 #
 
-# Set the UI port
-org.lockss.ui.port=${LOCKSS_UI_PORT}
+# None
 
 #
 # SYSTEM-LEVEL
