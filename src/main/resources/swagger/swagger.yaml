@@ -1,0 +1,353 @@
+# Copyright (c) 2000-2019, Board of Trustees of Leland Stanford Jr. University
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission. 
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+swagger: "2.0"
+info:
+  title: "LOCKSS Metadata Extraction Service REST API"
+  version: "2.0.0"
+  description: "REST API of the LOCKSS Metadata Extraction Service"
+  contact:
+    name: "LOCKSS Support"
+    url: "https://www.lockss.org/"
+    email: "lockss-support@lockss.org"
+  license:
+    name: "BSD-3-Clause"
+    url: "https://opensource.org/licenses/BSD-3-Clause"
+host: "laaws.lockss.org:443"
+basePath: "/"
+tags:
+  - name: Default
+    description: Default section
+  - name: "mdupdates"
+    description: "Metadata updates"
+schemes:
+  - "https"
+produces:
+  - "application/json"
+security:
+  - basicAuth: []
+paths:
+  /mdupdates:
+    get:
+      tags:
+        - "mdupdates"
+      summary: "Get a list of currently active jobs"
+      description: "Get a list of all currently active jobs or a pageful of the\
+        \ list defined by the continuation token and size"
+      operationId: "getMdupdates"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "limit"
+          in: "query"
+          description: "The number of jobs per page"
+          required: false
+          type: "integer"
+          default: 50
+        - name: "continuationToken"
+          in: "query"
+          required: false
+          type: "string"
+          description: "The continuation token of the next page of jobs to be\
+            \ returned"
+      responses:
+        200:
+          description: "The requested jobs"
+          schema:
+            $ref: '#/definitions/jobPageInfo'
+        400:
+          description: "Bad Request"
+        401:
+          description: "Unauthorized"
+        409:
+          description: "Conflict"
+        500:
+          description: "Internal Server Error"
+    post:
+      tags:
+        - "mdupdates"
+      summary: "Perform an AU metadata update operation"
+      description: "Perform an AU metadata update operation given the update\
+        \ specification"
+      operationId: "postMdupdates"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "metadataUpdateSpec"
+          in: "body"
+          description: "The information defining the AU metadata update\
+            \ operation"
+          required: true
+          schema:
+            $ref: "#/definitions/metadataUpdateSpec"
+      responses:
+        202:
+          description: "The job created to perform the AU metadata update\
+            \ operation"
+          schema:
+            $ref: "#/definitions/job"
+        400:
+          description: "Bad Request"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Not Found"
+        415:
+          description: Unsupported Media Type
+        500:
+          description: "Internal Server Error"
+    delete:
+      tags:
+        - "mdupdates"
+      summary: "Delete all of the currently queued and active jobs"
+      description: "Delete all of the currently queued and active jobs"
+      operationId: "deleteMdupdates"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Count of jobs successfully deleted"
+          schema:
+            type: "integer"
+            format: "int32"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+        500:
+          description: "Internal Server Error"
+  /mdupdates/{jobid}:
+    get:
+      tags:
+        - "mdupdates"
+      summary: "Get a job"
+      description: "Get a job given the job identifier"
+      operationId: "getMdupdatesJobid"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "jobid"
+          in: "path"
+          description: "The identifier of the requested job"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "The status of the requested job"
+          schema:
+            $ref: "#/definitions/status"
+        401:
+          description: "Unauthorized"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+    delete:
+      tags:
+        - "mdupdates"
+      summary: "Delete a job"
+      description: "Delete a job given the job identifier, stopping any current\
+        \ processing, if necessary"
+      operationId: deleteMdupdatesJobid
+      produces:
+        - "application/json"
+      parameters:
+        - name: "jobid"
+          in: "path"
+          description: "The identifier of the job to be deleted"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "The deleted job"
+          schema:
+            $ref: "#/definitions/job"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+  /status:
+    get:
+      tags:
+      - "status"
+      summary: "Get the status of the service"
+      description: "Get the status of the service"
+      operationId: "getStatus"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "The status of the service"
+          schema:
+            $ref: "#/definitions/apiStatus"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Internal Server Error"
+securityDefinitions:
+  basicAuth:
+    description: "HTTP Basic Authentication. Works over `HTTP` and `HTTPS`"
+    type: "basic"
+definitions:
+  status:
+    type: "object"
+    required:
+      - "code"
+      - "msg"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        description: "The numeric value for the current state"
+      msg:
+        type: "string"
+        description: "A text message defining the current state"
+    description: "The existing state of a job"
+  job:
+    type: "object"
+    required:
+      - "au"
+      - "creationDate"
+      - "id"
+      - "status"
+    properties:
+      au:
+        $ref: "#/definitions/au"
+      id:
+        type: "string"
+        description: "The identifier of this job"
+      description:
+        type: "string"
+        description: "A description of the task being performed by this job"
+      creationDate:
+        type: "string"
+        format: "date"
+        description: "The timestamp when this job was created"
+      startDate:
+        type: "string"
+        format: "date"
+        description: "The timestamp when this job processing started"
+      endDate:
+        type: "string"
+        format: "date"
+        description: "The timestamp when this job processing ended"
+      status:
+        $ref: "#/definitions/status"
+    description: "An asynchronous task to be performed"
+  au:
+    type: "object"
+    required:
+      - "id"
+    properties:
+      id:
+        type: "string"
+        description: "The identifier of this AU"
+      job:
+        type: "string"
+        description: "The identifier of the job associated with this AU"
+      name:
+        type: "string"
+        description: "The name of the AU, for display purposes"
+    description: "An Archival Unit"
+  jobPageInfo:
+    type: "object"
+    required:
+      - "jobs"
+      - "pageInfo"
+    properties:
+      jobs:
+        type: "array"
+        description: "The jobs displayed in the page"
+        items:
+          $ref: "#/definitions/job"
+      pageInfo:
+        $ref: "#/definitions/pageInfo"
+    description: "A display page of jobs"
+  pageInfo:
+    type: "object"
+    required:
+      - "curLink"
+      - "continuationToken"
+      - "resultsPerPage"
+      - "totalCount"
+    properties:
+      totalCount:
+        type: "integer"
+        format: "int32"
+        description: "The total number of elements to be paginated"
+      resultsPerPage:
+        type: "integer"
+        format: "int32"
+        description: "The number of results per page"
+      continuationToken:
+        type: "string"
+        description: "The continuation token"
+      curLink:
+        type: "string"
+        description: "The link to the current page"
+      nextLink:
+        type: "string"
+        description: "The link to the next page"
+    description: "The information related to pagination of content"
+  metadataUpdateSpec:
+    type: "object"
+    required:
+      - "auid"
+      - "updateType"
+    properties:
+      auid:
+        type: "string"
+        description: "The identifier of the AU for which the metadata update is\
+          \ to be performed"
+      updateType:
+        type: "string"
+        description: "The type of metadata update to be performed"
+        example: full_extraction | incremental_extraction | delete
+    description: "The information defining an AU metadata update operation"
+  apiStatus:
+    type: "object"
+    required:
+      - "version"
+      - "ready"
+    properties:
+      version:
+        type: "string"
+        description: "The version of the service"
+      ready:
+        type: "boolean"
+        description: "The indication of whether the service is available"
+    description: "The status information of the service"

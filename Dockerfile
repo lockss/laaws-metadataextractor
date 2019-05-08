@@ -1,41 +1,31 @@
-FROM ubuntu:latest
+# Copyright (c) 2000-2019, Board of Trustees of Leland Stanford Jr. University
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
-MAINTAINER "Daniel Vargas" <dlvargas@stanford.edu>
-
-# Install build tools
-RUN apt-get update
-RUN apt-get -y install git subversion ant gettext openjdk-8-jdk-headless maven locales
-
-# Set LANG (needed for msginit -- called by lockss-daemon build.xml)
-ENV LANG en_US.UTF-8
-RUN locale-gen ${LANG}
-
-# Get laaws-metadataextractor source 
-#RUN git clone https://gitlab.lockss.org/laaws/laaws-metadataextractor.git --recursive
-
-# Add LAAWS Metadata Extractor source
-ADD . /laaws-metadataextractor
-
-# Build LOCKSS daemon JARs
-WORKDIR /laaws-metadataextractor
-RUN ./initBuild
-
-# XXX Isolate only what's needed to run
-#RUN mkdir /laaws-metadataextractor
-#RUN mv target /laaws-metadataextractor
-#RUN mv runLaawsmetadataextractor /laaws-metadataextractor
-#RUN mv src /laaws-metadataextractor
-
-# XXX Clean up 
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-#RUN rm -rf ~/.m2 ~/.subversion
-
-# XXX Ask fergaloy to fix
-RUN mkdir logs
-RUN touch logs/laawsmdx.log
-
-# XXX Overlay needed for demo
-#ADD lockss.opt /laaws-metadataextractor
-
-CMD ["/bin/sh", "/laaws-metadataextractor/buildAndRunLaawsMdx", "-Dswarm.http.port=8888", "-Djava.net.preferIPv4Stack=true"]
+ARG LOCKSS_SPRING_VERSION
+FROM lockss/lockss-spring:${LOCKSS_SPRING_VERSION}

@@ -1,6 +1,6 @@
 <!--
 
-Copyright (c) 2000-2017 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2000-2019 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -29,94 +29,51 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --> 
-# laaws-metadata-extractor [![Build Status](https://travis-ci.org/lockss/laaws-metadata-extractor.svg?branch=master)](https://travis-ci.org/lockss/laaws-metadata-extractor)
-The LAAWS Metadata Extraction REST Web Service.
+# LOCKSS Metadata Extraction Service [![Build Status](https://travis-ci.org/lockss/laaws-metadataextractor.svg?branch=master)](https://travis-ci.org/lockss/laaws-metadataextractor)
+This is the REST Web Service that extracts metadata from the content of Archival
+Units.
 
+## Note on branches
+The `master` branch is for stable releases and the `develop` branch is for
+ongoing development.
+
+## Standard build and deployment
+The LOCKSS cluster, including this project, is normally built and deployed using
+the LOCKSS Installer, which uses `docker`.
+
+You can find more information about the installation of the LOCKSS system in the
+[LOCKSS system manual](https://lockss.github.io/software/manual).
+
+## Development build and deployment
 ### Clone the repo
-`git clone --recursive ssh://git@gitlab.lockss.org/laaws/laaws-metadataextractor.git`
+`git clone -b develop ssh://github.com/lockss/laaws-metadataextractor.git`
 
 ### Create the Eclipse project (if so desired)
 `File` -> `Import...` -> `Maven` -> `Existing Maven Projects`
 
-### Set up the LOCKSS plugins JAR file:
-The LOCKSS plugins JAR file needs to be located at `./lockss-plugins.jar`.
-
-### Set up the TDB tree:
-The TDB tree needs to be located at `./tdbxml/prod`, matching the definition
-in `./runLaawsMdx`.
-
-### Specify the Repository REST web service
-This web service requires that an external Repository REST web service is
-running so as to provide the contents of Archival Units.
-
-To specify the properties of the external REST web service used to get the URLs
-of an Archival Unit, edit in `config/lockss.txt` the following options with
-the appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlListWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&auid={auid}
-org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlListWs.userName=the-correct-user
-
-To specify the properties of the external REST web service used to get the
-artifact properties of a URL, edit in `config/lockss.txt` the following
-options with the appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlArtifactWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts?committed=false&uri={uri}
-org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=the-correct-user
-
-To specify the properties of the external REST web service used to get the
-content linked to a URL of an Archival Unit, edit in `config/lockss.txt` the
-following options with the appropriate values:
-
-org.lockss.plugin.auContentFromWs.urlContentWs.password=the-correct-password
-org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:the-correct-port/repos/demorepo/artifacts/{artifactid}
-org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlContentWs.userName=the-correct-user
-
 ### Build the web service:
-`./buildLaawsMdx`
+In the home directory of this project, where this `README.md` file resides,
+run `mvn clean install`.
 
 This will run the tests as a pre-requisite for the build.
 
 The result of the build is a so-called "uber JAR" file which includes the
-project code plus all its dependencies and which is located at
+project code plus all its dependencies and which can be located via the symbolic
+link at
 
-`./target/laaws-metadata-extraction-service-0.0.1-SNAPSHOT.jar`
+`./target/current-with-deps.jar`
 
 ### Run the web service:
-`./runLaawsMdx`
+Run the
+[LOCKSS Development Scripts](https://github.com/lockss/laaws-dev-scripts)
+project `bin/runservice` script in the home directory of this project, where
+this `README.md` file resides.
 
-This will use port 28120. To use another port, edit the value of the
-`server.port` property in file
-`src/main/resources/application.properties`.
+The log is at `./logs/app.log`.
 
-The log is at `./logs/mdx.log`
+The API is documented at <http://127.0.0.1:24640/swagger-ui.html>.
 
-### Build and run the web service:
-`./buildAndRunLaawsMdx`
+The status of the web service may be obtained at
+<http://127.0.0.1:24640/status>.
 
-This will use port 28120. To use another port, edit the value of the
-`server.port` property in file
-`src/main/resources/application.properties`.
-
-### API is documented at:
-#### http://localhost:28120/swagger-ui.html
-
-### The status of the web service may be obtained at:
-#### http://localhost:28120/status
-
-### Stop the web service:
-`./stopLaawsMdx`
-
-### Using another REST web service for metadata storage
-To use another REST web service to store the extracted metadata, instead of
-storing it in the configured database, edit in `config/lockss.txt` the
-following options with the appropriate values:
-
-org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:the-correct-port
-org.lockss.metadataManager.mdRest.timeoutValue=600
-org.lockss.metadataManager.mdRest.userName=the-correct-user
-org.lockss.metadataManager.mdRest.password=the-correct-password
+The administration UI of the web service is at <http://127.0.0.1:24641>.

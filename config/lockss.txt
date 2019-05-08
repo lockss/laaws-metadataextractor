@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2016-2019 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,48 +37,14 @@ org.lockss.ui.allowPluginConfig=true
 org.lockss.ui.start=yes
 org.lockss.proxy.start=no
 
-# Turn off V1 -- This will be the default some day.
-org.lockss.comm.enabled=false
-
-# Identity
-org.lockss.platform.v3.identity=TCP:[127.0.0.1]:9720
-
-# Comm settings
-org.lockss.scomm.maxMessageSize=33554430
-
-# Poller settings
-org.lockss.poll.v3.quorum=2
-org.lockss.poll.v3.pollStarterInitialDelay=5m
-org.lockss.poll.v3.pollStarterInterval=5m
-
-# Turn on ICP on port 3131
-org.lockss.proxy.icp.enabled=true
-org.lockss.proxy.icp.port=3131
-
-# Crawl starter interval
-org.lockss.crawler.startCrawlsInterval=5m
-
-org.lockss.crawlStatus.keepUrls=all
-
 # UI username-passwd = lockss-u/lockss-p
 org.lockss.platform.ui.username=lockss-u
 org.lockss.platform.ui.password=SHA1:ac4fc8fa9930a24c8d002d541c37ca993e1bc40f
 
-# So that we don't hash on no-longer-relevant URLs
-org.lockss.blockHasher.ignoreFilesOutsideCrawlSpec=true
-
-org.lockss.baseau.minFetchDelay=3000
-org.lockss.plugin.restartAusWithNewPlugin=true
-
-# Disable crawler, poller and voter
+# Disable crawler
 org.lockss.crawler.enabled=false
-org.lockss.poll.v3.enableV3Poller=false
-org.lockss.poll.v3.enableV3Voter=false
 
-# Disable the SOAP web services.
-org.lockss.ws.enabled=false
-
-org.lockss.ui.port=28121
+org.lockss.ui.port=24641
 
 #
 # The database manager used to store the Archival Unit metadata.
@@ -145,32 +111,14 @@ org.lockss.metadataManager.mandatoryFields=publisher;provider
 org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
 
 #
-# The web service used to get the URLs for an Archival Unit.
+# Repository
 #
-org.lockss.plugin.auContentFromWs.urlListWs.password=lockss-p
-org.lockss.plugin.auContentFromWs.urlListWs.restServiceLocation=http://localhost:8700/repos/demorepo/artifacts?committed=false&auid={auid}
-org.lockss.plugin.auContentFromWs.urlListWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlListWs.userName=lockss-u
+# default to local repo.
+org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
+# Put this in lockss.opt to use a REST repositoy service
+# org.lockss.repository.v2Repository=rest:demorepo:http://localhost:32640
 
-#
-# The web service used to get artifact properties of a URL.
-#
-org.lockss.plugin.auContentFromWs.urlArtifactWs.password=lockss-p
-org.lockss.plugin.auContentFromWs.urlArtifactWs.restServiceLocation=http://localhost:8700/repos/demorepo/artifacts?committed=false&uri={uri}
-org.lockss.plugin.auContentFromWs.urlArtifactWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlArtifactWs.userName=lockss-u
-
-#
-# The web service used to get the contents linked to a URL.
-#
-org.lockss.plugin.auContentFromWs.urlContentWs.password=lockss-p
-org.lockss.plugin.auContentFromWs.urlContentWs.restServiceLocation=http://localhost:8700/repos/demorepo/artifacts/{artifactid}
-org.lockss.plugin.auContentFromWs.urlContentWs.timeoutValue=600
-org.lockss.plugin.auContentFromWs.urlContentWs.userName=lockss-u
-
-#
 # The REST web service used to store and retrieve the metadata of an Archival Unit.
-#
 #org.lockss.metadataManager.mdRest.serviceLocation=http://localhost:49520
 #org.lockss.metadataManager.mdRest.timeoutValue=600
 #org.lockss.metadataManager.mdRest.userName=lockss-u

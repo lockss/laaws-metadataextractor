@@ -11,7 +11,7 @@ branches:
 os:
 - linux
 install: true
-script: mvn -q -U clean install
+script: mvn -q clean install
 before_deploy:
 - bash ./ci/before_deploy.sh
 deploy:
