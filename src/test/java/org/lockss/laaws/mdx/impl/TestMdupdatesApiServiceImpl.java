@@ -425,8 +425,8 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     JSONObject expected = new JSONObject().put("apiVersion", "2.0.0")
                                           .put("componentName", "laaws-metadata-extraction-service")
-                                          .put("componentVersion", "2.0.1.0")
-                                          .put("lockssVersion", "2.0-alpha")
+                                          .put("componentVersion", "3.0.2.0-SNAPSHOT")
+                                          .put("lockssVersion", "2.0-beta")
                                           .put("ready", true)
                                           .put("serviceName", "LOCKSS Metadata Extraction Service REST API");
     JSONAssert.assertEquals(expected.toString(), successResponse.getBody(), false);
