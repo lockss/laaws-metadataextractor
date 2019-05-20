@@ -28,6 +28,7 @@
 package org.lockss.laaws.mdx.impl;
 
 import static org.lockss.laaws.mdx.impl.MdupdatesApiServiceImpl.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.rs.client.WARCImporter;
 import org.lockss.laaws.rs.core.LocalLockssRepository;
 import org.lockss.laaws.rs.core.LockssRepository;
+import org.lockss.laaws.status.model.ApiStatus;
 import org.lockss.log.L4JLogger;
 import org.lockss.metadata.MetadataDbManager;
 import org.lockss.metadata.extractor.job.Job;
@@ -58,7 +60,6 @@ import org.lockss.metadata.extractor.job.Status;
 import org.lockss.rs.RestUtil;
 import org.lockss.test.SpringLockssTestCase;
 import org.lockss.util.ListUtil;
-import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -411,10 +412,10 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
   /**
    * Runs the status-related tests.
    * 
-   * @throws Exception
-   *           if there are problems.
+   * @throws JsonProcessingException
+   *           if there are problems getting the expected status in JSON format.
    */
-  private void getStatusTest() throws Exception {
+  private void getStatusTest() throws JsonProcessingException {
     log.debug2("Invoked");
 
     ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
@@ -423,13 +424,12 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     HttpStatus statusCode = successResponse.getStatusCode();
     assertEquals(HttpStatus.OK, statusCode);
 
-    JSONObject expected = new JSONObject().put("apiVersion", "2.0.0")
-                                          .put("componentName", "laaws-metadata-extraction-service")
-                                          .put("componentVersion", "2.0.2.0-SNAPSHOT")
-                                          .put("lockssVersion", "2.0-beta")
-                                          .put("ready", true)
-                                          .put("serviceName", "LOCKSS Metadata Extraction Service REST API");
-    JSONAssert.assertEquals(expected.toString(), successResponse.getBody(), false);
+    // Get the expected result.
+    ApiStatus expected = new ApiStatus("swagger/swagger.yaml");
+    expected.setReady(true);
+
+    JSONAssert.assertEquals(expected.toJson(), successResponse.getBody(),
+	false);
 
     log.debug2("Done");
   }
