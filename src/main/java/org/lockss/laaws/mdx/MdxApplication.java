@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2000-2018 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2000-2019 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -41,6 +41,7 @@ import org.lockss.plugin.*;
 import org.lockss.metadata.extractor.MetadataExtractorManager;
 import org.lockss.metadata.extractor.job.JobDbManager;
 import org.lockss.metadata.extractor.job.JobManager;
+import org.lockss.metadata.query.MetadataQueryManager;
 import org.lockss.spring.base.BaseSpringBootApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,8 @@ public class MdxApplication extends BaseSpringBootApplication
     METADATA_DB_MANAGER_DESC,
     // start metadata manager after plugin manager and database manager.
     METADATA_MANAGER_DESC,
+    new ManagerDesc(LockssDaemon.managerKey(MetadataQueryManager.class),
+	"org.lockss.metadata.query.MetadataQueryManager"),
     new ManagerDesc(LockssDaemon.managerKey(MetadataExtractorManager.class),
 	"org.lockss.metadata.extractor.MetadataExtractorManager"),
     // Start the job database manager.
