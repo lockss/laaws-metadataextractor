@@ -35,7 +35,6 @@ import java.security.AccessControlException;
 import java.util.ConcurrentModificationException;
 import javax.servlet.http.HttpServletRequest;
 import org.lockss.app.LockssApp;
-import org.lockss.laaws.mdx.api.MdupdatesApi;
 import org.lockss.laaws.mdx.api.MdupdatesApiDelegate;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
@@ -48,29 +47,20 @@ import org.lockss.metadata.extractor.job.JobPage;
 import org.lockss.metadata.extractor.job.Status;
 import org.lockss.spring.auth.Roles;
 import org.lockss.spring.auth.SpringAuthenticationFilter;
-import org.lockss.laaws.status.model.ApiStatus;
 import org.lockss.log.L4JLogger;
-import org.lockss.spring.status.SpringLockssBaseApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for access to the AU metadata jobs.
  */
 @Service
-public class MdupdatesApiServiceImpl extends SpringLockssBaseApiController
-    implements MdupdatesApiDelegate {
-  public static final String MD_UPDATE_DELETE = "delete";
-  public static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
-  public static final String MD_UPDATE_INCREMENTAL_EXTRACTION =
+public class MdupdatesApiServiceImpl implements MdupdatesApiDelegate {
+  static final String MD_UPDATE_DELETE = "delete";
+  static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
+  static final String MD_UPDATE_INCREMENTAL_EXTRACTION =
       "incremental_extraction";
 
   private static final L4JLogger log = L4JLogger.getLogger();
@@ -349,17 +339,6 @@ public class MdupdatesApiServiceImpl extends SpringLockssBaseApiController
       log.error(message, e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  /**
-   * Provides the status object.
-   * 
-   * @return an ApiStatus with the status.
-   */
-  @Override
-  public ApiStatus getApiStatus() {
-    return new ApiStatus("swagger/swagger.yaml")
-      .setReady(LockssApp.getLockssApp().isAppRunning());
   }
 
   /**
