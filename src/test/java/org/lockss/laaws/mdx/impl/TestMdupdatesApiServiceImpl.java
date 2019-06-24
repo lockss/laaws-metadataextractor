@@ -58,7 +58,6 @@ import org.lockss.metadata.extractor.job.Status;
 import org.lockss.rs.RestUtil;
 import org.lockss.test.SpringLockssTestCase;
 import org.lockss.util.ListUtil;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -304,7 +303,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
-    getSwaggerDocsTest();
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
     runMethodsNotAllowedUnAuthenticatedTest();
     getMdupdatesJobidUnAuthenticatedTest();
     getMdupdatesUnAuthenticatedTest();
@@ -333,7 +332,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
-    getSwaggerDocsTest();
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
     runMethodsNotAllowedAuthenticatedTest();
     getMdupdatesJobidAuthenticatedTest();
     getMdupdatesAuthenticatedTest();
@@ -379,30 +378,6 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     log.debug2("cmdLineArgs = {}", () -> cmdLineArgs);
     return cmdLineArgs;
-  }
-
-  /**
-   * Runs the Swagger-related tests.
-   * 
-   * @throws Exception
-   *           if there are problems.
-   */
-  private void getSwaggerDocsTest() throws Exception {
-    log.debug2("Invoked");
-
-    ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
-	getTestUrlTemplate("/v2/api-docs"), HttpMethod.GET, null, String.class);
-
-    HttpStatus statusCode = successResponse.getStatusCode();
-    assertEquals(HttpStatus.OK, statusCode);
-
-    String expectedBody = "{'swagger':'2.0','info':{'description':"
-	+ "'REST API of the LOCKSS Metadata Extraction Service'"
-        + "}}";
-
-    JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);
-
-    log.debug2("Done");
   }
 
   /**
