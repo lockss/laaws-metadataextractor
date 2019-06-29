@@ -285,6 +285,20 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.debug2("Done");
   }
 
+  // Can't be part of setUpBeforeEachTest as daemon hasn't been started yet
+  private void startAllAusIfNecessary() {
+    startAuIfNecessary(AUID_1);
+    startAuIfNecessary(AUID_2);
+    startAuIfNecessary(AUID_3);
+    startAuIfNecessary(TEST_AUID_1);
+    startAuIfNecessary(TEST_AUID_2);
+    startAuIfNecessary(TEST_AUID_3);
+    startAuIfNecessary(TEST_AUID_4);
+    startAuIfNecessary(TEST_AUID_5);
+    startAuIfNecessary(TEST_AUID_6);
+    startAuIfNecessary(TEST_AUID_7);
+  }
+
   /**
    * Runs the tests with authentication turned off.
    * 
@@ -302,6 +316,8 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
+
+    startAllAusIfNecessary();
 
     runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
     runMethodsNotAllowedUnAuthenticatedTest();
@@ -331,6 +347,8 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
+
+    startAllAusIfNecessary();
 
     runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
     runMethodsNotAllowedAuthenticatedTest();
