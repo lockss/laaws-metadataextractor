@@ -47,6 +47,7 @@ import org.lockss.metadata.extractor.job.JobPage;
 import org.lockss.metadata.extractor.job.Status;
 import org.lockss.spring.auth.Roles;
 import org.lockss.spring.auth.SpringAuthenticationFilter;
+import org.lockss.spring.base.BaseSpringApiServiceImpl;
 import org.lockss.log.L4JLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,7 +58,8 @@ import org.springframework.stereotype.Service;
  * Controller for access to the AU metadata jobs.
  */
 @Service
-public class MdupdatesApiServiceImpl implements MdupdatesApiDelegate {
+public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
+    implements MdupdatesApiDelegate {
   static final String MD_UPDATE_DELETE = "delete";
   static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
   static final String MD_UPDATE_INCREMENTAL_EXTRACTION =
@@ -77,6 +79,12 @@ public class MdupdatesApiServiceImpl implements MdupdatesApiDelegate {
   @Override
   public ResponseEntity<Integer> deleteMdupdates() {
     log.debug2("Invoked");
+
+    // Check whether the service has not been fully initialized.
+    if (!waitReady()) {
+      // Yes: Notify the client.
+      return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     // Check authorization.
     try {
@@ -110,6 +118,12 @@ public class MdupdatesApiServiceImpl implements MdupdatesApiDelegate {
   @Override
   public ResponseEntity<Job> deleteMdupdatesJobid(String jobid) {
     log.debug2("jobid = {}", jobid);
+
+    // Check whether the service has not been fully initialized.
+    if (!waitReady()) {
+      // Yes: Notify the client.
+      return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     // Check authorization.
     try {
@@ -155,6 +169,12 @@ public class MdupdatesApiServiceImpl implements MdupdatesApiDelegate {
       String continuationToken) {
     log.debug2("limit = {}", limit);
     log.debug2("continuationToken = {}", continuationToken);
+
+    // Check whether the service has not been fully initialized.
+    if (!waitReady()) {
+      // Yes: Notify the client.
+      return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     if (limit == null || limit.intValue() < 0) {
       String message =
@@ -237,6 +257,12 @@ public class MdupdatesApiServiceImpl implements MdupdatesApiDelegate {
   public ResponseEntity<Status> getMdupdatesJobid(String jobid) {
     log.debug2("jobid = {}", jobid);
 
+    // Check whether the service has not been fully initialized.
+    if (!waitReady()) {
+      // Yes: Notify the client.
+      return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
     try {
       JobAuStatus jobAuStatus = getJobManager().getJobStatus(jobid);
       log.trace("jobAuStatus = {}", () -> jobAuStatus);
@@ -270,6 +296,12 @@ public class MdupdatesApiServiceImpl implements MdupdatesApiDelegate {
   public ResponseEntity<Job> postMdupdates(
       MetadataUpdateSpec metadataUpdateSpec) {
     log.debug2("metadataUpdateSpec = {}", () -> metadataUpdateSpec);
+
+    // Check whether the service has not been fully initialized.
+    if (!waitReady()) {
+      // Yes: Notify the client.
+      return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     // Check authorization.
     try {
