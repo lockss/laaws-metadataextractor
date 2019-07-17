@@ -37,6 +37,7 @@
 # SYSTEM-LEVEL
 #
 
+# FIXME move to AppSpec
 # Enable the job manager
 org.lockss.jobManager.enabled=true
 
