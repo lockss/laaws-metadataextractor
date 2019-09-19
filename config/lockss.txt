@@ -145,8 +145,8 @@ org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
 #
 # Repository
 #
-# default to local repo.
-org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
+# use repo from cluster config.
+#org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
 # Put this in lockss.opt to use a REST repositoy service
 # org.lockss.repository.v2Repository=rest:demorepo:http://localhost:32640
 
