@@ -55,4 +55,4 @@ org.lockss.crawler.enabled=false
 org.lockss.jobManager.enabled=true
 org.lockss.jobManager.sleepDelaySeconds=1
 org.lockss.metadataManager.mandatoryFields=publisher;provider
-org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
+org.lockss.metadataManager.indexing_enabled=true
