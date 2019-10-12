@@ -55,7 +55,7 @@ import org.lockss.metadata.extractor.job.JobContinuationToken;
 import org.lockss.metadata.extractor.job.JobDbManager;
 import org.lockss.metadata.extractor.job.JobManager;
 import org.lockss.metadata.extractor.job.Status;
-import org.lockss.rs.RestUtil;
+import org.lockss.util.rest.RestUtil;
 import org.lockss.test.SpringLockssTestCase;
 import org.lockss.util.ListUtil;
 import org.springframework.beans.factory.annotation.Autowired;
