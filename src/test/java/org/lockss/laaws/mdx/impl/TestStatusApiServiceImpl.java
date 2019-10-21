@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lockss.util.rest.status.ApiStatus;
-import org.lockss.app.LockssApp;
+import org.lockss.app.*;
 import org.lockss.log.L4JLogger;
 import org.lockss.test.SpringLockssTestCase;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -176,6 +176,7 @@ public class TestStatusApiServiceImpl extends SpringLockssTestCase {
     ApiStatus expected = new ApiStatus("swagger/swagger.yaml");
     expected.setReady(true);
     expected.setReadyTime(LockssApp.getLockssApp().getReadyTime());
+    expected.setPluginsReady(LockssDaemon.getLockssDaemon().areLoadablePluginsReady());
 
     JSONAssert.assertEquals(expected.toJson(), successResponse.getBody(),
 	false);
