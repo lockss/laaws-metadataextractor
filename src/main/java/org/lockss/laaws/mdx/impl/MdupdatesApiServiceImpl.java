@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.lockss.laaws.mdx.impl;
 
+import static org.lockss.util.rest.MetadataExtractorConstants.*;
 import java.security.AccessControlException;
 import java.util.ConcurrentModificationException;
 import javax.servlet.http.HttpServletRequest;
@@ -60,11 +61,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
     implements MdupdatesApiDelegate {
-  static final String MD_UPDATE_DELETE = "delete";
-  static final String MD_UPDATE_FULL_EXTRACTION = "full_extraction";
-  static final String MD_UPDATE_INCREMENTAL_EXTRACTION =
-      "incremental_extraction";
-
   private static final L4JLogger log = L4JLogger.getLogger();
 
   @Autowired

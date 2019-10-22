@@ -27,7 +27,7 @@
  */
 package org.lockss.laaws.mdx.impl;
 
-import static org.lockss.laaws.mdx.impl.MdupdatesApiServiceImpl.*;
+import static org.lockss.util.rest.MetadataExtractorConstants.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
