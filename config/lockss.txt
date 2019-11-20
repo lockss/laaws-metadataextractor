@@ -155,3 +155,7 @@ org.lockss.metadataManager.indexing_enabled=true
 #org.lockss.metadataManager.mdRest.timeoutValue=600
 #org.lockss.metadataManager.mdRest.userName=lockss-u
 #org.lockss.metadataManager.mdRest.password=lockss-p
+
+#org.lockss.platform.ui.passwordfile=auth/RestClientPwd.txt
+#org.lockss.restAuth.authenticationType=basic
+
