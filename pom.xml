@@ -115,8 +115,8 @@ POSSIBILITY OF SUCH DAMAGE.
     <!-- WARCImporter -->
     <dependency>
       <groupId>org.lockss.laaws</groupId>
-      <artifactId>laaws-repository-client</artifactId>
-      <version>${version.lockss.lockss-repository-client}</version>
+      <artifactId>laaws-repository-tools</artifactId>
+      <version>${version.lockss.lockss-repository-tools}</version>
       <scope>test</scope>
     </dependency>
 
