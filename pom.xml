@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-Copyright (c) 2000-2019, Board of Trustees of Leland Stanford Jr. University
+Copyright (c) 2000-2020, Board of Trustees of Leland Stanford Jr. University
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -39,13 +39,13 @@ POSSIBILITY OF SUCH DAMAGE.
   <parent>
     <groupId>org.lockss</groupId>
     <artifactId>lockss-parent-pom</artifactId>
-    <version>1.10.0</version>
+    <version>1.11.0</version>
     <relativePath />
   </parent>
 
   <groupId>org.lockss.laaws</groupId>
   <artifactId>laaws-metadata-extraction-service</artifactId>
-  <version>2.0.1.0</version>
+  <version>2.0.2.0</version>
   <packaging>jar</packaging>
 
   <name>laaws-metadata-extraction-service</name>
@@ -64,7 +64,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <build.docker.skip>false</build.docker.skip>
     <build.docker.dockerBuild.restPort>24640</build.docker.dockerBuild.restPort>
     <build.docker.dockerBuild.uiPort>24641</build.docker.dockerBuild.uiPort>
-    
+
     <!-- Needs lockss-legacy repository for lockss-plugins -->
     <repository.enabled.lockss-legacy>true</repository.enabled.lockss-legacy>
   </properties>
@@ -83,13 +83,6 @@ POSSIBILITY OF SUCH DAMAGE.
       <groupId>org.lockss</groupId>
       <artifactId>lockss-spring-bundle</artifactId>
       <version>${version.lockss.lockss-spring-bundle}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.lockss</groupId>
-      <artifactId>lockss-core-bundle</artifactId>
-      <version>${version.lockss.lockss-core-bundle}</version>
-      <type>pom</type>
     </dependency>
 
     <dependency>
@@ -122,8 +115,8 @@ POSSIBILITY OF SUCH DAMAGE.
     <!-- WARCImporter -->
     <dependency>
       <groupId>org.lockss.laaws</groupId>
-      <artifactId>laaws-repository-client</artifactId>
-      <version>${version.lockss.lockss-repository-client}</version>
+      <artifactId>laaws-repository-tools</artifactId>
+      <version>${version.lockss.lockss-repository-tools}</version>
       <scope>test</scope>
     </dependency>
 

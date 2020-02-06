@@ -28,7 +28,7 @@
 package org.lockss.laaws.mdx.client;
 
 import java.net.URI;
-import org.lockss.laaws.status.model.ApiStatus;
+import org.lockss.util.rest.status.ApiStatus;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;

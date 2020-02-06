@@ -47,6 +47,36 @@ org.lockss.crawler.enabled=false
 org.lockss.ui.port=24641
 
 #
+# The database manager used to store the Archival Unit configurations.
+#
+# Using Derby.
+#org.lockss.configDbManager.derby.infologAppend=true
+##org.lockss.configDbManager.derby.languageLogqueryplan=true
+#org.lockss.configDbManager.derby.languageLogstatementtext=true
+##org.lockss.configDbManager.derby.streamErrorFile=/tmp/derby.log
+#org.lockss.configDbManager.derby.streamErrorLogseveritylevel=0
+#org.lockss.configDbManager.datasource.className=org.apache.derby.jdbc.EmbeddedDataSource
+org.lockss.configDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
+org.lockss.configDbManager.datasource.password=goodPassword
+##org.lockss.configDbManager.datasource.createDatabase=create
+#org.lockss.configDbManager.datasource.databaseName=LockssConfigDbManager
+##org.lockss.configDbManager.datasource.portNumber=1527
+##org.lockss.configDbManager.datasource.serverName=localhost
+##org.lockss.configDbManager.datasource.user=LOCKSS
+
+# Using PostgreSQL.
+#org.lockss.configDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
+##org.lockss.configDbManager.datasource.databaseName=LockssConfigDbManager
+##org.lockss.configDbManager.datasource.password=goodPassword
+#org.lockss.configDbManager.datasource.portNumber=5432
+##org.lockss.configDbManager.datasource.serverName=localhost
+##org.lockss.configDbManager.datasource.user=LOCKSS
+##org.lockss.configDbManager.datasource.schemaName=LOCKSS
+
+# Using MySQL
+#org.lockss.configDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+
+#
 # The database manager used to store the Archival Unit metadata.
 #
 # Using Derby.
@@ -59,18 +89,19 @@ org.lockss.ui.port=24641
 org.lockss.metadataDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
 org.lockss.metadataDbManager.datasource.password=goodPassword
 ##org.lockss.metadataDbManager.datasource.createDatabase=create
-#org.lockss.metadataDbManager.datasource.databaseName=db/MetadataDbManager
-##org.lockss.metadataDbManager.datasource.portNumber=1527
+#org.lockss.metadataDbManager.datasource.databaseName=LockssMetadataDbManager
+org.lockss.metadataDbManager.datasource.portNumber=1528
 ##org.lockss.metadataDbManager.datasource.serverName=localhost
 ##org.lockss.metadataDbManager.datasource.user=LOCKSS
 
 # Using PostgreSQL.
 #org.lockss.metadataDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
-##org.lockss.metadataDbManager.datasource.databaseName=MetadataDbManager
+##org.lockss.metadataDbManager.datasource.databaseName=LockssMetadataDbManager
 ##org.lockss.metadataDbManager.datasource.password=goodPassword
 #org.lockss.metadataDbManager.datasource.portNumber=5432
 ##org.lockss.metadataDbManager.datasource.serverName=localhost
 ##org.lockss.metadataDbManager.datasource.user=LOCKSS
+##org.lockss.metadataDbManager.datasource.schemaName=LOCKSS
 
 # Using MySQL
 #org.lockss.metadataDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
@@ -88,18 +119,19 @@ org.lockss.metadataDbManager.datasource.password=goodPassword
 org.lockss.jobDbManager.datasource.className=org.apache.derby.jdbc.ClientDataSource
 org.lockss.jobDbManager.datasource.password=goodPassword
 ##org.lockss.jobDbManager.datasource.createDatabase=create
-#org.lockss.jobDbManager.datasource.databaseName=db/JobDbManager
-##org.lockss.jobDbManager.datasource.portNumber=1527
+#org.lockss.jobDbManager.datasource.databaseName=LockssJobDbManager
+org.lockss.jobDbManager.datasource.portNumber=1529
 ##org.lockss.jobDbManager.datasource.serverName=localhost
 ##org.lockss.jobDbManager.datasource.user=LOCKSS
 
 # Using PostgreSQL.
 #org.lockss.jobDbManager.datasource.className=org.postgresql.ds.PGSimpleDataSource
-##org.lockss.jobDbManager.datasource.databaseName=JobDbManager
+##org.lockss.jobDbManager.datasource.databaseName=LockssJobDbManager
 ##org.lockss.jobDbManager.datasource.password=goodPassword
 #org.lockss.jobDbManager.datasource.portNumber=5432
 ##org.lockss.jobDbManager.datasource.serverName=localhost
 ##org.lockss.jobDbManager.datasource.user=LOCKSS
+##org.lockss.jobDbManager.datasource.schemaName=LOCKSS
 
 # Using MySQL
 #org.lockss.jobDbManager.datasource.className=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
@@ -108,13 +140,13 @@ org.lockss.jobManager.enabled=true
 #org.lockss.jobManager.taskListSize=1
 #org.lockss.jobManager.sleepDelaySeconds=60
 org.lockss.metadataManager.mandatoryFields=publisher;provider
-org.lockss.metadataManager.onDemandMetadataExtractionOnly=true
+org.lockss.metadataManager.indexing_enabled=true
 
 #
 # Repository
 #
-# default to local repo.
-org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
+# use repo from cluster config.
+#org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
 # Put this in lockss.opt to use a REST repositoy service
 # org.lockss.repository.v2Repository=rest:demorepo:http://localhost:32640
 
@@ -123,3 +155,6 @@ org.lockss.repository.v2Repository=local:demorepo:/tmp/locksslocalrepo
 #org.lockss.metadataManager.mdRest.timeoutValue=600
 #org.lockss.metadataManager.mdRest.userName=lockss-u
 #org.lockss.metadataManager.mdRest.password=lockss-p
+
+#org.lockss.restAuth.authenticationType=basic
+

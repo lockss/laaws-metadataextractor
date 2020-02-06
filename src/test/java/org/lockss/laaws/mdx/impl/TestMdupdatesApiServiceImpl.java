@@ -27,7 +27,7 @@
  */
 package org.lockss.laaws.mdx.impl;
 
-import static org.lockss.laaws.mdx.impl.MdupdatesApiServiceImpl.*;
+import static org.lockss.util.rest.MetadataExtractorConstants.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -55,11 +55,9 @@ import org.lockss.metadata.extractor.job.JobContinuationToken;
 import org.lockss.metadata.extractor.job.JobDbManager;
 import org.lockss.metadata.extractor.job.JobManager;
 import org.lockss.metadata.extractor.job.Status;
-import org.lockss.rs.RestUtil;
+import org.lockss.util.rest.RestUtil;
 import org.lockss.test.SpringLockssTestCase;
 import org.lockss.util.ListUtil;
-import org.json.JSONObject;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -287,6 +285,20 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.debug2("Done");
   }
 
+  // Can't be part of setUpBeforeEachTest as daemon hasn't been started yet
+  private void startAllAusIfNecessary() {
+    startAuIfNecessary(AUID_1);
+    startAuIfNecessary(AUID_2);
+    startAuIfNecessary(AUID_3);
+    startAuIfNecessary(TEST_AUID_1);
+    startAuIfNecessary(TEST_AUID_2);
+    startAuIfNecessary(TEST_AUID_3);
+    startAuIfNecessary(TEST_AUID_4);
+    startAuIfNecessary(TEST_AUID_5);
+    startAuIfNecessary(TEST_AUID_6);
+    startAuIfNecessary(TEST_AUID_7);
+  }
+
   /**
    * Runs the tests with authentication turned off.
    * 
@@ -305,8 +317,9 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
-    getSwaggerDocsTest();
-    getStatusTest();
+    startAllAusIfNecessary();
+
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
     runMethodsNotAllowedUnAuthenticatedTest();
     getMdupdatesJobidUnAuthenticatedTest();
     getMdupdatesUnAuthenticatedTest();
@@ -335,8 +348,9 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
-    getSwaggerDocsTest();
-    getStatusTest();
+    startAllAusIfNecessary();
+
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
     runMethodsNotAllowedAuthenticatedTest();
     getMdupdatesJobidAuthenticatedTest();
     getMdupdatesAuthenticatedTest();
@@ -382,56 +396,6 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
 
     log.debug2("cmdLineArgs = {}", () -> cmdLineArgs);
     return cmdLineArgs;
-  }
-
-  /**
-   * Runs the Swagger-related tests.
-   * 
-   * @throws Exception
-   *           if there are problems.
-   */
-  private void getSwaggerDocsTest() throws Exception {
-    log.debug2("Invoked");
-
-    ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
-	getTestUrlTemplate("/v2/api-docs"), HttpMethod.GET, null, String.class);
-
-    HttpStatus statusCode = successResponse.getStatusCode();
-    assertEquals(HttpStatus.OK, statusCode);
-
-    String expectedBody = "{'swagger':'2.0','info':{'description':"
-	+ "'REST API of the LOCKSS Metadata Extraction Service'"
-        + "}}";
-
-    JSONAssert.assertEquals(expectedBody, successResponse.getBody(), false);
-
-    log.debug2("Done");
-  }
-
-  /**
-   * Runs the status-related tests.
-   * 
-   * @throws Exception
-   *           if there are problems.
-   */
-  private void getStatusTest() throws Exception {
-    log.debug2("Invoked");
-
-    ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
-	getTestUrlTemplate("/status"), HttpMethod.GET, null, String.class);
-
-    HttpStatus statusCode = successResponse.getStatusCode();
-    assertEquals(HttpStatus.OK, statusCode);
-
-    JSONObject expected = new JSONObject().put("apiVersion", "2.0.0")
-                                          .put("componentName", "laaws-metadata-extraction-service")
-                                          .put("componentVersion", "2.0.1.0")
-                                          .put("lockssVersion", "2.0-alpha")
-                                          .put("ready", true)
-                                          .put("serviceName", "LOCKSS Metadata Extraction Service REST API");
-    JSONAssert.assertEquals(expected.toString(), successResponse.getBody(), false);
-
-    log.debug2("Done");
   }
 
   /**
