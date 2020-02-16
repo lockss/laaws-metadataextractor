@@ -104,6 +104,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <groupId>org.lockss</groupId>
       <artifactId>lockss-plugins</artifactId>
       <version>${version.lockss.lockss-plugins}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
