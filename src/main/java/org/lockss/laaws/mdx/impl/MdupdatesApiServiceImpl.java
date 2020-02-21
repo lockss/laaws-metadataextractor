@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2000-2019 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2000-2020 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -40,6 +40,7 @@ import org.lockss.laaws.mdx.api.MdupdatesApiDelegate;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
+import org.lockss.metadata.extractor.MetadataExtractorManager;
 import org.lockss.metadata.extractor.job.Job;
 import org.lockss.metadata.extractor.job.JobAuStatus;
 import org.lockss.metadata.extractor.job.JobContinuationToken;
@@ -305,6 +306,15 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    // Check whether metadata extraction is not enabled.
+    if (!LockssApp.getManagerByTypeStatic(MetadataExtractorManager.class)
+	.isIndexingEnabled()) {
+      // Yes: Report the problem.
+      String message = "Metadata extraction is disabled";
+      log.warn(message);
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     String auid = null;

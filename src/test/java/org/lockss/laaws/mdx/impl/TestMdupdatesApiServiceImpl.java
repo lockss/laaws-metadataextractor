@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017-2019 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017-2020 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -357,6 +357,35 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     postMdupdatesAuthenticatedTest();
     deleteMdupdatesJobidAuthenticatedTest();
     deleteMdupdatesAuthenticatedTest();
+
+    log.debug2("Done");
+  }
+
+  /**
+   * Runs the tests with metadata indexing disabled.
+   * 
+   * @throws Exception
+   *           if there are problems.
+   */
+  @Test
+  public void runDisabledTests() throws Exception {
+    log.debug2("Invoked");
+
+    // Specify the command line parameters to be used for the tests.
+    List<String> cmdLineArgs = getCommandLineArguments();
+    cmdLineArgs.add("-p");
+    cmdLineArgs.add("test/config/testDisabled.txt");
+
+    CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
+    runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
+
+    startAllAusIfNecessary();
+
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
+    runMethodsNotAllowedUnAuthenticatedTest();
+    getMdupdatesJobidUnAuthenticatedTest();
+    getMdupdatesUnAuthenticatedTest();
+    postMdupdatesDisabledTest();
 
     log.debug2("Done");
   }
@@ -1710,6 +1739,71 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     assertEquals((Long)(jobSeq2 + 1L), jobSeq3);
 
     waitForJobStatus(jobId, CONTENT_ADMIN, "Success");
+
+    log.debug2("Done");
+  }
+
+  /**
+   * Runs the postMdupdates()-related tests when metadata indexing is disabled.
+   */
+  private void postMdupdatesDisabledTest() throws Exception {
+    log.debug2("Invoked");
+
+    // Missing payload (This should return HttpStatus.BAD_REQUEST, but Spring
+    // returns HttpStatus.UNSUPPORTED_MEDIA_TYPE).
+    runTestPostMetadataAus(null, null, null, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    runTestPostMetadataAus(null, null, ANYBODY,
+	HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+
+    // Missing AUId.
+    runTestPostMetadataAus(null, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAus(null, MD_UPDATE_INCREMENTAL_EXTRACTION, ANYBODY,
+	HttpStatus.BAD_REQUEST);
+
+    // Empty AUId.
+    runTestPostMetadataAus(EMPTY_STRING, MD_UPDATE_DELETE, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(EMPTY_STRING, MD_UPDATE_FULL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Missing update type.
+    runTestPostMetadataAus(AUID_1, null, null, HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAus(AUID_2, null, ANYBODY, HttpStatus.BAD_REQUEST);
+
+    // Empty update type.
+    runTestPostMetadataAus(AUID_3, EMPTY_STRING, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(AUID_1, EMPTY_STRING, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Unknown AUId.
+    runTestPostMetadataAus(UNKNOWN_AUID, MD_UPDATE_INCREMENTAL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(UNKNOWN_AUID, MD_UPDATE_DELETE, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Bad update type.
+    runTestPostMetadataAus(AUID_2, BAD_UPDATE_TYPE, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(AUID_3, BAD_UPDATE_TYPE, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Full extraction with no credentials.
+    runTestPostMetadataAus(AUID_1, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+
+    // Full extraction with bad credentials.
+    runTestPostMetadataAus(AUID_2, MD_UPDATE_FULL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Incremental extraction with no credentials.
+    runTestPostMetadataAus(AUID_3, MD_UPDATE_INCREMENTAL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+
+    // Incremental extraction with bad credentials.
+    runTestPostMetadataAus(AUID_1, MD_UPDATE_INCREMENTAL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
 
     log.debug2("Done");
   }
