@@ -30,4 +30,5 @@ src/generated/java/org/lockss/laaws/*/api/NotFoundException.java
 src/generated/java/org/lockss/laaws/*/model/ApiStatus.java
 src/generated/java/org/lockss/laaws/*/model/Au.java
 src/generated/java/org/lockss/laaws/*/model/Job.java
+src/generated/java/org/lockss/laaws/*/model/MetadataUpdateSpec.java
 src/generated/java/org/lockss/laaws/*/model/Status.java

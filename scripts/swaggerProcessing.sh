@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2018-2019 Board of Trustees of Leland Stanford Jr. University,
+# Copyright (c) 2018-2020 Board of Trustees of Leland Stanford Jr. University,
 # all rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,11 +38,13 @@ sed -i.backup "s/import org.lockss.laaws.mdx.model.ApiStatus/import org.lockss.u
 # Edit the ApiDelegate.
 API_DELEGATE=src/generated/java/org/lockss/laaws/mdx/api/MdupdatesApiDelegate.java
 sed -i.backup "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $API_DELEGATE && rm $API_DELEGATE.backup
+sed -i.backup "s/import org.lockss.laaws.mdx.model.MetadataUpdateSpec;/import org.lockss.util.rest.mdx.MetadataUpdateSpec;/" $API_DELEGATE && rm $API_DELEGATE.backup
 sed -i.backup "s/import org.lockss.laaws.mdx.model.Status;/import org.lockss.metadata.extractor.job.Status;/" $API_DELEGATE && rm $API_DELEGATE.backup
 
 # Edit the Api.
 API=src/generated/java/org/lockss/laaws/mdx/api/MdupdatesApi.java
 sed -i.backup "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $API && rm $API.backup
+sed -i.backup "s/import org.lockss.laaws.mdx.model.MetadataUpdateSpec;/import org.lockss.util.rest.mdx.MetadataUpdateSpec;/" $API && rm $API.backup
 sed -i.backup "s/import org.lockss.laaws.mdx.model.Status;/import org.lockss.metadata.extractor.job.Status;/" $API && rm $API.backup
 
 # Edit JobPageInfo.java.
