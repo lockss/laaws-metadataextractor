@@ -108,6 +108,13 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/metadataUpdateSpec"
+        - name: "force"
+          in: "query"
+          description: "An indication of whether to force the operation\
+            \ regardless of the current state of the AU"
+          required: false
+          type: "boolean"
+          default: true
       responses:
         202:
           description: "The job created to perform the AU metadata update\
