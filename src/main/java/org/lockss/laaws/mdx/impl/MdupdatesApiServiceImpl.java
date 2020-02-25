@@ -420,6 +420,7 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
 	}
 
 	AuState auState = AuUtil.getAuState(au);
+	log.trace("auState = {}", auState);
 
 	switch (auState.getSubstanceState()) {
 	  case No:
@@ -432,6 +433,14 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
 	    return new ResponseEntity<>(HttpStatus.CONFLICT);
 	  case Yes:
 	    // Fall through.
+	}
+
+	// Check whether metadata extraction for the AU is not enabled.
+	if (!auState.isMetadataExtractionEnabled()) {
+	  // Yes: Report the problem.
+	  message = "Metadata extraction for this AU has been disabled";
+	  log.warn(message);
+	  return new ResponseEntity<>(HttpStatus.CONFLICT);
 	}
       }
 
