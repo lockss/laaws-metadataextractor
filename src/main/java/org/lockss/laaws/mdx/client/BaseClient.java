@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2016-2017 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2016-2020 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,10 +30,9 @@ package org.lockss.laaws.mdx.client;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import org.springframework.http.MediaType;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import org.lockss.util.rest.RestUtil;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 
 /**
  * A base client for all of the LAAWS-MDX web service operations.
@@ -52,12 +51,7 @@ public class BaseClient {
    *         status code is not 2xx.
    */
   protected static RestTemplate getRestTemplate() {
-    RestTemplate template = new RestTemplate();
-    template.setErrorHandler(new DefaultResponseErrorHandler(){
-      protected boolean hasError(HttpStatus statusCode) {
-	return false;
-      }
-    });
+    RestTemplate template = RestUtil.getRestTemplate();
 
     return template;
   }

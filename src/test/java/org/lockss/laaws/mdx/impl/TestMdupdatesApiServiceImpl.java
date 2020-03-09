@@ -554,7 +554,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -1106,7 +1106,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -1345,7 +1345,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -1846,7 +1846,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<MetadataUpdateSpec> requestEntity = null;
 
@@ -2129,7 +2129,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<MetadataUpdateSpec> requestEntity = null;
 
@@ -2315,7 +2315,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -2463,7 +2463,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
