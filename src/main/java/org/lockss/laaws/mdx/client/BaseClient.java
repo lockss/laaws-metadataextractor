@@ -51,7 +51,7 @@ public class BaseClient {
    *         status code is not 2xx.
    */
   protected static RestTemplate getRestTemplate() {
-    RestTemplate template = RestUtil.getSimpleFactoryRestTemplate();
+    RestTemplate template = RestUtil.getRestTemplate();
 
     return template;
   }
