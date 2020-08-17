@@ -55,7 +55,7 @@ import org.lockss.plugin.ArchivalUnit;
 import org.lockss.plugin.AuUtil;
 import org.lockss.servlet.DebugPanel;
 import org.lockss.spring.auth.Roles;
-import org.lockss.spring.auth.SpringAuthenticationFilter;
+import org.lockss.spring.auth.AuthUtil;
 import org.lockss.spring.base.BaseSpringApiServiceImpl;
 import org.lockss.state.AuState;
 import org.lockss.util.rest.mdx.MetadataUpdateSpec;
@@ -95,9 +95,9 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
       return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    // Check authorization.
+    // Check for required role
     try {
-      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+      AuthUtil.checkHasRole(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -134,9 +134,9 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
       return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    // Check authorization.
+    // Check for required role
     try {
-      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+      AuthUtil.checkHasRole(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -315,9 +315,9 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
       return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    // Check authorization.
+    // Check for required role
     try {
-      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+      AuthUtil.checkHasRole(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);

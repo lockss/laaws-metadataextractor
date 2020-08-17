@@ -59,7 +59,7 @@ import org.lockss.plugin.AuUtil;
 import org.lockss.plugin.PluginManager;
 import org.lockss.state.AuStateBean;
 import org.lockss.state.SubstanceChecker;
-import org.lockss.test.SpringLockssTestCase;
+import org.lockss.spring.test.SpringLockssTestCase4;
 import org.lockss.util.ListUtil;
 import org.lockss.util.rest.RestUtil;
 import org.lockss.util.rest.mdx.MetadataUpdateSpec;
@@ -84,7 +84,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
+public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
   private static final L4JLogger log = L4JLogger.getLogger();
 
   private static final String UI_PORT_CONFIGURATION_TEMPLATE =
