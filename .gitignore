@@ -201,3 +201,6 @@ local.properties
 /src/generated/
 
 .swagger-codegen/
+
+/pom.xml.bak
+/*/pom.xml.bak
