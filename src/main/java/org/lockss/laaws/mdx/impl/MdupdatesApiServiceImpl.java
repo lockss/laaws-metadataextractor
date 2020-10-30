@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2000-2019 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2000-2020 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -31,28 +31,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.lockss.laaws.mdx.impl;
 
+import static org.lockss.servlet.DebugPanel.ACTION_FORCE_REINDEX_METADATA;
+import static org.lockss.servlet.DebugPanel.ACTION_REINDEX_METADATA;
 import static org.lockss.util.rest.MetadataExtractorConstants.*;
 import java.security.AccessControlException;
 import java.util.ConcurrentModificationException;
 import javax.servlet.http.HttpServletRequest;
+import org.lockss.account.UserAccount;
 import org.lockss.app.LockssApp;
+import org.lockss.app.LockssDaemon;
 import org.lockss.laaws.mdx.api.MdupdatesApiDelegate;
 import org.lockss.laaws.mdx.model.JobPageInfo;
 import org.lockss.laaws.mdx.model.PageInfo;
-import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
+import org.lockss.log.L4JLogger;
+import org.lockss.metadata.extractor.MetadataExtractorManager;
 import org.lockss.metadata.extractor.job.Job;
 import org.lockss.metadata.extractor.job.JobAuStatus;
 import org.lockss.metadata.extractor.job.JobContinuationToken;
 import org.lockss.metadata.extractor.job.JobManager;
 import org.lockss.metadata.extractor.job.JobPage;
 import org.lockss.metadata.extractor.job.Status;
+import org.lockss.plugin.ArchivalUnit;
+import org.lockss.plugin.AuUtil;
+import org.lockss.servlet.DebugPanel;
 import org.lockss.spring.auth.Roles;
-import org.lockss.spring.auth.SpringAuthenticationFilter;
+import org.lockss.spring.auth.AuthUtil;
 import org.lockss.spring.base.BaseSpringApiServiceImpl;
-import org.lockss.log.L4JLogger;
+import org.lockss.state.AuState;
+import org.lockss.util.rest.mdx.MetadataUpdateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -62,6 +72,9 @@ import org.springframework.stereotype.Service;
 public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
     implements MdupdatesApiDelegate {
   private static final L4JLogger log = L4JLogger.getLogger();
+
+  static final String USE_FORCE_MESSAGE =
+      "Use the 'force=true' query parameter to override.";
 
   @Autowired
   private HttpServletRequest request;
@@ -82,9 +95,9 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
       return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    // Check authorization.
+    // Check for required role
     try {
-      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+      AuthUtil.checkHasRole(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -121,9 +134,9 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
       return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    // Check authorization.
+    // Check for required role
     try {
-      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+      AuthUtil.checkHasRole(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -282,16 +295,19 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
    * Extracts and stores all or part of the metadata for an AU, or deletes the
    * metadata for an AU.
    * 
-   * @param metadataUpdateSpec
-   *          A MetadataUpdateSpec with the specification of the metadata update
-   *          operation.
+   * @param metadataUpdateSpec A MetadataUpdateSpec with the specification of
+   *                           the metadata update operation.
+   * @param force              A Boolean with the indication of whether to force
+   *                           the operation regardless of the current state of
+   *                           the AU.
    * @return a {@code ResponseEntity<Job>} with the information of the job
    *         created.
    */
   @Override
   public ResponseEntity<Job> postMdupdates(
-      MetadataUpdateSpec metadataUpdateSpec) {
-    log.debug2("metadataUpdateSpec = {}", () -> metadataUpdateSpec);
+      MetadataUpdateSpec metadataUpdateSpec, Boolean force) {
+    log.debug2("metadataUpdateSpec = {}", metadataUpdateSpec);
+    log.debug2("force = {}", force);
 
     // Check whether the service has not been fully initialized.
     if (!waitReady()) {
@@ -299,18 +315,54 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
       return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    // Check authorization.
+    // Check for required role
     try {
-      SpringAuthenticationFilter.checkAuthorization(Roles.ROLE_CONTENT_ADMIN);
+      AuthUtil.checkHasRole(Roles.ROLE_CONTENT_ADMIN);
     } catch (AccessControlException ace) {
       log.warn(ace.getMessage());
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    // Check whether metadata extraction is not enabled.
+    if (!LockssApp.getManagerByTypeStatic(MetadataExtractorManager.class)
+	.isIndexingEnabled()) {
+      // Yes: Add to the audit log a reference to this operation, if necessary.
+      try {
+        if (force) {
+          audit(ACTION_FORCE_REINDEX_METADATA, null);
+        } else {
+          audit(ACTION_REINDEX_METADATA, null);
+        }
+      } catch (AccessControlException ace) {
+        log.warn(ace.getMessage());
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+      }
+
+      // Report the problem.
+      String message = "Metadata extraction is disabled";
+      log.warn(message);
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+
     String auid = null;
 
     try {
+      // Check whether no metadata extraction specification was received.
       if (metadataUpdateSpec == null) {
+	// Yes: Add to the audit log a reference to this operation, if
+	// necessary.
+	try {
+	  if (force) {
+	    audit(ACTION_FORCE_REINDEX_METADATA, null);
+	  } else {
+	    audit(ACTION_REINDEX_METADATA, null);
+	  }
+	} catch (AccessControlException ace) {
+	  log.warn(ace.getMessage());
+	  return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+	}
+
+	// Report the problem.
 	String message = "Invalid metadata update specification: null";
 	log.warn(message);
 	return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -318,6 +370,18 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
 
       auid = metadataUpdateSpec.getAuid();
       log.trace("auid = {}", auid);
+
+      // Add to the audit log a reference to this operation, if necessary.
+      try {
+        if (force) {
+          audit(ACTION_FORCE_REINDEX_METADATA, auid);
+        } else {
+          audit(ACTION_REINDEX_METADATA, auid);
+        }
+      } catch (AccessControlException ace) {
+        log.warn(ace.getMessage());
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+      }
 
       if (auid == null || auid.isEmpty()) {
 	String message = "Invalid auid = '" + auid + "'";
@@ -332,6 +396,52 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
 	String message = "Invalid updateType = '" + updateType + "'";
 	log.warn(message);
 	return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      }
+
+      // Check whether the state of the AU needs to be validated before
+      // proceeding with the operation.
+      if (!force) {
+	// Yes: Get the Archival Unit to have its metadata indexing enabled.
+	ArchivalUnit au =
+	    LockssDaemon.getLockssDaemon().getPluginManager().getAuFromId(auid);
+	log.trace("au = {}", au);
+
+	// Handle a missing Archival Unit.
+	if (au == null) {
+	  throw new IllegalArgumentException();
+	}
+
+	String message = null;
+
+	if (!AuUtil.hasCrawled(au)) {
+	  message = "AU has never been crawled. " + USE_FORCE_MESSAGE;
+	  log.warn(message);
+	  return new ResponseEntity<>(HttpStatus.CONFLICT);
+	}
+
+	AuState auState = AuUtil.getAuState(au);
+	log.trace("auState = {}", auState);
+
+	switch (auState.getSubstanceState()) {
+	  case No:
+	    message = "AU has no substance. " + USE_FORCE_MESSAGE;
+	    log.warn(message);
+	    return new ResponseEntity<>(HttpStatus.CONFLICT);
+	  case Unknown:
+	    message = "Unknown substance for AU. " + USE_FORCE_MESSAGE;
+	    log.warn(message);
+	    return new ResponseEntity<>(HttpStatus.CONFLICT);
+	  case Yes:
+	    // Fall through.
+	}
+
+	// Check whether metadata extraction for the AU is not enabled.
+	if (!auState.isMetadataExtractionEnabled()) {
+	  // Yes: Report the problem.
+	  message = "Metadata extraction for this AU has been disabled";
+	  log.warn(message);
+	  return new ResponseEntity<>(HttpStatus.CONFLICT);
+	}
       }
 
       String canonicalUpdateType = updateType.toLowerCase();
@@ -363,7 +473,7 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       String message = "Cannot postMdupdates() for metadataUpdateSpec = '"
-	  + metadataUpdateSpec + "'";
+	  + metadataUpdateSpec + "', force = " + force;
       log.error(message, e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -376,5 +486,42 @@ public class MdupdatesApiServiceImpl extends BaseSpringApiServiceImpl
    */
   private JobManager getJobManager() {
     return LockssApp.getManagerByTypeStatic(JobManager.class);
+  }
+
+  /**
+   * Adds to the audit log a reference to this operation, if necessary.
+   * 
+   * @param action
+   *          A String with the name of the operation.
+   * @param auId
+   *          A String with the identifier (auid) of the archival unit.
+   * @throws AccessControlException if the user cannot be validated.
+   */
+  private void audit(String action, String auId) throws AccessControlException {
+    log.debug2("action = {}", action);
+    log.debug2("auId = {}", auId);
+
+    String userName =
+	SecurityContextHolder.getContext().getAuthentication().getName();
+    log.trace("userName = {}", userName);
+
+    // Get the user account.
+    UserAccount userAccount = null;
+
+    try {
+      userAccount =
+          LockssDaemon.getLockssDaemon().getAccountManager().getUser(userName);
+      log.trace("userAccount = {}", userAccount);
+    } catch (Exception e) {
+      log.error("userName = {}", userName);
+      log.error("LockssDaemon.getLockssDaemon().getAccountManager()."
+          + "getUser(" + userName + ")", e);
+      throw new AccessControlException("Unable to get user '" + userName + "'");
+    }
+
+    if (userAccount != null && !DebugPanel.noAuditActions.contains(action)) {
+      userAccount.auditableEvent("Called AusApi web service operation '"
+	  + action + "' AU ID: " + auId);
+    }
   }
 }

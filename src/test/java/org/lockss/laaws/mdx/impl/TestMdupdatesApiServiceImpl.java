@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2017-2019 Board of Trustees of Leland Stanford Jr. University,
+ Copyright (c) 2017-2020 Board of Trustees of Leland Stanford Jr. University,
  all rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,9 +41,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lockss.app.LockssDaemon;
 import org.lockss.config.Configuration;
 import org.lockss.laaws.mdx.model.JobPageInfo;
-import org.lockss.laaws.mdx.model.MetadataUpdateSpec;
 import org.lockss.laaws.mdx.model.PageInfo;
 import org.lockss.laaws.rs.client.WARCImporter;
 import org.lockss.laaws.rs.core.LocalLockssRepository;
@@ -55,9 +55,14 @@ import org.lockss.metadata.extractor.job.JobContinuationToken;
 import org.lockss.metadata.extractor.job.JobDbManager;
 import org.lockss.metadata.extractor.job.JobManager;
 import org.lockss.metadata.extractor.job.Status;
-import org.lockss.util.rest.RestUtil;
-import org.lockss.test.SpringLockssTestCase;
+import org.lockss.plugin.AuUtil;
+import org.lockss.plugin.PluginManager;
+import org.lockss.state.AuStateBean;
+import org.lockss.state.SubstanceChecker;
+import org.lockss.spring.test.SpringLockssTestCase4;
 import org.lockss.util.ListUtil;
+import org.lockss.util.rest.RestUtil;
+import org.lockss.util.rest.mdx.MetadataUpdateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -79,7 +84,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
+public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
   private static final L4JLogger log = L4JLogger.getLogger();
 
   private static final String UI_PORT_CONFIGURATION_TEMPLATE =
@@ -326,6 +331,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     postMdupdatesUnAuthenticatedTest();
     deleteMdupdatesJobidUnAuthenticatedTest();
     deleteMdupdatesUnAuthenticatedTest();
+    postMdupdatesUnAuthenticatedNoForceTest();
 
     log.debug2("Done");
   }
@@ -357,6 +363,35 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     postMdupdatesAuthenticatedTest();
     deleteMdupdatesJobidAuthenticatedTest();
     deleteMdupdatesAuthenticatedTest();
+
+    log.debug2("Done");
+  }
+
+  /**
+   * Runs the tests with metadata indexing disabled.
+   * 
+   * @throws Exception
+   *           if there are problems.
+   */
+  @Test
+  public void runDisabledTests() throws Exception {
+    log.debug2("Invoked");
+
+    // Specify the command line parameters to be used for the tests.
+    List<String> cmdLineArgs = getCommandLineArguments();
+    cmdLineArgs.add("-p");
+    cmdLineArgs.add("test/config/testDisabled.txt");
+
+    CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
+    runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
+
+    startAllAusIfNecessary();
+
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
+    runMethodsNotAllowedUnAuthenticatedTest();
+    getMdupdatesJobidUnAuthenticatedTest();
+    getMdupdatesUnAuthenticatedTest();
+    postMdupdatesDisabledTest();
 
     log.debug2("Done");
   }
@@ -519,7 +554,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -1071,7 +1106,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -1310,7 +1345,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -1715,6 +1750,71 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
   }
 
   /**
+   * Runs the postMdupdates()-related tests when metadata indexing is disabled.
+   */
+  private void postMdupdatesDisabledTest() throws Exception {
+    log.debug2("Invoked");
+
+    // Missing payload (This should return HttpStatus.BAD_REQUEST, but Spring
+    // returns HttpStatus.UNSUPPORTED_MEDIA_TYPE).
+    runTestPostMetadataAus(null, null, null, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    runTestPostMetadataAus(null, null, ANYBODY,
+	HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+
+    // Missing AUId.
+    runTestPostMetadataAus(null, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAus(null, MD_UPDATE_INCREMENTAL_EXTRACTION, ANYBODY,
+	HttpStatus.BAD_REQUEST);
+
+    // Empty AUId.
+    runTestPostMetadataAus(EMPTY_STRING, MD_UPDATE_DELETE, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(EMPTY_STRING, MD_UPDATE_FULL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Missing update type.
+    runTestPostMetadataAus(AUID_1, null, null, HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAus(AUID_2, null, ANYBODY, HttpStatus.BAD_REQUEST);
+
+    // Empty update type.
+    runTestPostMetadataAus(AUID_3, EMPTY_STRING, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(AUID_1, EMPTY_STRING, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Unknown AUId.
+    runTestPostMetadataAus(UNKNOWN_AUID, MD_UPDATE_INCREMENTAL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(UNKNOWN_AUID, MD_UPDATE_DELETE, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Bad update type.
+    runTestPostMetadataAus(AUID_2, BAD_UPDATE_TYPE, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAus(AUID_3, BAD_UPDATE_TYPE, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Full extraction with no credentials.
+    runTestPostMetadataAus(AUID_1, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+
+    // Full extraction with bad credentials.
+    runTestPostMetadataAus(AUID_2, MD_UPDATE_FULL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Incremental extraction with no credentials.
+    runTestPostMetadataAus(AUID_3, MD_UPDATE_INCREMENTAL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+
+    // Incremental extraction with bad credentials.
+    runTestPostMetadataAus(AUID_1, MD_UPDATE_INCREMENTAL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    log.debug2("Done");
+  }
+
+  /**
    * Performs a POST operation for the metadata of an Archival Unit.
    * 
    * @param auId
@@ -1746,7 +1846,290 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
+
+    HttpEntity<MetadataUpdateSpec> requestEntity = null;
+
+    // Get the individual credentials elements.
+    String user = null;
+    String password = null;
+
+    if (credentials != null) {
+      user = credentials.getUser();
+      password = credentials.getPassword();
+    }
+
+    // Check whether there are any custom headers to be specified in the
+    // request.
+    if (auId != null || updateType != null || user != null || password != null)
+    {
+      // Initialize the payload.
+      MetadataUpdateSpec metadataUpdateSpec = null;
+
+      if (auId != null || updateType != null) {
+	metadataUpdateSpec = new MetadataUpdateSpec();
+	metadataUpdateSpec.setAuid(auId);
+	metadataUpdateSpec.setUpdateType(updateType);
+      }
+
+      if (log.isTraceEnabled())
+	log.trace("metadataUpdateSpec = {}", metadataUpdateSpec);
+
+      HttpHeaders headers = null;
+
+      if (user != null || password != null) {
+	// Initialize the request headers.
+	headers = new HttpHeaders();
+
+	// Set up the authentication credentials, if necessary.
+	if (credentials != null) {
+	  credentials.setUpBasicAuthentication(headers);
+	}
+
+	if (log.isTraceEnabled())
+	  log.trace("requestHeaders = {}", headers.toSingleValueMap());
+      }
+
+      // Create the request entity.
+      requestEntity =
+	  new HttpEntity<MetadataUpdateSpec>(metadataUpdateSpec, headers);
+    }
+
+    // The next call should use the Job class instead of the String class,
+    // but Spring gets confused when errors are reported.
+    // Make the request and get the response.
+    ResponseEntity<String> response = new TestRestTemplate(restTemplate).
+	exchange(uri, HttpMethod.POST, requestEntity, String.class);
+
+    // Get the response status.
+    HttpStatus statusCode = response.getStatusCode();
+    assertEquals(expectedStatus, statusCode);
+
+    Job result = null;
+
+    if (RestUtil.isSuccess(statusCode)) {
+      result = new ObjectMapper().readValue(response.getBody(), Job.class);
+    }
+
+    if (log.isDebug2Enabled()) log.debug2("result = {}", result);
+    return result;
+  }
+
+  /**
+   * Runs the postMdupdates()-related un-authenticated-specific tests.
+   */
+  private void postMdupdatesUnAuthenticatedNoForceTest() throws Exception {
+    log.debug2("Invoked");
+
+    // Missing payload (This should return HttpStatus.BAD_REQUEST, but Spring
+    // returns HttpStatus.UNSUPPORTED_MEDIA_TYPE).
+    runTestPostMetadataAusNoForce(null, null, null,
+	HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    runTestPostMetadataAusNoForce(null, null, ANYBODY,
+	HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+
+    // Missing AUId.
+    runTestPostMetadataAusNoForce(null, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAusNoForce(null, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	ANYBODY, HttpStatus.BAD_REQUEST);
+
+    // Empty AUId.
+    runTestPostMetadataAusNoForce(EMPTY_STRING, MD_UPDATE_DELETE, null,
+	HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAusNoForce(EMPTY_STRING, MD_UPDATE_FULL_EXTRACTION,
+	ANYBODY, HttpStatus.BAD_REQUEST);
+
+    // Missing update type.
+    runTestPostMetadataAusNoForce(AUID_1, null, null, HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAusNoForce(AUID_2, null, ANYBODY,
+	HttpStatus.BAD_REQUEST);
+
+    // Empty update type.
+    runTestPostMetadataAusNoForce(AUID_3, EMPTY_STRING, null,
+	HttpStatus.BAD_REQUEST);
+    runTestPostMetadataAusNoForce(AUID_1, EMPTY_STRING, ANYBODY,
+	HttpStatus.BAD_REQUEST);
+
+    // Unknown AUId.
+    runTestPostMetadataAusNoForce(UNKNOWN_AUID,
+	MD_UPDATE_INCREMENTAL_EXTRACTION, null, HttpStatus.NOT_FOUND);
+    runTestPostMetadataAusNoForce(UNKNOWN_AUID, MD_UPDATE_DELETE, ANYBODY,
+	HttpStatus.NOT_FOUND);
+
+    // Bad update type.
+    runTestPostMetadataAusNoForce(AUID_2, BAD_UPDATE_TYPE, null,
+	HttpStatus.CONFLICT);
+    runTestPostMetadataAusNoForce(AUID_3, BAD_UPDATE_TYPE, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Full extraction with no credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as crawled.
+    PluginManager pluginMgr = LockssDaemon.getLockssDaemon().getPluginManager();
+    AuStateBean auStateBean =
+	AuUtil.getAuState(pluginMgr.getAuFromId(AUID_1)).getBean();
+    auStateBean.setLastCrawlTime(12345678L);
+
+    // Full extraction with no credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as having substance.
+    auStateBean.setHasSubstance(SubstanceChecker.State.Yes);
+
+    // Full extraction with no credentials.
+    runTestPostMetadataAus(AUID_1, MD_UPDATE_FULL_EXTRACTION, null,
+	HttpStatus.ACCEPTED);
+
+    // Full extraction with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_2, MD_UPDATE_FULL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as crawled.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_2)).getBean();
+    auStateBean.setLastCrawlTime(12345678L);
+
+    // Full extraction with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_2, MD_UPDATE_FULL_EXTRACTION, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as having substance.
+    auStateBean.setHasSubstance(SubstanceChecker.State.Yes);
+
+    // Full extraction with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_2, MD_UPDATE_FULL_EXTRACTION, ANYBODY,
+	HttpStatus.ACCEPTED);
+    
+    // Incremental extraction with no credentials.
+    runTestPostMetadataAusNoForce(AUID_3, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	null, HttpStatus.CONFLICT);
+
+    // Mark the AU as crawled.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_3)).getBean();
+    auStateBean.setLastCrawlTime(12345678L);
+
+    // Incremental extraction with no credentials.
+    runTestPostMetadataAusNoForce(AUID_3, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	null, HttpStatus.CONFLICT);
+
+    // Mark the AU as having substance.
+    auStateBean.setHasSubstance(SubstanceChecker.State.Yes);
+
+    // Incremental extraction with no credentials.
+    runTestPostMetadataAusNoForce(AUID_3, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	null, HttpStatus.ACCEPTED);
+    
+    // Mark the AU as not having been crawled.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_1)).getBean();
+    auStateBean.setLastCrawlTime(-1);
+
+    // Incremental extraction with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	ANYBODY, HttpStatus.CONFLICT);
+
+    // Mark the AU as crawled and having no substance.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_1)).getBean();
+    auStateBean.setLastCrawlTime(12345678L);
+    auStateBean.setHasSubstance(SubstanceChecker.State.No);
+
+    // Incremental extraction with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	ANYBODY, HttpStatus.CONFLICT);
+
+    // Mark the AU as having substance.
+    auStateBean.setHasSubstance(SubstanceChecker.State.Yes);
+
+    // Incremental extraction with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_INCREMENTAL_EXTRACTION,
+	ANYBODY, HttpStatus.ACCEPTED);
+    
+    // Mark the AU as not having been crawled.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_1)).getBean();
+    auStateBean.setLastCrawlTime(-1);
+
+    // Delete with no credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_DELETE, null,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as crawled and having no substance.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_1)).getBean();
+    auStateBean.setLastCrawlTime(12345678L);
+    auStateBean.setHasSubstance(SubstanceChecker.State.No);
+
+    // Delete with no credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_DELETE, null,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as having substance.
+    auStateBean.setHasSubstance(SubstanceChecker.State.Yes);
+
+    // Delete with no credentials.
+    runTestPostMetadataAusNoForce(AUID_1, MD_UPDATE_DELETE, null,
+	HttpStatus.ACCEPTED);
+    
+    // Mark the AU as not having been crawled.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_2)).getBean();
+    auStateBean.setLastCrawlTime(-1);
+
+    // Delete with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_2, MD_UPDATE_DELETE, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as crawled and having no substance.
+    auStateBean = AuUtil.getAuState(pluginMgr.getAuFromId(AUID_2)).getBean();
+    auStateBean.setLastCrawlTime(12345678L);
+    auStateBean.setHasSubstance(SubstanceChecker.State.No);
+
+    // Delete with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_2, MD_UPDATE_DELETE, ANYBODY,
+	HttpStatus.CONFLICT);
+
+    // Mark the AU as having substance.
+    auStateBean.setHasSubstance(SubstanceChecker.State.Yes);
+
+    // Delete with bad credentials.
+    runTestPostMetadataAusNoForce(AUID_2, MD_UPDATE_DELETE, ANYBODY,
+	HttpStatus.ACCEPTED);
+
+    log.debug2("Done");
+  }
+
+  /**
+   * Performs a POST operation for the metadata of an Archival Unit.
+   * 
+   * @param auId
+   *          A String with the identifier of the Archival Unit.
+   * @param updateType
+   *          A String with the type of metadata update.
+   * @param credentials
+   *          A Credentials with the request credentials.
+   * @param expectedStatus
+   *          An HttpStatus with the HTTP status of the result.
+   * @return a Job with the details of the scheduled job.
+   */
+  private Job runTestPostMetadataAusNoForce(String auId, String updateType,
+      Credentials credentials, HttpStatus expectedStatus) throws IOException {
+    log.debug2("auId = {}", auId);
+    log.debug2("updateType = {}", updateType);
+    log.debug2("credentials = {}", () -> credentials);
+    log.debug2("expectedStatus = {}", () -> expectedStatus);
+
+    // Get the test URL template.
+    String template = getTestUrlTemplate("/mdupdates?force=false");
+
+    // Create the URI of the request to the REST service.
+    UriComponents uriComponents =
+	UriComponentsBuilder.fromUriString(template).build();
+
+    URI uri = UriComponentsBuilder.newInstance().uriComponents(uriComponents)
+	.build().encode().toUri();
+    log.trace("uri = {}", () -> uri);
+
+    // Initialize the request to the REST service.
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<MetadataUpdateSpec> requestEntity = null;
 
@@ -1932,7 +2315,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
@@ -2080,7 +2463,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = RestUtil.getRestTemplate();
 
     HttpEntity<String> requestEntity = null;
 
