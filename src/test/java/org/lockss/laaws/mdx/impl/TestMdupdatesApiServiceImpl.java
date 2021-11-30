@@ -240,11 +240,14 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     // Set up the repository configuration.
     setUpRepositoryConfig(REPO_CONFIGURATION_TEMPLATE, REPO_CONFIGURATION_FILE);
 
+    File repositoryStateDir = new File(getTempDirPath(), "testRepo");
+    log.trace("repositoryStateDir = {}", () -> repositoryStateDir.getAbsolutePath());
+
     File repositoryDir = new File(getTempDirPath(), "testRepo");
     log.trace("repositoryDir = {}", () -> repositoryDir.getAbsolutePath());
 
     LockssRepository repository =
-	new LocalLockssRepository(repositoryDir, "artifact-index.ser");
+        new LocalLockssRepository(repositoryStateDir, repositoryDir, "artifact-index.ser");
 
     // Import the content of the first Archival Unit.
     File warc1 = new File(new File(getTempDirPath(), "content"), WARC_1);
