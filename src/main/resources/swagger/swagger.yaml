@@ -348,15 +348,45 @@ definitions:
         example: full_extraction | incremental_extraction | delete
     description: "The information defining an AU metadata update operation"
   apiStatus:
+    description: "The status information of the service"
     type: "object"
     required:
-      - "version"
+      - "apiVersion"
       - "ready"
     properties:
-      version:
+      apiVersion:
         type: "string"
-        description: "The version of the service"
+        description: "The version of the API"
+      componentName:
+        type: "string"
+        description: "The name of the component"
+      componentVersion:
+        type: "string"
+        description: "The version of the component software"
+      lockssVersion:
+        type: "string"
+        description: "The version of the LOCKSS system"
       ready:
         type: "boolean"
         description: "The indication of whether the service is available"
-    description: "The status information of the service"
+      serviceName:
+        type: "string"
+        description: "The name of the service"
+      readyTime:
+        type: "integer"
+        format: "int64"
+        description: "The time the service last became ready."
+      reason:
+        type: "string"
+        description: "The reason the service isn't ready."
+      startupStatus:
+        description: "Enum indicating progress of plugin/AU processing at startup."
+        type: string
+        enum:
+          - NONE
+          - PLUGINS_CRAWLING
+          - PLUGINS_COLLECTED
+          - PLUGINS_LOADING
+          - PLUGINS_LOADED
+          - AUS_STARTING
+          - AUS_STARTED
