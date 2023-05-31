@@ -176,7 +176,11 @@ public class TestStatusApiServiceImpl extends SpringLockssTestCase4 {
     ApiStatus expected = new ApiStatus("swagger/swagger.yaml");
     expected.setReady(true);
     expected.setReadyTime(LockssApp.getLockssApp().getReadyTime());
-    expected.setPluginsReady(LockssDaemon.getLockssDaemon().areLoadablePluginsReady());
+    if (LockssDaemon.getLockssDaemon().areLoadablePluginsReady()) {
+      expected.setStartupStatus(ApiStatus.StartupStatus.AUS_STARTED);
+    } else {
+      expected.setStartupStatus(ApiStatus.StartupStatus.NONE);
+    }
 
     JSONAssert.assertEquals(expected.toJson(), successResponse.getBody(),
 	false);
