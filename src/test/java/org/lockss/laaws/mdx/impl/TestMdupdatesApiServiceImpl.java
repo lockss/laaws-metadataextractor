@@ -65,7 +65,8 @@ import org.lockss.util.rest.RestUtil;
 import org.lockss.util.rest.mdx.MetadataUpdateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContext;
@@ -557,7 +558,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     log.trace("uri = {}", uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = RestUtil.getRestTemplate();
+    RestTemplateBuilder templateBuilder = RestUtil.getRestTemplateBuilder(0, 0);
 
     HttpEntity<String> requestEntity = null;
 
@@ -589,7 +590,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     }
 
     // Make the request and get the response. 
-    ResponseEntity<String> response = new TestRestTemplate(restTemplate)
+    ResponseEntity<String> response = new TestRestTemplate(templateBuilder)
 	.exchange(uri, method, requestEntity, String.class);
 
     // Get the response status.
@@ -1109,7 +1110,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = RestUtil.getRestTemplate();
+    RestTemplateBuilder templateBuilder = RestUtil.getRestTemplateBuilder(0, 0);
 
     HttpEntity<String> requestEntity = null;
 
@@ -1141,7 +1142,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     }
 
     // Make the request and get the response. 
-    ResponseEntity<String> response = new TestRestTemplate(restTemplate)
+    ResponseEntity<String> response = new TestRestTemplate(templateBuilder)
 	.exchange(uri, HttpMethod.GET, requestEntity, String.class);
 
     // Get the response status.
@@ -1348,7 +1349,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = RestUtil.getRestTemplate();
+    RestTemplateBuilder templateBuilder = RestUtil.getRestTemplateBuilder(0, 0);
 
     HttpEntity<String> requestEntity = null;
 
@@ -1380,7 +1381,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     }
 
     // Make the request and get the response. 
-    ResponseEntity<String> response = new TestRestTemplate(restTemplate)
+    ResponseEntity<String> response = new TestRestTemplate(templateBuilder)
 	.exchange(uri, HttpMethod.GET, requestEntity, String.class);
 
     // Get the response status.
@@ -1849,7 +1850,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = RestUtil.getRestTemplate();
+    RestTemplateBuilder templateBuilder = RestUtil.getRestTemplateBuilder(0, 0);
 
     HttpEntity<MetadataUpdateSpec> requestEntity = null;
 
@@ -1901,7 +1902,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     // The next call should use the Job class instead of the String class,
     // but Spring gets confused when errors are reported.
     // Make the request and get the response.
-    ResponseEntity<String> response = new TestRestTemplate(restTemplate).
+    ResponseEntity<String> response = new TestRestTemplate(templateBuilder).
 	exchange(uri, HttpMethod.POST, requestEntity, String.class);
 
     // Get the response status.
@@ -2132,7 +2133,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = RestUtil.getRestTemplate();
+    RestTemplateBuilder templateBuilder = RestUtil.getRestTemplateBuilder(0, 0);
 
     HttpEntity<MetadataUpdateSpec> requestEntity = null;
 
@@ -2184,7 +2185,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     // The next call should use the Job class instead of the String class,
     // but Spring gets confused when errors are reported.
     // Make the request and get the response.
-    ResponseEntity<String> response = new TestRestTemplate(restTemplate).
+    ResponseEntity<String> response = new TestRestTemplate(templateBuilder).
 	exchange(uri, HttpMethod.POST, requestEntity, String.class);
 
     // Get the response status.
@@ -2318,7 +2319,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = RestUtil.getRestTemplate();
+    RestTemplateBuilder templateBuilder = RestUtil.getRestTemplateBuilder(0, 0);
 
     HttpEntity<String> requestEntity = null;
 
@@ -2352,7 +2353,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     // The next call should use the Integer class instead of the String class,
     // but Spring gets confused when errors are reported.
     // Make the request and get the response. 
-    ResponseEntity<String> response = new TestRestTemplate(restTemplate).
+    ResponseEntity<String> response = new TestRestTemplate(templateBuilder).
 	exchange(uri, HttpMethod.DELETE, requestEntity, String.class);
 
     // Get the response status.
@@ -2466,7 +2467,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     log.trace("uri = {}", () -> uri);
 
     // Initialize the request to the REST service.
-    RestTemplate restTemplate = RestUtil.getRestTemplate();
+    RestTemplateBuilder templateBuilder = RestUtil.getRestTemplateBuilder(0, 0);
 
     HttpEntity<String> requestEntity = null;
 
@@ -2500,7 +2501,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
     // The next call should use the Integer class instead of the String class,
     // but Spring gets confused when errors are reported.
     // Make the request and get the response. 
-    ResponseEntity<String> response = new TestRestTemplate(restTemplate).
+    ResponseEntity<String> response = new TestRestTemplate(templateBuilder).
 	exchange(uri, HttpMethod.DELETE, requestEntity, String.class);
 
     // Get the response status.
