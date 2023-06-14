@@ -127,6 +127,7 @@ public class MdxApplication extends BaseSpringBootApplication
 	.setArgs(args)
 	.addAppConfig(LockssDaemon.PARAM_START_PLUGINS, "true")
 	.addAppConfig(PluginManager.PARAM_START_ALL_AUS, "false")
+	.addAppConfig(LockssDaemon.PARAM_CRAWL_MODE, "None")
 	.addAppConfig(CrawlManagerImpl.PARAM_CRAWLER_ENABLED, "false")
 	.addAppConfig(CrawlManagerImpl.PARAM_CRAWL_STARTER_ENABLED, "false")
 	.setSpringApplicatonContext(getApplicationContext())
