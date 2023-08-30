@@ -37,6 +37,7 @@ import org.lockss.app.LockssApp.AppSpec;
 import org.lockss.app.LockssApp.ManagerDesc;
 import org.lockss.app.LockssDaemon;
 import org.lockss.app.ServiceDescr;
+import org.lockss.crawler.CrawlManagerImpl;
 import org.lockss.plugin.*;
 import org.lockss.metadata.extractor.MetadataExtractorManager;
 import org.lockss.metadata.extractor.job.JobDbManager;
@@ -126,6 +127,9 @@ public class MdxApplication extends BaseSpringBootApplication
 	.setArgs(args)
 	.addAppConfig(LockssDaemon.PARAM_START_PLUGINS, "true")
 	.addAppConfig(PluginManager.PARAM_START_ALL_AUS, "false")
+	.addAppConfig(LockssDaemon.PARAM_CRAWL_MODE, "None")
+	.addAppConfig(CrawlManagerImpl.PARAM_CRAWLER_ENABLED, "false")
+	.addAppConfig(CrawlManagerImpl.PARAM_CRAWL_STARTER_ENABLED, "false")
 	.setSpringApplicatonContext(getApplicationContext())
 	.setAppManagers(myManagerDescs);
       LockssApp.startStatic(LockssDaemon.class, spec);

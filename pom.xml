@@ -38,13 +38,13 @@ POSSIBILITY OF SUCH DAMAGE.
   <parent>
     <groupId>org.lockss</groupId>
     <artifactId>lockss-parent-pom</artifactId>
-    <version>1.15.0</version>
+    <version>1.16.0</version>
     <relativePath />
   </parent>
 
   <groupId>org.lockss.laaws</groupId>
   <artifactId>laaws-metadata-extraction-service</artifactId>
-  <version>2.6.0</version>
+  <version>2.7.0</version>
   <packaging>jar</packaging>
 
   <name>laaws-metadata-extraction-service</name>
@@ -104,6 +104,16 @@ POSSIBILITY OF SUCH DAMAGE.
       <version>${version.lockss.lockss-core-bundle}</version>
       <type>pom</type>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-io</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-http</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- LOCKSS daemon -->
