@@ -65,16 +65,12 @@ import org.lockss.util.rest.RestUtil;
 import org.lockss.util.rest.mdx.MetadataUpdateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -594,9 +590,10 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 	.exchange(uri, method, requestEntity, String.class);
 
     // Get the response status.
-    HttpStatus statusCode = response.getStatusCode();
-    assertFalse(RestUtil.isSuccess(statusCode));
-    assertEquals(expectedStatus, statusCode);
+    HttpStatusCode statusCode = response.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertFalse(RestUtil.isSuccess(status));
+    assertEquals(expectedStatus, status);
   }
 
   /**
@@ -1146,12 +1143,13 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 	.exchange(uri, HttpMethod.GET, requestEntity, String.class);
 
     // Get the response status.
-    HttpStatus statusCode = response.getStatusCode();
-    assertEquals(expectedStatus, statusCode);
+    HttpStatusCode statusCode = response.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(expectedStatus, status);
 
     JobPageInfo result = null;
 
-    if (RestUtil.isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(status)) {
       result = new ObjectMapper().readValue(response.getBody(),
 	  JobPageInfo.class);
     }
@@ -1385,12 +1383,13 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 	.exchange(uri, HttpMethod.GET, requestEntity, String.class);
 
     // Get the response status.
-    HttpStatus statusCode = response.getStatusCode();
-    assertEquals(expectedHttpStatus, statusCode);
+    HttpStatusCode statusCode = response.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(expectedHttpStatus, status);
 
     Status result = null;
 
-    if (RestUtil.isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(status)) {
       result = new ObjectMapper().readValue(response.getBody(), Status.class);
     }
 
@@ -1906,12 +1905,13 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 	exchange(uri, HttpMethod.POST, requestEntity, String.class);
 
     // Get the response status.
-    HttpStatus statusCode = response.getStatusCode();
-    assertEquals(expectedStatus, statusCode);
+    HttpStatusCode statusCode = response.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(expectedStatus, status);
 
     Job result = null;
 
-    if (RestUtil.isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(status)) {
       result = new ObjectMapper().readValue(response.getBody(), Job.class);
     }
 
@@ -2189,12 +2189,13 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 	exchange(uri, HttpMethod.POST, requestEntity, String.class);
 
     // Get the response status.
-    HttpStatus statusCode = response.getStatusCode();
-    assertEquals(expectedStatus, statusCode);
+    HttpStatusCode statusCode = response.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(expectedStatus, status);
 
     Job result = null;
 
-    if (RestUtil.isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(status)) {
       result = new ObjectMapper().readValue(response.getBody(), Job.class);
     }
 
@@ -2357,10 +2358,11 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 	exchange(uri, HttpMethod.DELETE, requestEntity, String.class);
 
     // Get the response status.
-    HttpStatus statusCode = response.getStatusCode();
-    assertEquals(expectedStatus, statusCode);
+    HttpStatusCode statusCode = response.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(expectedStatus, status);
 
-    if (RestUtil.isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(status)) {
       // Verify the identity of the deleted job.
       Job job = new ObjectMapper().readValue(response.getBody(), Job.class);
       assertEquals(jobId, job.getId());
@@ -2505,10 +2507,11 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 	exchange(uri, HttpMethod.DELETE, requestEntity, String.class);
 
     // Get the response status.
-    HttpStatus statusCode = response.getStatusCode();
-    assertEquals(expectedStatus, statusCode);
+    HttpStatusCode statusCode = response.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(expectedStatus, status);
 
-    if (RestUtil.isSuccess(statusCode)) {
+    if (RestUtil.isSuccess(status)) {
       // Verify the count of deleted items.
       assertEquals(expectedDeletedCount, Integer.parseInt(response.getBody()));
 

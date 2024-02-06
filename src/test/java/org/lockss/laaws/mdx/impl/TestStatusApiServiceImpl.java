@@ -41,12 +41,13 @@ import org.lockss.spring.test.SpringLockssTestCase4;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -169,8 +170,9 @@ public class TestStatusApiServiceImpl extends SpringLockssTestCase4 {
     ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
 	getTestUrlTemplate("/status"), HttpMethod.GET, null, String.class);
 
-    HttpStatus statusCode = successResponse.getStatusCode();
-    assertEquals(HttpStatus.OK, statusCode);
+    HttpStatusCode statusCode = successResponse.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(HttpStatus.OK, status);
 
     // Get the expected result.
     ApiStatus expected = new ApiStatus("swagger/swagger.yaml");
