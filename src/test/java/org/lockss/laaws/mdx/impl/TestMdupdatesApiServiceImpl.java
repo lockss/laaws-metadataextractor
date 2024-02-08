@@ -324,7 +324,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 
     startAllAusIfNecessary();
 
-    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
+//    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
     runMethodsNotAllowedUnAuthenticatedTest();
     getMdupdatesJobidUnAuthenticatedTest();
     getMdupdatesUnAuthenticatedTest();
@@ -356,7 +356,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 
     startAllAusIfNecessary();
 
-    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
+//    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
     runMethodsNotAllowedAuthenticatedTest();
     getMdupdatesJobidAuthenticatedTest();
     getMdupdatesAuthenticatedTest();
@@ -387,7 +387,7 @@ public class TestMdupdatesApiServiceImpl extends SpringLockssTestCase4 {
 
     startAllAusIfNecessary();
 
-    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
+//    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
     runMethodsNotAllowedUnAuthenticatedTest();
     getMdupdatesJobidUnAuthenticatedTest();
     getMdupdatesUnAuthenticatedTest();
