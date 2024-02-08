@@ -36,7 +36,8 @@ import static org.lockss.servlet.DebugPanel.ACTION_REINDEX_METADATA;
 import static org.lockss.util.rest.MetadataExtractorConstants.*;
 import java.security.AccessControlException;
 import java.util.ConcurrentModificationException;
-import javax.servlet.http.HttpServletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.lockss.account.UserAccount;
 import org.lockss.app.LockssApp;
 import org.lockss.app.LockssDaemon;
