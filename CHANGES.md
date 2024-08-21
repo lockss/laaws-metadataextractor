@@ -1,4 +1,11 @@
 # `laaws-metadata-extraction-service` Release Notes
+* Remove  Travis CI
+* Move to OpenAPI 3
+* Move to Java 17
+* Move to springdoc
+* Supress extraneous messages in tests
+* Spring 6.1.x and Spring Boot 3.2.x support
+* Set crawlMode = None
 
 ## Changes Since 2.0.3.1
 
