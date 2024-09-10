@@ -34,6 +34,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lockss.laaws.mdx.MdxApplication;
 import org.lockss.util.rest.status.ApiStatus;
 import org.lockss.app.*;
 import org.lockss.log.L4JLogger;
@@ -41,12 +42,13 @@ import org.lockss.spring.test.SpringLockssTestCase4;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -54,7 +56,9 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Test class for org.lockss.laaws.mdx.api.StatusApiServiceImpl.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    classes = {MdxApplication.class},
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestStatusApiServiceImpl extends SpringLockssTestCase4 {
   private static final L4JLogger log = L4JLogger.getLogger();
 
@@ -103,7 +107,7 @@ public class TestStatusApiServiceImpl extends SpringLockssTestCase4 {
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
-    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
     getStatusTest();
 
     log.debug2("Done");
@@ -127,7 +131,7 @@ public class TestStatusApiServiceImpl extends SpringLockssTestCase4 {
     CommandLineRunner runner = appCtx.getBean(CommandLineRunner.class);
     runner.run(cmdLineArgs.toArray(new String[cmdLineArgs.size()]));
 
-    runGetSwaggerDocsTest(getTestUrlTemplate("/v2/api-docs"));
+    runGetSwaggerDocsTest(getTestUrlTemplate("/v3/api-docs"));
     getStatusTest();
 
     log.debug2("Done");
@@ -169,8 +173,9 @@ public class TestStatusApiServiceImpl extends SpringLockssTestCase4 {
     ResponseEntity<String> successResponse = new TestRestTemplate().exchange(
 	getTestUrlTemplate("/status"), HttpMethod.GET, null, String.class);
 
-    HttpStatus statusCode = successResponse.getStatusCode();
-    assertEquals(HttpStatus.OK, statusCode);
+    HttpStatusCode statusCode = successResponse.getStatusCode();
+    HttpStatus status = HttpStatus.valueOf(statusCode.value());
+    assertEquals(HttpStatus.OK, status);
 
     // Get the expected result.
     ApiStatus expected = new ApiStatus("swagger/swagger.yaml");

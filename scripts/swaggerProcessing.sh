@@ -50,3 +50,5 @@ sed -i.backup "s/import org.lockss.laaws.mdx.model.Status;/import org.lockss.met
 # Edit JobPageInfo.java.
 CLASS=src/generated/java/org/lockss/laaws/mdx/model/JobPageInfo.java
 sed -i.backup "s/import org.lockss.laaws.mdx.model.Job;/import org.lockss.metadata.extractor.job.Job;/" $CLASS && rm $CLASS.backup
+
+rm -rf src/generated/java/org/lockss/laaws/mdx/config/SwaggerDocumentationConfig.java

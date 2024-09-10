@@ -29,7 +29,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --> 
-# LOCKSS Metadata Extraction Service [![Build Status](https://travis-ci.org/lockss/laaws-metadataextractor.svg?branch=master)](https://travis-ci.org/lockss/laaws-metadataextractor)
+# LOCKSS Metadata Extraction Service
 This is the REST Web Service that extracts metadata from the content of Archival
 Units.
 
